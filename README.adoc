@@ -14,7 +14,7 @@
 :page-duration: 25 minutes
 :page-releasedate: 2018-10-05
 :page-description: Explore how to deploy microservices to IBM Cloud Private and manage your cluster.
-:page-tags: ['microservices', 'Kubernetes', 'Docker', 'containers', 'kubectl', 'Minikube', 'ICP', 'IBM Cloud Private']
+:page-tags: ['microservices', 'Kubernetes', 'Docker', 'containers', 'kubectl', 'ICP', 'IBM Cloud Private']
 :page-permalink: /guides/{projectid}
 :page-related-guides: ['kubernetes-intro']
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
@@ -53,14 +53,14 @@ IBM Cloud Private is a {kube} platform that provides an on-premises cloud soluti
 == What you'll learn
 
 You will learn how to deploy two microservices in Open Liberty containers to an ICP cluster.
-You will then manage your deployed microservices using the `kubectl` command line
+You'll then manage your deployed microservices using the `kubectl` command-line
 interface for {kube}. The `kubectl` CLI is your primary tool for communicating with and managing your
 {kube} cluster.
 
-The two microservices you will deploy are called `name` and `ping`. The `name` microservice simply
+The two microservices you'll deploy are called `name` and `ping`. The `name` microservice
 displays a brief greeting and the name of the
-container that it runs in, making it easy to distinguish it from its other replicas. The `ping` microservice
-simply pings the {kube} Service that encapsulates the pods running the `name` microservice. This demonstrates
+container it's running in. This message makes it easy to differentiate it from its other replicas. The `ping` microservice
+pings the {kube} Service that encapsulates the `name` pods. This communication demonstrates
 how communication can be established between pods inside a cluster.
 
 // =================================================================================================
@@ -69,8 +69,7 @@ how communication can be established between pods inside a cluster.
 
 == Prerequisites
 
-First, you will need a containerization software for building containers. {kube} supports a variety
-of container types. You will use `Docker` in this guide. For installation instructions, refer to the https://docs.docker.com/install/[official Docker documentation].
+First, you will need a containerization software for building containers. {kube} supports various types. You will use `Docker` in this guide. For installation instructions, refer to the https://docs.docker.com/install/[official Docker documentation].
 
 You will also need to install the https://kubernetes.io/docs/tasks/tools/install-kubectl/[kubectl] cli tool.
 
@@ -95,15 +94,15 @@ First, login and navigate to your ICP dashboard.
 
 image::images/dashboard.png[]
 
-Click on the icon located at the top left of the page to expand the menu.
+Click the icon located at the upper left of the page to expand the menu.
 
 image::images/menu-open.png[]
 
-Click on `Command Line Tools > Cloud Private CLI` to navigate to the `IBM Cloud Private CLI` page.
+Click `Command Line Tools > Cloud Private CLI` to navigate to the `IBM Cloud Private CLI` page.
 
 image::images/cli-tools-expanded.png[]
 
-Click on `Install IBM Cloud Private CLI and plug-ins` and follow the instructions to download the `cloudctl` tool.
+Click `Install IBM Cloud Private CLI and plug-ins` and follow the instructions to download the `cloudctl` tool.
 
 image::images/cli-tools-page.png[]
 
@@ -129,13 +128,13 @@ set PATH=%PATH%;%systemdrive%%userprofile%\cloudctl-bin
 Next, move the file you downloaded into the `cloudctl-bin` directory and rename the file to `cloudctl.exe`.
 ****
 
-Connect the `kubectl` cli tool to your cluster by logging into the cluster, replace `[hostname]` and `[port]` as appropriate with the values for your ICP instance.
+Connect the `kubectl` cli tool to your cluster by logging in to the cluster, replace `[hostname]` and `[port]` as appropriate with the values for your ICP instance.
 
 ```
 cloudctl login -a https://[hostname]:[port]  --skip-ssl-validation
 ```
 
-When prompted, enter your username and password. Then select the cluster account. Finally, ensure to select the `default` namespace.
+When prompted, enter your username and password. Then, select the cluster account. Finally, ensure to select the `default` namespace.
 
 ----
 Username> enter_your_username	
@@ -197,18 +196,18 @@ NAME           STATUS    ROLES                          AGE       VERSION
 The first step of deploying to {kube} is to build your microservices and containerize them with Docker.
 
 The starting Java project, which you can find in the `start` directory, is a multi-module Maven
-project that's made up of the `name` and `ping` microservices. Each microservice resides in its own directory,
+project. It's made up of the `name` and `ping` microservices. Each microservice resides in its own directory,
 `start/name` and `start/ping`. Each of these directories also contains a Dockerfile, which is necessary
 for building Docker images. If you're unfamiliar with Dockerfiles, check out the
 https://openliberty.io/guides/docker.html[Using Docker containers to develop microservices] guide,
 which covers Dockerfiles in depth.
 
 If you're familiar with Maven and Docker, you might be tempted to run a Maven build first and then
-use the `.war` file produced by the build to build a Docker image. While it is by no means a wrong
+use the `.war` file to build a Docker image. While it's by no means a wrong
 approach, we've setup the projects such that this process is automated
-as a part of a single Maven build. This is done by using the `dockerfile-maven` plug-in, which automatically
+as a part of a single Maven build. It's created by using the `dockerfile-maven` plug-in. The plugin automatically
 picks up the Dockerfile located in the same directory as its POM file and builds a Docker image from it.
-If you're using Docker for Windows ensure that, on the Docker for Windows _General Setting_ page, the option is set to `Expose daemon on tcp://localhost:2375 without TLS`. This is required by the `dockerfile-maven` part of the build.
+If you're using Docker for Windows ensure that, on the Docker for Windows _General Setting_ page, the option is set to `Expose daemon on tcp://localhost:2375 without TLS`. This configuration is required by the `dockerfile-maven` part of the build.
 
 Navigate to the `start` directory and run the following command:
 
@@ -216,7 +215,7 @@ Navigate to the `start` directory and run the following command:
 mvn package
 ```
 
-The `package` goal automatically invokes the `dockerfile-maven:build` goal, which runs during the
+The `package` goal automatically starts the `dockerfile-maven:build` goal. It runs during the
 `package` phase. This goal builds a Docker image from the Dockerfile located in the same directory
 as the POM file.
 
@@ -245,11 +244,11 @@ build log for any potential errors.
 
 == Pushing the images to a private docker registry
 
-Pushing the images a private registry will allow the ICP cluster to create pods using your docker images. Since it is a private registry, only users with access to your cluster will be able to access these images.
+Pushing the images a private registry will allow the ICP cluster to create pods using your docker images. Since it's a private registry, only users with access to your cluster will have access to access these images.
 
-First, you will add your ICP instance to an insecure registry whitelist in your docker preferences. Go to your Docker Preferences and select the `Daemon` tab. If it is not checked, then check the `Experimental Features` box. Next, add an insecure registry to the list in the form `[hostname]:8500` where hostname is the hostname of your ICP instance. Click the `Apply & Restart` button and wait for the docker engine to start again.
+First, you will add your ICP instance to an insecure registry whitelist in your docker preferences. Go to your Docker Preferences and select the `Daemon` tab. If it's not checked, then check the `Experimental Features` box. Next, add an insecure registry to the list in the form `[hostname]:8500` where hostname is the hostname of your ICP instance. Click the `Apply & Restart` button and wait for the docker engine to start again.
 
-Then, login to the docker registry from your command line and enter your username and password when prompted.
+Then, login to the docker registry from your command line and enter your user name and password when prompted.
 
 ```
 docker login [hostname]:8500
@@ -273,7 +272,7 @@ docker tag name:1.0-SNAPSHOT [hostname]:8500/default/name:1.0-SNAPSHOT
 docker tag ping:1.0-SNAPSHOT [hostname]:8500/default/ping:1.0-SNAPSHOT
 ```
 
-Then push your images to the private registry.
+Then, push your images to the private registry.
 
 ```
 docker push [hostname]:8500/default/name:1.0-SNAPSHOT
@@ -297,7 +296,7 @@ To deploy the `name` and `ping` applications, first create the `kubernetes.yaml`
 include::finish/kubernetes.yaml[tags=**;]
 ----
 
-This file defines four {kube} resources. It defines two deployments and two services. A {kube} deployment is a resource responsible for controlling the creation and management of pods. The file specifies to use the images stored in the ICP instance's private registry by prefixing the `name:1.0-SNAPSHOT` image name with `mycluster.icp:8500/default`. `mycluster.icp:8500` refers to the current ICP instance's docker registry, and `default` refers to the `default` namespace.
+This file defines four {kube} resources. It defines two deployments and two services. A {kube} deployment is a resource responsible for controlling the creation and management of pods. The file specifies to use the images stored in the ICP instance's private registry. You may specify it by prefixing the `name:1.0-SNAPSHOT` image name with `mycluster.icp:8500/default`. `mycluster.icp:8500` refers to the current ICP instance's docker registry, and `default` refers to the `default` namespace.
 
 Run the following commands to deploy the resources as defined in kubernetes.yaml:
 
@@ -311,7 +310,7 @@ When the apps are deployed, run the following command to check the status of you
 kubectl get pods
 ```
 
-You'll see an output similar to the following if all the pods are healthy and running:
+If all the pods are healthy and running, then you'll see an output similar to the following:
 
 [source, role="no_copy"]
 ----
@@ -320,9 +319,9 @@ name-deployment-6bd97d9bf6-4ccds   1/1       Running   0          15s
 ping-deployment-645767664f-nbtd9   1/1       Running   0          15s
 ----
 
-Next you will make requests to your services.
+Next, you will make requests to your services.
 
-Then `curl` or visit the following URLs to access your microservices, substituting the appropriate hostname:
+Then, `curl` or visit the following URLs to access your microservices, substituting the appropriate hostname:
 
 - {name-api}
 - {ping-api}/name-service
@@ -338,7 +337,7 @@ a good or a bad response depending on whether `kube-service` is a valid {kube} S
 
 == Scaling a deployment
 
-To use load balancing, you need to scale your deployments. When you scale a deployment, you replicate its pods, creating more running instances of your applications. Scaling is one of the primary advantages of {kube} because replicating your application allows it to accommodate more traffic, and then descale your deployments to free up resources when the traffic decreases.
+To use load balancing, you need to scale your deployments. When you scale a deployment, you replicate its pods, creating more running instances of your applications. Scaling is one of the primary advantages of {kube} because replicating your application allows it to accommodate more traffic. Then descale your deployments to free up resources when the traffic decreases.
 
 As an example, scale the `name` Deployment to 3 pods by running the following command:
 
@@ -384,7 +383,7 @@ in the ready state before proceeding further. The default properties defined in 
 
 Navigate back to the `start` directory.
 
-Run the integration tests against a cluster running with a hostname of `localhost`:
+Run the integration tests against a cluster running with a host name of `localhost`:
 
 ```
 mvn verify -Ddockerfile.skip=true -Dcluster.ip=[hostname]
