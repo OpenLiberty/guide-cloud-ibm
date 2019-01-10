@@ -283,7 +283,7 @@ docker push [hostname]:8500/default/ping:1.0-SNAPSHOT
 // Deploying the microservices
 // =================================================================================================
 
-== Deploying the microservices
+== (Option A) Deploying the microservices
 
 Now that your Docker images are built, deploy them using a Kubernetes resource definition.
 
@@ -331,36 +331,33 @@ runs in. The second URL returns `pong` if it received a good response from the `
 {kube} Service. Visiting `{ping-api}/[kube-service]` in general returns either
 a good or a bad response depending on whether `kube-service` is a valid {kube} Service that can be accessed.
 
-// =================================================================================================
-// Scaling a deployment
-// ================================================================================================
+== (Option B) Deploying the microservices from the UI
 
-== Scaling a deployment
+Navigate to your ICP console and click on the catalog link in the top right.
 
-To use load balancing, you need to scale your deployments. When you scale a deployment, you replicate its pods, creating more running instances of your applications. Scaling is one of the primary advantages of {kube} because replicating your application allows it to accommodate more traffic. Then descale your deployments to free up resources when the traffic decreases.
+Type `open-liberty` in the search box and click on the `ibm-open-liberty` helm chart.
 
-As an example, scale the `name` Deployment to 3 pods by running the following command:
+Click the `Configure` button then enter `name-app` into the `Helm Release Name` field. Select `default`
+as the target namespace. Check the box to verify that you've read the license agreement.
 
-```
-kubectl scale deployment/name-deployment --replicas=3
-```
+Expand the `All Parameters` form and change the `Image > Repository` field from `open-liberty` to `mycluster.icp:8500/default/name`.
+Change the `Image > Tag` field to `1.0-SNAPSHOT`. Using the `mycluster.icp:8500` prefix specifies to ICP to access docker images
+stored in its private registry.
 
-Use the following command to verify that two new pods have been created.
+Click the install button to deploy the helm chart.
 
-```
-kubectl get pods
-```
+Go back to the catalog and repeat the same steps to deploy the `ping` microservice.
 
-[source, role="no_copy"]
-----
-NAME                               READY     STATUS    RESTARTS   AGE
-name-deployment-6bd97d9bf6-4ccds   1/1       Running   0          1m
-name-deployment-6bd97d9bf6-jf9rs   1/1       Running   0          25s
-name-deployment-6bd97d9bf6-x4zth   1/1       Running   0          25s
-ping-deployment-645767664f-nbtd9   1/1       Running   0          1m
-----
+Type `open-liberty` in the search box and click on the `ibm-open-liberty` helm chart.
 
-Wait for your two new pods to be in the ready state, then `curl` or visit the `{name-api}` URL. You'll notice that the service will respond with a different name when you call it multiple times. This is because there are now three pods running all serving the `name` application. Similarly, to descale your deployments you can use the same scale command with fewer replicas.
+Click the `Configure` button then enter `ping-app` into the `Helm Release Name` field. Select `default`
+as the target namespace. Check the box to verify that you've read the license agreement.
+
+Expand the `All Parameters` form and change the `Image > Repository` field from `open-liberty` to `mycluster.icp:8500/default/ping`.
+Change the `Image > Tag` field to `1.0-SNAPSHOT`.
+
+Click the install button to deploy the helm chart.
+
 
 // =================================================================================================
 // Testing microservices that are running on {kube}
