@@ -358,6 +358,69 @@ Change the `Image > Tag` field to `1.0-SNAPSHOT`.
 
 Click the install button to deploy the helm chart.
 
+Get the node port of the `name` microservice.
+
+```
+kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+```
+
+Get the node port of the `ping` microservice.
+
+```
+kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+```
+
+Make a request to the `name` microservice.
+
+```
+curl -k https://[hostname]:[nameNodePort]/api/name
+```
+
+```
+curl -k https://[hostname]:[pingNodePort]/api/ping/name-app-ibm-open-libert
+```
+
+== (Option C)) Deploy the microservices using the Helm CLI
+
+Use helm to deploy the `name` microservice.
+
+```
+helm install --name name-app \
+    --set image.repository=mycluster.icp:8500/default/name \
+    --set image.tag=1.0-SNAPSHOT \
+    ibm-charts/ibm-open-liberty
+```
+
+Use helm to deploy the `ping` microservice.
+
+```
+helm install --name ping-app \
+    --set image.repository=mycluster.icp:8500/default/ping \
+    --set image.tag=1.0-SNAPSHOT \
+    ibm-charts/ibm-open-liberty
+```
+
+Get the node port of the `name` microservice.
+
+```
+kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+```
+
+Get the node port of the `ping` microservice.
+
+```
+kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+```
+
+Make a request to the `name` microservice.
+
+```
+curl -k https://[hostname]:[nameNodePort]/api/name
+```
+
+```
+curl -k https://[hostname]:[pingNodePort]/api/ping/name-app-ibm-open-libert
+```
 
 // =================================================================================================
 // Testing microservices that are running on {kube}
