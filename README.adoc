@@ -211,6 +211,86 @@ NAME           STATUS    ROLES                          AGE       VERSION
 192.168.0.5    Ready     etcd,management,master,proxy   10d       v1.11.1+icp-ee
 ----
 
+== Setting up an IBM Cloud Kubernetes Service (IKS) instance
+
+=== Installing command line tools for IBM Cloud
+
+Use the following command to download and install everything you will need to interact with IBM Cloud.
+Running this script will install https://console.bluemix.net/docs/cli/index.html#overview[several tools]
+that will be useful for interacting with IBM Cloud. It will install the `ibmcloud`, `kubectl`, `helm`,
+and `curl` tools which are needed to complete this guide.
+
+****
+[system]#*{linux} | {mac}*#
+
+```
+curl -sL https://ibm.biz/idt-installer | bash
+```
+
+[system]#*{win}*#
+
+```
+Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebClient).DownloadString('http://ibm.biz/idt-win-installer')
+```
+****
+
+Once the script has finished running, login with the command line to IBM Cloud.
+
+```
+ibmcloud login
+```
+
+If you are logging in with organization credentials, you may need to pass in the `--sso` flag
+to get a one time code for single sign-on. Follow the instructions given on the prompt and in
+your web browser to complete the login process.
+
+```
+ibmcloud login --sso
+```
+
+=== Provisioning a cluster
+
+Use the following command to provision a cluster.
+
+// ```
+// ibmcloud ks cluster-create \
+//     --zone dal10 \
+//     --machine-type b2c.4x16 \
+//     --hardware <shared_or_dedicated> \
+//     --public-vlan <public_VLAN_ID> \
+//     --private-vlan <private_VLAN_ID> \
+//     --workers 3 \
+//     --name <cluster_name> \
+//     --kube-version <major.minor.patch>
+// ```
+
+```
+ibmcloud ks cluster-create --name guide-cluster
+```
+
+Once your cluster is ready, connect `kubectl` to the cluster.
+****
+[system]#*{linux} | {mac}*#
+
+```
+eval $(ibmcloud ks cluster-config --export guide-cluster)
+```
+[system]#*{win}*#
+
+TODO: Equivalent windows command
+
+****
+
+Verify that you're connected to the cluster by checking the cluster's nodes.
+
+```
+kubectl get nodes
+```
+
+----
+TODO: SHOW OUTPUT HERE
+----
+
 // =================================================================================================
 // Building and containerizing the microservices
 // =================================================================================================
@@ -268,7 +348,9 @@ build log for any potential errors.
 
 == Pushing the images to a private docker registry
 
-Pushing the images a private registry will allow the ICP cluster to create pods using your docker images. Since it's a private registry, only users with access to your cluster will have access to access these images.
+Pushing the images a private registry will allow the cluster to create pods using your docker images. Since it's a private registry, only users with access to your cluster will have access to access these images.
+
+=== Pushing to the ICP docker registry
 
 First, you will add your ICP instance to an insecure registry whitelist in your docker preferences. Go to your Docker Preferences and select the `Daemon` tab. If it's not checked, then check the `Experimental Features` box. Next, add an insecure registry to the list in the form `[hostname]:8500` where hostname is the hostname of your ICP instance. Click the `Apply & Restart` button and wait for the docker engine to start again.
 
@@ -303,6 +385,41 @@ docker push [hostname]:8500/default/name:1.0-SNAPSHOT
 docker push [hostname]:8500/default/ping:1.0-SNAPSHOT
 ```
 
+=== Pushing to an IBM Cloud container registry
+
+Install the container registry plugin.
+
+```
+ibmcloud plugin install container-registry -r Bluemix
+```
+
+Use the container registry plugin to create a namespace for your container images.
+The namespace must be unique, so choose something relevant that you'll remember for the duration of the guide.
+
+```
+ibmcloud cr namespace-add [your-namespace]
+```
+
+Use the plugin again to login to the docker registry.
+
+```
+ibmcloud cr login
+```
+
+Next, you need to tag your docker images with the relevant data about your registry.
+
+```
+docker tag name:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
+docker tag ping:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
+```
+
+Finally, push your images to the registry.
+
+```
+docker push registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
+docker push registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
+```
+
 // =================================================================================================
 // Deploying the microservices
 // =================================================================================================
@@ -314,6 +431,8 @@ Add the `ibm-charts` repository so that you may use the `ibm-open-liberty` chart
 ```
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
 ```
+
+=== Deploying to IBM Cloud Private
 
 Use helm to deploy the `name` microservice.
 
@@ -343,6 +462,43 @@ The `--name` flag specifies the release name. This is the name that helm uses to
 deployment of your chart. The image repository and flag refers to the image you built for your microservices.
 The `mycluster.icp:8500/default` prefix uses an image on your local cluster located in the `default` namespace.
 
+=== Deploying to IBM Cloud Kubernetes Service
+
+Use helm to deploy the `name` microservice.
+
+```
+helm install --name name-app \
+    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT \
+    --set image.tag=1.0-SNAPSHOT \
+    --set service.port=9080 \
+    --set service.targetPort=9080 \
+    --set ssl.enabled=false \
+    ibm-charts/ibm-open-liberty
+```
+
+Use helm to deploy the `ping` microservice.
+
+```
+helm install --name ping-app \
+    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT \
+    --set image.tag=1.0-SNAPSHOT \
+    --set service.port=9080 \
+    --set service.targetPort=9080 \
+    --set ssl.enabled=false \
+    ibm-charts/ibm-open-liberty
+```
+
+The `--name` flag specifies the release name. This is the name that helm uses to identify this specific
+deployment of your chart.
+
+=== Making requests to the microservices
+
+Get the ip address of the cluster.
+
+```
+kubectl get nodes -l proxy=true -o jsonpath="{.items[0].status.addresses[?(@.type==\"Hostname\")].address}"
+```
+
 Get the node port of the `name` microservice.
 
 ```
@@ -355,14 +511,16 @@ Get the node port of the `ping` microservice.
 kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
 ```
 
+Take note of the ip address and ports. They are required to make the HTTP requests.
+
 Make a request to the `name` microservice.
 
 ```
-curl http://[hostname]:[nameNodePort]/api/name
+curl http://[ip-address]:[nameNodePort]/api/name
 ```
 
 ```
-curl http://[hostname]:[pingNodePort]/api/ping/name-app-ibm-open-libert
+curl http://[ip-address]:[pingNodePort]/api/ping/name-app-ibm-open-libert
 ```
 
 // =================================================================================================
@@ -441,6 +599,8 @@ helm delete --purge name-app
 helm delete --purge ping-app
 ```
 
+=== Logging out of ICP
+
 Logout of your docker registry.
 
 ```
@@ -453,14 +613,34 @@ Logout of your ICP cluster.
 cloudctl logout
 ```
 
+=== Tearing down IKS
+
+Logout of your docker registry.
+
+```
+docker logout registry.ng.bluemix.net
+```
+
+Remove your IKS cluster.
+
+```
+ibmcloud ks cluster-rm guide-cluster
+```
+
+Logout of the `ibmcloud` command line tool.
+
+```
+ibmcloud logout
+```
+
 // =================================================================================================
 // finish
 // =================================================================================================
 
 == Great work! You're done!
 
-You have just deployed two microservices to ICP. You then scaled a microservice and ran integration tests against miroservices that are running in an ICP 
-cluster.
+You have just deployed two microservices to IBM Cloud. You have learned to use Helm to install your microservices
+on a {kube} cluster using IBM's helm chart for Open Liberty.
 
 // Include the below from the guides-common repo to tell users how they can contribute to the guide
 include::{common-includes}/finish.adoc[]
