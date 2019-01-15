@@ -21,7 +21,7 @@
 :source-highlighter: prettify
 :page-seo-title: IBM Cloud tutorial
 :page-seo-description: How to deploy microservices to IBM Cloud
-= Deploying microservices to IBM Cloud Private
+= Deploying microservices to IBM Cloud
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
