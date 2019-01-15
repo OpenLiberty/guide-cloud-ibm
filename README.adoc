@@ -235,6 +235,8 @@ curl -sL https://ibm.biz/idt-installer | bash
 
 [system]#*{win}*#
 
+Open PowerShell as an administrator and run the following command.
+
 ```
 Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebClient).DownloadString('http://ibm.biz/idt-win-installer')
 ```
@@ -315,8 +317,11 @@ eval $(ibmcloud ks cluster-config --export guide-cluster)
 ```
 [system]#*{win}*#
 
-TODO: Equivalent windows command
-
+```
+ibmcloud ks cluster-config --export guide-cluster > tmp-set-cluster.cmd
+call tmp-set-cluster.cmd
+del tmp-set-cluster.cmd
+```
 ****
 
 Verify that you're connected to the cluster by checking the cluster's nodes.
