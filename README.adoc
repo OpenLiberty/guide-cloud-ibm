@@ -26,7 +26,7 @@
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website].
 
-Deploy microservices in Open Liberty Docker containers to IBM Cloud Private and manage them with the Kubernetes CLI, kubectl.
+Deploy microservices in Open Liberty Docker containers to IBM Cloud.
 
 :minikube-ip: 192.168.99.100
 :kube: Kubernetes
@@ -58,10 +58,9 @@ IKS is a service offered as part of IBM's public cloud offerings. It provides a 
 
 == What you'll learn
 
-You will learn how to deploy two microservices in Open Liberty containers to an ICP cluster.
-You'll then manage your deployed microservices using the `kubectl` command-line
-interface for {kube}. The `kubectl` CLI is your primary tool for communicating with and managing your
-{kube} cluster.
+You will learn how to deploy two microservices in Open Liberty containers to a {kube}
+cluster on IBM Cloud. You will use `helm` to deploy these microservices using IBM's
+Open Liberty Helm charts.
 
 The two microservices you'll deploy are called `name` and `ping`. The `name` microservice
 displays a brief greeting and the name of the
@@ -75,7 +74,7 @@ how communication can be established between pods inside a cluster.
 
 == Prerequisites
 
-First, you will need a containerization software for building containers. {kube} supports various types. You will use `Docker` in this guide. For installation instructions, refer to the https://docs.docker.com/install/[official Docker documentation].
+First, you will need Docker to build your containers, refer to the https://docs.docker.com/install/[official Docker documentation] to install Docker.
 
 You will also need to install the https://kubernetes.io/docs/tasks/tools/install-kubectl/[kubectl] cli tool.
 
@@ -275,6 +274,38 @@ Use the following command to provision a cluster.
 ibmcloud ks cluster-create --name guide-cluster
 ```
 
+This command provisions a free cluster that will expire in a month if you do not delete it.
+
+----
+The 'machine-type' flag was not specified. So a free cluster will be created.
+Creating cluster...
+OK
+----
+
+Check the current status of your cluster.
+
+```
+ibmcloud ks clusters
+```
+
+----
+Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
+guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   deploying   4 minutes ago   1         Dallas     1.10.11_1536   default 
+----
+
+----
+Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
+guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   pending     19 minutes ago   1         Dallas     1.10.11_1536   default 
+----
+
+Wait until the `State` of your cluster is `normal` before proceeding with the guide. This may take a while for IKS to prepare your cluster.
+
+----
+Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
+guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1           Dallas     1.10.11_1536   default 
+----
+
+
 Once your cluster is ready, connect `kubectl` to the cluster.
 ****
 [system]#*{linux} | {mac}*#
@@ -295,7 +326,8 @@ kubectl get nodes
 ```
 
 ----
-TODO: SHOW OUTPUT HERE
+NAME           STATUS    ROLES     AGE       VERSION
+10.70.200.73   Ready     <none>    1h        v1.10.11+IKS
 ----
 
 // =================================================================================================
@@ -344,6 +376,7 @@ Verify that the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images are listed am
 REPOSITORY                                                       TAG
 ping                                                             1.0-SNAPSHOT
 name                                                             1.0-SNAPSHOT
+open-liberty                                                     latest
 ----
 
 If you don't see the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images, then check the Maven
@@ -471,11 +504,29 @@ The `mycluster.icp:8500/default` prefix uses an image on your local cluster loca
 
 === Deploying to IBM Cloud Kubernetes Service
 
+First, setup RBAC to give Helm's tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the tiller.
+
+```
+kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
+```
+
+[source, role="no_copy"]
+----
+serviceaccount/tiller created
+clusterrolebinding.rbac.authorization.k8s.io/tiller created
+----
+
+Next, install the tiller to your cluster. Specify the service account that was created in the previous step.
+
+```
+helm init --service-account tiller
+```
+
 Use helm to deploy the `name` microservice.
 
 ```
 helm install --name name-app \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT \
+    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
     --set image.tag=1.0-SNAPSHOT \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -487,7 +538,7 @@ Use helm to deploy the `ping` microservice.
 
 ```
 helm install --name ping-app \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT \
+    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping \
     --set image.tag=1.0-SNAPSHOT \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -502,9 +553,19 @@ deployment of your chart.
 
 Get the ip address of the cluster.
 
+****
+[system]#*ICP*#
+
 ```
 kubectl get nodes -l proxy=true -o jsonpath="{.items[0].status.addresses[?(@.type==\"Hostname\")].address}"
 ```
+
+[system]#*IKS*#
+
+```
+ibmcloud ks workers $(kubectl config current-context)
+```
+****
 
 Get the node port of the `name` microservice.
 
@@ -551,12 +612,12 @@ in the ready state before proceeding further. The default properties defined in 
 
 Navigate back to the `start` directory.
 
-Run the integration tests against the ICP cluster:
+Run the integration tests against your cluster:
 
 ```
 mvn verify \
     -Ddockerfile.skip=true \
-    -Dcluster.ip=`kubectl get nodes -l proxy=true -o jsonpath="{.items[0].status.addresses[?(@.type==\"Hostname\")].address}"` \
+    -Dcluster.ip=[ip-address] \
     -Dname.node.port=`kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"` \
     -Dping.node.port=`kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"` \
     -Dname.kube.service=name-app-ibm-open-libert
