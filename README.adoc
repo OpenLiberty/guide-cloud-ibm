@@ -91,10 +91,10 @@ include::{common-includes}/gitclone.adoc[]
 
 
 // =================================================================================================
-// Connecting to your ICP cluster
+// Deploying microservices to IBM Cloud Private (ICP)
 // =================================================================================================
 
-== Connecting to your ICP cluster
+== Deploying microservices to IBM Cloud Private (ICP)
 
 === Installing cloudctl
 
@@ -217,7 +217,22 @@ NAME           STATUS    ROLES                          AGE       VERSION
 192.168.0.5    Ready     etcd,management,master,proxy   10d       v1.11.1+icp-ee
 ----
 
-== Setting up an IBM Cloud Kubernetes Service (IKS) instance
+:use-icp: true
+include::partials/build-and-containerizing.adoc[]
+
+include::partials/pushing-images.adoc[]
+
+include::partials/deploying.adoc[]
+
+include::partials/making-requests.adoc[]
+
+include::partials/testing.adoc[]
+
+include::partials/tearing-down.adoc[]
+
+include::partials/finish.adoc[]
+
+== Deploying microservices to IBM Cloud Kubernetes Service (IKS)
 
 === Installing command line tools for IBM Cloud
 
@@ -335,387 +350,21 @@ NAME           STATUS    ROLES     AGE       VERSION
 10.70.200.73   Ready     <none>    1h        v1.10.11+IKS
 ----
 
-// =================================================================================================
-// Building and containerizing the microservices
-// =================================================================================================
+:!use-icp:
+:use-iks: true
+include::partials/build-and-containerizing.adoc[]
 
-== Building and containerizing the microservices
+include::partials/pushing-images.adoc[]
 
-The first step of deploying to {kube} is to build your microservices and containerize them with Docker.
+include::partials/deploying.adoc[]
 
-The starting Java project, which you can find in the `start` directory, is a multi-module Maven
-project. It's made up of the `name` and `ping` microservices. Each microservice resides in its own directory,
-`start/name` and `start/ping`. Each of these directories also contains a Dockerfile, which is necessary
-for building Docker images. If you're unfamiliar with Dockerfiles, check out the
-https://openliberty.io/guides/docker.html[Using Docker containers to develop microservices] guide.
-It covers Dockerfiles in depth.
+include::partials/making-requests.adoc[]
 
-If you're familiar with Maven and Docker, you might be tempted to run a Maven build first and then
-use the `.war` file to build a Docker image. While it's by no means a wrong
-approach, we've setup the projects such that this process is automated
-as a part of a single Maven build. It's created by using the `dockerfile-maven` plug-in. The plug-in automatically
-picks up the Dockerfile located in the same directory as its POM file and builds a Docker image from it.
-If you're using Docker for Windows ensure that, on the Docker for Windows _General Setting_ page, the option is set to `Expose daemon on tcp://localhost:2375 without TLS`. This configuration is required by the `dockerfile-maven` part of the build.
+include::partials/testing.adoc[]
 
-Navigate to the `start` directory and run the following command:
+include::partials/tearing-down.adoc[]
 
-```
-mvn package
-```
-
-The `package` goal automatically starts the `dockerfile-maven:build` goal. It runs during the
-`package` phase. This goal builds a Docker image from the Dockerfile located in the same directory
-as the POM file.
-
-During the build, you'll see various Docker messages describing what images are being downloaded and
-built. When the build finishes, run the following command to list all local Docker images:
-
-```
-docker images
-```
-
-Verify that the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images are listed among them, for example:
-
-[source, role="no_copy"]
-----
-REPOSITORY                                                       TAG
-ping                                                             1.0-SNAPSHOT
-name                                                             1.0-SNAPSHOT
-open-liberty                                                     latest
-----
-
-If you don't see the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images, then check the Maven
-build log for any potential errors.
-
-// =================================================================================================
-// Pushing the images to a private docker registry
-// =================================================================================================
-
-== Pushing the images to a private docker registry
-
-Pushing the images a private registry will allow the cluster to create pods using your docker images. Since it's a private registry, only users with access to your cluster will have access to access these images.
-
-=== Pushing to the ICP docker registry
-
-First, you will add your ICP instance to an insecure registry whitelist in your docker preferences. Go to your Docker Preferences and select the `Daemon` tab. If it's not checked, then check the `Experimental Features` box. Next, add an insecure registry to the list in the form `[hostname]:8500` where hostname is the hostname of your ICP instance. Click the `Apply & Restart` button and wait for the docker engine to start again.
-
-Then, login to the docker registry from your command line and enter your user name and password when prompted.
-
-```
-docker login [hostname]:8500
-```
-
-[source, role="no_copy"]
-----
-Username: your_username
-Password: your_password
-WARNING! Your password will be stored unencrypted in ~/.docker/config.json.
-Configure a credential helper to remove this warning. See
-https://docs.docker.com/engine/reference/commandline/login/#credentials-store
-
-Login Succeeded
-----
-
-Next, you need to tag your docker image with the relevant data about your registry.
-
-```
-docker tag name:1.0-SNAPSHOT [hostname]:8500/default/name:1.0-SNAPSHOT
-docker tag ping:1.0-SNAPSHOT [hostname]:8500/default/ping:1.0-SNAPSHOT
-```
-
-Then, push your images to the private registry.
-
-```
-docker push [hostname]:8500/default/name:1.0-SNAPSHOT
-docker push [hostname]:8500/default/ping:1.0-SNAPSHOT
-```
-
-=== Pushing to an IBM Cloud container registry
-
-Install the container registry plugin.
-
-```
-ibmcloud plugin install container-registry -r Bluemix
-```
-
-Use the container registry plugin to create a namespace for your container images.
-The namespace must be unique, so choose something relevant that you'll remember for the duration of the guide.
-
-```
-ibmcloud cr namespace-add [your-namespace]
-```
-
-Use the plugin again to login to the docker registry.
-
-```
-ibmcloud cr login
-```
-
-Next, you need to tag your docker images with the relevant data about your registry.
-
-```
-docker tag name:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
-docker tag ping:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
-```
-
-Finally, push your images to the registry.
-
-```
-docker push registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
-docker push registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
-```
-
-// =================================================================================================
-// Deploying the microservices
-// =================================================================================================
-
-== Deploying the microservices
-
-Add the `ibm-charts` repository so that you may use the `ibm-open-liberty` chart.
-
-```
-helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
-```
-
-=== Deploying to IBM Cloud Private
-
-Use helm to deploy the `name` microservice.
-
-```
-helm install --name name-app \
-    --set image.repository=mycluster.icp:8500/default/name \
-    --set image.tag=1.0-SNAPSHOT \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty --tls
-```
-
-Use helm to deploy the `ping` microservice.
-
-```
-helm install --name ping-app \
-    --set image.repository=mycluster.icp:8500/default/ping \
-    --set image.tag=1.0-SNAPSHOT \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty --tls
-```
-
-The `--name` flag specifies the release name. This is the name that helm uses to identify this specific
-deployment of your chart. The image repository and flag refers to the image you built for your microservices.
-The `mycluster.icp:8500/default` prefix uses an image on your local cluster located in the `default` namespace.
-
-=== Deploying to IBM Cloud Kubernetes Service
-
-First, set up RBAC to give Helm's tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the tiller.
-
-```
-kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
-```
-
-[source, role="no_copy"]
-----
-serviceaccount/tiller created
-clusterrolebinding.rbac.authorization.k8s.io/tiller created
-----
-
-Next, install the tiller to your cluster. Specify the service account that was created in the previous step.
-
-```
-helm init --service-account tiller
-```
-
-Use helm to deploy the `name` microservice.
-
-```
-helm install --name name-app \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
-    --set image.tag=1.0-SNAPSHOT \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty
-```
-
-Use helm to deploy the `ping` microservice.
-
-```
-helm install --name ping-app \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping \
-    --set image.tag=1.0-SNAPSHOT \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty
-```
-
-The `--name` flag specifies the release name. This is the name that helm uses to identify this specific
-deployment of your chart.
-
-=== Making requests to the microservices
-
-Get the ip address of the cluster.
-
-****
-[system]#*ICP*#
-
-```
-kubectl get nodes -l proxy=true -o jsonpath="{.items[0].status.addresses[?(@.type==\"Hostname\")].address}"
-```
-
-[system]#*IKS*#
-
-```
-ibmcloud ks workers $(kubectl config current-context)
-```
-****
-
-Get the node port of the `name` microservice.
-
-```
-kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
-```
-
-Get the node port of the `ping` microservice.
-
-```
-kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
-```
-
-Take note of the ip address and ports. They are required to make the HTTP requests.
-
-Make a request to the `name` microservice.
-
-```
-curl http://[ip-address]:[nameNodePort]/api/name
-```
-
-Make a request to the `ping` microservice.
-
-```
-curl http://[ip-address]:[pingNodePort]/api/ping/name-app-ibm-open-libert
-```
-
-// =================================================================================================
-// Testing microservices that are running on {kube}
-// =================================================================================================
-
-== Testing microservices that are running on ICP
-
-A few tests are included for you to test the basic functionality of the microservices. If a test failure
-occurs, then you might have introduced a bug into the code. To run the tests, wait for all pods to be
-in the ready state before proceeding further. The default properties defined in the `pom.xml` are:
-
-[cols="15, 100", options="header"]
-|===
-| *Property*        | *Description*
-| cluster.ip        | IP or hostname for your cluster
-| name.kube.service | Name of the {kube} Service wrapping the `name` pods, `name-service` by default.
-| name.node.port    | The NodePort of the {kube} Service `name-service`, 31000 by default.
-| ping.node.port    | The NodePort of the {kube} Service `ping-service`, 32000 by default.
-|===
-
-Navigate back to the `start` directory.
-
-Run the integration tests against your cluster:
-
-```
-mvn verify \
-    -Ddockerfile.skip=true \
-    -Dcluster.ip=[ip-address] \
-    -Dname.node.port=`kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"` \
-    -Dping.node.port=`kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"` \
-    -Dname.kube.service=name-app-ibm-open-libert
-```
-
-The `dockerfile.skip` parameter is set to `true` in order to skip building a new Docker image.
-
-If the tests pass, you'll see an output similar to the following for each service respectively:
-
-[source, role="no_copy"]
-----
--------------------------------------------------------
- T E S T S
--------------------------------------------------------
-Running it.io.openliberty.guides.name.NameEndpointTest
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.673 sec - in it.io.openliberty.guides.name.NameEndpointTest
-
-Results :
-
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
-----
-
-[source, role="no_copy"]
-----
--------------------------------------------------------
- T E S T S
--------------------------------------------------------
-Running it.io.openliberty.guides.ping.PingEndpointTest
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.222 sec - in it.io.openliberty.guides.ping.PingEndpointTest
-
-Results :
-
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
-----
-
-
-// =================================================================================================
-// Tear Down
-// =================================================================================================
-
-== Tearing down the environment
-
-When you no longer need your deployed microservices, you can delete them with the following helm commands:
-
-```
-helm delete --purge name-app
-helm delete --purge ping-app
-```
-
-=== Logging out of ICP
-
-Logout of your docker registry.
-
-```
-docker logout [hostname]:8500
-```
-
-Logout of your ICP cluster.
-
-```
-cloudctl logout
-```
-
-=== Tearing down IKS
-
-Logout of your docker registry.
-
-```
-docker logout registry.ng.bluemix.net
-```
-
-Remove your IKS cluster.
-
-```
-ibmcloud ks cluster-rm guide-cluster
-```
-
-Logout of the `ibmcloud` command line tool.
-
-```
-ibmcloud logout
-```
-
-// =================================================================================================
-// finish
-// =================================================================================================
-
-== Great work! You're done!
-
-You have just deployed two microservices to IBM Cloud. You have learned to use Helm to install your microservices
-on a {kube} cluster using IBM's helm chart for Open Liberty.
+include::partials/finish.adoc[]
 
 // Include the below from the guides-common repo to tell users how they can contribute to the guide
 include::{common-includes}/finish.adoc[]

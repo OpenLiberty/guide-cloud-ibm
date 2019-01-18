@@ -1,0 +1,51 @@
+// =================================================================================================
+// Building and containerizing the microservices
+// =================================================================================================
+
+=== Building and containerizing the microservices
+
+The first step of deploying to {kube} is to build your microservices and containerize them with Docker.
+
+The starting Java project, which you can find in the `start` directory, is a multi-module Maven
+project. It's made up of the `name` and `ping` microservices. Each microservice resides in its own directory,
+`start/name` and `start/ping`. Each of these directories also contains a Dockerfile, which is necessary
+for building Docker images. If you're unfamiliar with Dockerfiles, check out the
+https://openliberty.io/guides/docker.html[Using Docker containers to develop microservices] guide.
+It covers Dockerfiles in depth.
+
+If you're familiar with Maven and Docker, you might be tempted to run a Maven build first and then
+use the `.war` file to build a Docker image. While it's by no means a wrong
+approach, we've setup the projects such that this process is automated
+as a part of a single Maven build. It's created by using the `dockerfile-maven` plug-in. The plug-in automatically
+picks up the Dockerfile located in the same directory as its POM file and builds a Docker image from it.
+If you're using Docker for Windows ensure that, on the Docker for Windows _General Setting_ page, the option is set to `Expose daemon on tcp://localhost:2375 without TLS`. This configuration is required by the `dockerfile-maven` part of the build.
+
+Navigate to the `start` directory and run the following command:
+
+```
+mvn package
+```
+
+The `package` goal automatically starts the `dockerfile-maven:build` goal. It runs during the
+`package` phase. This goal builds a Docker image from the Dockerfile located in the same directory
+as the POM file.
+
+During the build, you'll see various Docker messages describing what images are being downloaded and
+built. When the build finishes, run the following command to list all local Docker images:
+
+```
+docker images
+```
+
+Verify that the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images are listed among them, for example:
+
+[source, role="no_copy"]
+----
+REPOSITORY                                                       TAG
+ping                                                             1.0-SNAPSHOT
+name                                                             1.0-SNAPSHOT
+open-liberty                                                     latest
+----
+
+If you don't see the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images, then check the Maven
+build log for any potential errors.

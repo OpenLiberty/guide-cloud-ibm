@@ -1,0 +1,46 @@
+// =================================================================================================
+// Tear Down
+// =================================================================================================
+
+=== Tearing down the environment
+
+When you no longer need your deployed microservices, you can delete them with the following helm commands:
+
+```
+helm delete --purge name-app
+helm delete --purge ping-app
+```
+
+ifdef::use-icp[]
+Logout of your docker registry.
+
+```
+docker logout [hostname]:8500
+```
+
+Logout of your ICP cluster.
+
+```
+cloudctl logout
+```
+endif::[]
+
+ifdef::use-iks[]
+Logout of your docker registry.
+
+```
+docker logout registry.ng.bluemix.net
+```
+
+Remove your IKS cluster.
+
+```
+ibmcloud ks cluster-rm guide-cluster
+```
+
+Logout of the `ibmcloud` command line tool.
+
+```
+ibmcloud logout
+```
+endif::[]

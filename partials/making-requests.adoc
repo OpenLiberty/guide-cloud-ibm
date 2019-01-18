@@ -1,0 +1,41 @@
+=== Making requests to the microservices
+
+Get the ip address of the cluster.
+
+ifdef::use-icp[]
+```
+kubectl get nodes -l proxy=true -o jsonpath="{.items[0].status.addresses[?(@.type==\"Hostname\")].address}"
+```
+endif::[]
+
+ifdef::use-iks[]
+```
+ibmcloud ks workers $(kubectl config current-context)
+```
+endif::[]
+
+Get the node port of the `name` microservice.
+
+```
+kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+```
+
+Get the node port of the `ping` microservice.
+
+```
+kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+```
+
+Take note of the ip address and ports. They are required to make the HTTP requests.
+
+Make a request to the `name` microservice.
+
+```
+curl http://[ip-address]:[nameNodePort]/api/name
+```
+
+Make a request to the `ping` microservice.
+
+```
+curl http://[ip-address]:[pingNodePort]/api/ping/name-app-ibm-open-libert
+```
