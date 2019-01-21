@@ -6,6 +6,7 @@
 
 First, add the `ibm-charts` repository so that you may use the `ibm-open-liberty` chart.
 
+[role=command]
 ```
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
 ```
@@ -14,6 +15,7 @@ helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/rep
 ifdef::use-iks[]
 Set up Role Based Access Control (RBAC) to give Helm's tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the tiller.
 
+[role=command]
 ```
 kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
 ```
@@ -26,6 +28,7 @@ clusterrolebinding.rbac.authorization.k8s.io/tiller created
 
 Next, install the tiller to your cluster. Specify the service account that was created in the previous step.
 
+[role=command]
 ```
 helm init --service-account tiller
 ```
@@ -35,6 +38,7 @@ endif::[]
 ifdef::use-iks[]
 Use helm to deploy the `name` microservice.
 
+[role=command]
 ```
 helm install --name name-app \
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
@@ -47,6 +51,7 @@ helm install --name name-app \
 
 Use helm to deploy the `ping` microservice.
 
+[role=command]
 ```
 helm install --name ping-app \
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping \
@@ -65,6 +70,7 @@ endif::[]
 ifdef::use-icp[]
 Use helm to deploy the `name` microservice.
 
+[role=command]
 ```
 helm install --name name-app \
     --set image.repository=mycluster.icp:8500/default/name \
@@ -77,6 +83,7 @@ helm install --name name-app \
 
 Use helm to deploy the `ping` microservice.
 
+[role=command]
 ```
 helm install --name ping-app \
     --set image.repository=mycluster.icp:8500/default/ping \

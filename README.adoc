@@ -10,7 +10,7 @@
 //     IBM Corporation
 //
 :projectid: ibm-cloud-intro
-:page-layout: guide
+:page-layout: guide-multipane
 :page-duration: 25 minutes
 :page-releasedate: 2018-10-05
 :page-description: Explore how to deploy microservices to IBM Cloud Private and manage your cluster.
@@ -110,6 +110,7 @@ include::{common-includes}/gitclone.adoc[]
 
 Move and rename the downloaded file to `/usr/local/bin/cloudctl` then make it executable.
 
+[role=command]
 ```
 sudo mv `ls cloudctl-*` /usr/local/bin/cloudctl
 sudo chmod +x /usr/local/bin/cloudctl
@@ -119,6 +120,7 @@ sudo chmod +x /usr/local/bin/cloudctl
 
 Create a directory called `cloudctl-bin` under your user directory and add it to your `PATH` environment variable.
 
+[role=command]
 ```
 mkdir %systemdrive%%userprofile%\cloudctl-bin
 set PATH=%PATH%;%systemdrive%%userprofile%\cloudctl-bin
@@ -136,6 +138,7 @@ Click `Install Helm` on the same page where you downloaded `cloudctl`. Follow th
 
 Use the following commands to extract the archive and move the helm binary to `/usr/local/bin/helm` and then make it executable.
 
+[role=command]
 ```
 mkdir helm
 tar -zxf helm-* -C helm/
@@ -150,6 +153,7 @@ you downloaded to this directory. Use the following commands to add `helm` to yo
 
 Create a directory called `helm-cli` under your user directory and add it to your `PATH` environment variable.
 
+[role=command]
 ```
 mkdir %systemdrive%%userprofile%\helm-cli\windows-amd64
 set PATH=%PATH%;%systemdrive%%userprofile%\helm-cli\windows-amd64
@@ -162,6 +166,7 @@ Next, extract the file you downloaded into the `helm-cli` directory.
 
 Connect the `kubectl` cli tool to your cluster by logging in to the cluster, replace `[hostname]` and `[port]` as appropriate with the values for your ICP instance.
 
+[role=command]
 ```
 cloudctl login -a https://[hostname]:[port]  --skip-ssl-validation
 ```
@@ -208,6 +213,7 @@ OK
 
 Verify that you're connected to the cluster by checking the cluster's nodes.
 
+[role=command]
 ```
 kubectl get nodes
 ```
@@ -246,6 +252,7 @@ and `curl` tools which are needed to complete this guide.
 ****
 [system]#*{linux} | {mac}*#
 
+[role=command]
 ```
 curl -sL https://ibm.biz/idt-installer | bash
 ```
@@ -254,6 +261,7 @@ curl -sL https://ibm.biz/idt-installer | bash
 
 Open PowerShell as an administrator and run the following command.
 
+[role=command]
 ```
 Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebClient).DownloadString('http://ibm.biz/idt-win-installer')
 ```
@@ -261,6 +269,7 @@ Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebClient).DownloadString('
 
 Once the script has finished running, login with the command line to IBM Cloud.
 
+[role=command]
 ```
 ibmcloud login
 ```
@@ -269,6 +278,7 @@ If you're logging in with organization credentials, you may need to pass in the 
 to get a one time code for single sign-on. Follow the instructions given on the prompt and in
 your web browser to complete the login process.
 
+[role=command]
 ```
 ibmcloud login --sso
 ```
@@ -289,6 +299,7 @@ Use the following command to provision a cluster.
 //     --kube-version <major.minor.patch>
 // ```
 
+[role=command]
 ```
 ibmcloud ks cluster-create --name guide-cluster
 ```
@@ -303,6 +314,7 @@ OK
 
 Check the current status of your cluster.
 
+[role=command]
 ```
 ibmcloud ks clusters
 ```
@@ -343,6 +355,7 @@ del tmp-set-cluster.cmd
 
 Verify that you're connected to the cluster by checking the cluster's nodes.
 
+[role=command]
 ```
 kubectl get nodes
 ```

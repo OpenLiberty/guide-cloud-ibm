@@ -22,6 +22,7 @@ If you're using Docker for Windows ensure that, on the Docker for Windows _Gener
 
 Navigate to the `start` directory and run the following command:
 
+[role=command]
 ```
 mvn package
 ```
@@ -33,6 +34,7 @@ as the POM file.
 During the build, you'll see various Docker messages describing what images are being downloaded and
 built. When the build finishes, run the following command to list all local Docker images:
 
+[role=command]
 ```
 docker images
 ```
