@@ -44,6 +44,8 @@ Deploy microservices in Open Liberty Docker containers to IBM Cloud.
 
 == IBM Cloud
 
+Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your microservices locally. In production, you'll want to use something more robust. IBM Cloud offers solutions for running your workloads in a Kubernetes cluster. Using IBM Cloud allows you to focus on developing your microservices rather than worrying about details related to the servers you'll deploy them to. 
+
 === What is IBM Cloud Private (ICP)?
 
 IBM Cloud Private is a {kube} platform that provides an on-premises cloud solution. It has many useful features for your cloud needs. The main feature it provides is a {kube} cluster. It works just like any {kube} cluster and can be manipulated with `kubectl`. Another useful feature it provides is a private docker registry so that you don't need to use something like https://hub.docker.com/[Docker Hub]. Some other capabilities it provides include a dashboard and a web interface to deploy helm charts.
