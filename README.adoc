@@ -382,9 +382,6 @@ include::partials/tearing-down.adoc[]
 
 include::partials/finish.adoc[]
 
-// Include the below from the guides-common repo to tell users how they can contribute to the guide
-include::{common-includes}/finish.adoc[]
-
 // Multipane
 include::https://raw.githubusercontent.com/OpenLiberty/guides-common/multipane/attribution.adoc[subs="attributes"]
 
