@@ -88,6 +88,7 @@ are following the ICP instructions. You do not need an ICP instance to follow th
 // Getting Started
 // =================================================================================================
 
+[role=command]
 include::{common-includes}/gitclone.adoc[]
 
 // no "try what you'll build" section in this guide since it would be too long due to all setup the user will have to do.
