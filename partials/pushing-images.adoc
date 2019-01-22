@@ -18,6 +18,7 @@ First, you will add your ICP instance to an insecure registry whitelist in your 
 
 Then, login to the docker registry from your command line and enter your user name and password when prompted.
 
+[role=command]
 ```
 docker login [hostname]:8500
 ```
@@ -38,6 +39,7 @@ endif::[]
 ifdef::use-iks[]
 Install the container registry plugin.
 
+[role=command]
 ```
 ibmcloud plugin install container-registry -r Bluemix
 ```
@@ -45,12 +47,14 @@ ibmcloud plugin install container-registry -r Bluemix
 Use the container registry plugin to create a namespace for your container images.
 The namespace must be unique, so choose something relevant that you'll remember for the duration of the guide.
 
+[role=command]
 ```
 ibmcloud cr namespace-add [your-namespace]
 ```
 
 Use the plugin again to login to the docker registry.
 
+[role=command]
 ```
 ibmcloud cr login
 ```
@@ -60,12 +64,14 @@ endif::[]
 Next, you need to tag your docker images with the relevant data about your registry.
 
 ifdef::use-iks[]
+[role=command]
 ```
 docker tag name:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
 docker tag ping:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
 ```
 endif::[]
 ifdef::use-icp[]
+[role=command]
 ```
 docker tag name:1.0-SNAPSHOT [hostname]:8500/default/name:1.0-SNAPSHOT
 docker tag ping:1.0-SNAPSHOT [hostname]:8500/default/ping:1.0-SNAPSHOT
@@ -76,12 +82,14 @@ endif::[]
 Finally, push your images to the registry.
 
 ifdef::use-iks[]
+[role=command]
 ```
 docker push registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
 docker push registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
 ```
 endif::[]
 ifdef::use-icp[]
+[role=command]
 ```
 docker push [hostname]:8500/default/name:1.0-SNAPSHOT
 docker push [hostname]:8500/default/ping:1.0-SNAPSHOT

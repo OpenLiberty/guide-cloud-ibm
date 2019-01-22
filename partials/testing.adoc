@@ -21,6 +21,7 @@ Navigate back to the `start` directory.
 
 Run the integration tests against your cluster:
 
+[role=command]
 ```
 mvn verify \
     -Ddockerfile.skip=true \
