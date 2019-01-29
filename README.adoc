@@ -9,9 +9,9 @@
 // Contributors:
 //     IBM Corporation
 //
-:projectid: ibm-cloud-intro
+:projectid: cloud-ibm
 :page-layout: guide-multipane
-:page-duration: 25 minutes
+:page-duration: 4 hours
 :page-releasedate: 2018-10-05
 :page-description: Explore how to deploy microservices to IBM Cloud Private and manage your cluster.
 :page-tags: ['Kubernetes', 'Docker']
@@ -43,17 +43,11 @@ Deploy microservices in Open Liberty Docker containers to IBM Cloud.
 // What is {kube}
 // =================================================================================================
 
-== IBM Cloud
+== Why use cloud-hosted Kubernetes services?
 
-Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your microservices locally. In production, you'll want to use something more robust. IBM Cloud offers solutions for running your workloads in a Kubernetes cluster. Using IBM Cloud allows you to focus on developing your microservices rather than worrying about details related to the servers you'll deploy them to. 
+Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your microservices locally. In production, you'll want to use something more robust. Various clouds offer solutions for running your workloads in a {kube} cluster. Using cloud infrastructure allows you to focus on developing your microservices rather than worrying about details related to the servers you'll deploy them to. 
 
-=== What is IBM Cloud Private (ICP)?
-
-IBM Cloud Private is a {kube} platform that provides an on-premises cloud solution. It has many useful features for your cloud needs. The main feature it provides is a {kube} cluster. It works just like any {kube} cluster and can be manipulated with `kubectl`. Another useful feature it provides is a private docker registry so that you don't need to use something like https://hub.docker.com/[Docker Hub]. Some other capabilities it provides include a dashboard and a web interface to deploy helm charts.
-
-=== What is IBM Cloud Kubernetes Service (IKS)?
-
-IKS is a service offered as part of IBM's public cloud offerings. It provides a managed {kube} cluster that you may deploy your microservices to. You will use it in conjunction with IBM Cloud Container Registry.
+IBM Cloud offers a managed Kubernetes service called IBM Cloud Kubernetes Service (IKS). IKS is a service offered as part of IBM's public cloud offerings. It provides a managed {kube} cluster that you may deploy your microservices to. You will use it in conjunction with IBM Cloud Container Registry.
 
 // =================================================================================================
 // Introduction
@@ -77,12 +71,7 @@ how communication can be established between pods inside a cluster.
 
 == Prerequisites
 
-First, you will need Docker to build your containers, refer to the https://docs.docker.com/install/[official Docker documentation] to install Docker.
-
-You will also need to install the https://kubernetes.io/docs/tasks/tools/install-kubectl/[kubectl] cli tool.
-
-Finally, you'll need to have access to an IBM Cloud Private instance that you may use to follow the guide. This is only necessary if you
-are following the ICP instructions. You do not need an ICP instance to follow the IKS instructions.
+You will need Docker to build your containers, refer to the https://docs.docker.com/install/[official Docker documentation] to install Docker.
 
 // =================================================================================================
 // Getting Started
@@ -92,155 +81,6 @@ are following the ICP instructions. You do not need an ICP instance to follow th
 include::{common-includes}/gitclone.adoc[]
 
 // no "try what you'll build" section in this guide since it would be too long due to all setup the user will have to do.
-
-
-// =================================================================================================
-// Deploying microservices to IBM Cloud Private (ICP)
-// =================================================================================================
-
-== Deploying microservices to IBM Cloud Private (ICP)
-
-=== Installing cloudctl
-
-1. First, login and navigate to your ICP dashboard.
-2. Click the icon located at the upper left of the page to expand the menu.
-3. Click `Command Line Tools > Cloud Private CLI` to navigate to the `IBM Cloud Private CLI` page.
-4. Click `Install IBM Cloud Private CLI and plug-ins` and follow the instructions to download the `cloudctl` tool.
-
-****
-[system]#*{linux} | {mac}*#
-
-Move and rename the downloaded file to `/usr/local/bin/cloudctl` then make it executable.
-
-[role=command]
-```
-sudo mv `ls cloudctl-*` /usr/local/bin/cloudctl
-sudo chmod +x /usr/local/bin/cloudctl
-```
-
-[system]#*{win}*#
-
-Create a directory called `cloudctl-bin` under your user directory and add it to your `PATH` environment variable.
-
-[role=command]
-```
-mkdir %systemdrive%%userprofile%\cloudctl-bin
-set PATH=%PATH%;%systemdrive%%userprofile%\cloudctl-bin
-```
-
-Next, move the file you downloaded into the `cloudctl-bin` directory and rename the file to `cloudctl.exe`.
-****
-
-=== Installing helm
-
-Click `Install Helm` on the same page where you downloaded `cloudctl`. Follow the instructions to download `helm`.
-
-****
-[system]#*{linux} | {mac}*#
-
-Use the following commands to extract the archive and move the helm binary to `/usr/local/bin/helm` and then make it executable.
-
-[role=command]
-```
-mkdir helm
-tar -zxf helm-* -C helm/
-sudo mv helm/`ls helm`/helm /usr/local/bin/helm
-sudo chmod +x /usr/local/bin/helm
-```
-
-[system]#*{win}*#
-
-Create a directory called `helm-cli` under your user directory and extract the contents of the file
-you downloaded to this directory. Use the following commands to add `helm` to your path.
-
-Create a directory called `helm-cli` under your user directory and add it to your `PATH` environment variable.
-
-[role=command]
-```
-mkdir %systemdrive%%userprofile%\helm-cli\windows-amd64
-set PATH=%PATH%;%systemdrive%%userprofile%\helm-cli\windows-amd64
-```
-
-Next, extract the file you downloaded into the `helm-cli` directory.
-****
-
-=== Connecting kubectl and helm to ICP
-
-Connect the `kubectl` cli tool to your cluster by logging in to the cluster, replace `[hostname]` and `[port]` as appropriate with the values for your ICP instance.
-
-[role=command]
-```
-cloudctl login -a https://[hostname]:[port]  --skip-ssl-validation
-```
-
-When prompted, enter your user name and password. Then, select the cluster account. Finally, ensure to select the `default` namespace.
-
-----
-Username> enter_your_username	
-
-Password> enter_your_password
-Authenticating...
-OK
-
-Select an account:
-1. mycluster Account (id-mycluster-account)
-Enter a number> 1
-Targeted account mycluster Account (id-mycluster-account)
-
-Select a namespace:
-1. cert-manager
-2. default
-3. ibmcom
-4. istio-system
-5. kube-public
-6. kube-system
-7. platform
-8. services
-Enter a number> 2
-Targeted namespace default
-
-Configuring kubectl ...
-Property "clusters.mycluster" unset.
-Property "users.mycluster-user" unset.
-Property "contexts.mycluster-context" unset.
-Cluster "mycluster" set.
-User "mycluster-user" set.
-Context "mycluster-context" created.
-Switched to context "mycluster-context".
-OK
-
-Configuring helm: ~/.helm
-OK
-----
-
-Verify that you're connected to the cluster by checking the cluster's nodes.
-
-[role=command]
-```
-kubectl get nodes
-```
-
-----
-NAME           STATUS    ROLES                          AGE       VERSION
-192.168.0.15   Ready     worker                         10d       v1.11.1+icp-ee
-192.168.0.10   Ready     worker                         10d       v1.11.1+icp-ee
-192.168.0.5    Ready     etcd,management,master,proxy   10d       v1.11.1+icp-ee
-----
-
-:use-icp: true
-include::partials/build-and-containerizing.adoc[]
-
-include::partials/pushing-images.adoc[]
-
-include::partials/deploying.adoc[]
-
-include::partials/making-requests.adoc[]
-
-include::partials/testing.adoc[]
-
-include::partials/tearing-down.adoc[]
-
-include::partials/finish.adoc[]
 
 == Deploying microservices to IBM Cloud Kubernetes Service (IKS)
 
@@ -367,21 +207,328 @@ NAME           STATUS    ROLES     AGE       VERSION
 10.70.200.73   Ready     <none>    1h        v1.10.11+IKS
 ----
 
-:!use-icp:
-:use-iks: true
-include::partials/build-and-containerizing.adoc[]
+// =================================================================================================
+// Building and containerizing the microservices
+// =================================================================================================
 
-include::partials/pushing-images.adoc[]
+=== Building and containerizing the microservices
 
-include::partials/deploying.adoc[]
+The first step of deploying to {kube} is to build your microservices and containerize them with Docker.
 
-include::partials/making-requests.adoc[]
+The starting Java project, which you can find in the `start` directory, is a multi-module Maven
+project. It's made up of the `name` and `ping` microservices. Each microservice resides in its own directory,
+`start/name` and `start/ping`. Each of these directories also contains a Dockerfile, which is necessary
+for building Docker images. If you're unfamiliar with Dockerfiles, check out the
+https://openliberty.io/guides/docker.html[Using Docker containers to develop microservices] guide.
+It covers Dockerfiles in depth.
 
-include::partials/testing.adoc[]
+If you're familiar with Maven and Docker, you might be tempted to run a Maven build first and then
+use the `.war` file to build a Docker image. While it's by no means a wrong
+approach, we've setup the projects such that this process is automated
+as a part of a single Maven build. It's created by using the `dockerfile-maven` plug-in. The plug-in automatically
+picks up the Dockerfile located in the same directory as its POM file and builds a Docker image from it.
+If you're using Docker for Windows ensure that, on the Docker for Windows _General Setting_ page, the option is set to `Expose daemon on tcp://localhost:2375 without TLS`. This configuration is required by the `dockerfile-maven` part of the build.
 
-include::partials/tearing-down.adoc[]
+Navigate to the `start` directory and run the following command:
 
-include::partials/finish.adoc[]
+[role=command]
+```
+mvn package
+```
+
+The `package` goal automatically starts the `dockerfile-maven:build` goal. It runs during the
+`package` phase. This goal builds a Docker image from the Dockerfile located in the same directory
+as the POM file.
+
+During the build, you'll see various Docker messages describing what images are being downloaded and
+built. When the build finishes, run the following command to list all local Docker images:
+
+[role=command]
+```
+docker images
+```
+
+Verify that the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images are listed among them, for example:
+
+[source, role="no_copy"]
+----
+REPOSITORY                                                       TAG
+ping                                                             1.0-SNAPSHOT
+name                                                             1.0-SNAPSHOT
+open-liberty                                                     latest
+----
+
+If you don't see the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images, then check the Maven
+build log for any potential errors.
+
+// =================================================================================================
+// Pushing the images to a private docker registry
+// =================================================================================================
+
+=== Pushing the images to a private docker registry
+
+Pushing the images a private registry will allow the cluster to create pods using your docker images. Since it's a private registry, only users with access to your cluster will have access to access these images.
+
+The registry you will use is called IBM Cloud Container registry (ICR).
+
+// ICR Login
+Install the container registry plugin.
+
+[role=command]
+```
+ibmcloud plugin install container-registry -r Bluemix
+```
+
+Use the container registry plugin to create a namespace for your container images.
+The namespace must be unique, so choose something relevant that you'll remember for the duration of the guide.
+
+[role=command]
+```
+ibmcloud cr namespace-add [your-namespace]
+```
+
+Use the plugin again to login to the docker registry.
+
+[role=command]
+```
+ibmcloud cr login
+```
+
+// Tagging images
+Next, you need to tag your docker images with the relevant data about your registry.
+
+[role=command]
+```
+docker tag name:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
+docker tag ping:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
+```
+
+// Pushing images
+Finally, push your images to the registry.
+
+[role=command]
+```
+docker push registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
+docker push registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
+```
+
+// =================================================================================================
+// Deploying the microservices
+// =================================================================================================
+
+=== Deploying the microservices
+
+First, add the `ibm-charts` repository so that you may use the `ibm-open-liberty` chart.
+
+[role=command]
+```
+helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
+```
+
+// Setup Tiller for IKS
+Set up Role Based Access Control (RBAC) to give Helm's tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the tiller.
+
+[role=command]
+```
+kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
+```
+
+[source, role="no_copy"]
+----
+serviceaccount/tiller created
+clusterrolebinding.rbac.authorization.k8s.io/tiller created
+----
+
+Next, install the tiller to your cluster. Specify the service account that was created in the previous step.
+
+[role=command]
+```
+helm init --service-account tiller
+```
+
+// Deploy to IKS
+Use helm to deploy the `name` microservice.
+
+[role=command]
+```
+helm install --name name-app \
+    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
+    --set image.tag=1.0-SNAPSHOT \
+    --set service.port=9080 \
+    --set service.targetPort=9080 \
+    --set ssl.enabled=false \
+    ibm-charts/ibm-open-liberty
+```
+
+Use helm to deploy the `ping` microservice.
+
+[role=command]
+```
+helm install --name ping-app \
+    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping \
+    --set image.tag=1.0-SNAPSHOT \
+    --set service.port=9080 \
+    --set service.targetPort=9080 \
+    --set ssl.enabled=false \
+    ibm-charts/ibm-open-liberty
+```
+
+The `--name` flag specifies the release name. This is the name that helm uses to identify this specific
+deployment of your chart.
+
+=== Making requests to the microservices
+
+Get the ip address of the cluster.
+
+[role=command]
+```
+ibmcloud ks workers $(kubectl config current-context)
+```
+
+Get the node port of the `name` microservice.
+
+[role=command]
+```
+kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+```
+
+Get the node port of the `ping` microservice.
+
+[role=command]
+```
+kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+```
+
+Take note of the ip address and ports. They are required to make the HTTP requests.
+
+Make a request to the `name` microservice.
+
+[role=command]
+```
+curl http://[ip-address]:[nameNodePort]/api/name
+```
+
+Make a request to the `ping` microservice.
+
+[role=command]
+```
+curl http://[ip-address]:[pingNodePort]/api/ping/name-app-ibm-open-libert
+```
+
+// =================================================================================================
+// Testing microservices that are running on IBM Cloud
+// =================================================================================================
+
+== Testing microservices that are running on IBM Cloud
+
+A few tests are included for you to test the basic functionality of the microservices. If a test failure
+occurs, then you might have introduced a bug into the code. To run the tests, wait for all pods to be
+in the ready state before proceeding further. The default properties defined in the `pom.xml` are:
+
+[cols="15, 100", options="header"]
+|===
+| *Property*        | *Description*
+| cluster.ip        | IP or hostname for your cluster
+| name.kube.service | Name of the {kube} Service wrapping the `name` pods, `name-service` by default.
+| name.node.port    | The NodePort of the {kube} Service `name-service`, 31000 by default.
+| ping.node.port    | The NodePort of the {kube} Service `ping-service`, 32000 by default.
+|===
+
+Navigate back to the `start` directory.
+
+Run the integration tests against your cluster:
+
+[role=command]
+```
+mvn verify \
+    -Ddockerfile.skip=true \
+    -Dcluster.ip=[ip-address] \
+    -Dname.node.port=`kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"` \
+    -Dping.node.port=`kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"` \
+    -Dname.kube.service=name-app-ibm-open-libert
+```
+
+The `dockerfile.skip` parameter is set to `true` in order to skip building a new Docker image.
+
+If the tests pass, you'll see an output similar to the following for each service respectively:
+
+[source, role="no_copy"]
+----
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.name.NameEndpointTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.673 sec - in it.io.openliberty.guides.name.NameEndpointTest
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+----
+
+[source, role="no_copy"]
+----
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.ping.PingEndpointTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.222 sec - in it.io.openliberty.guides.ping.PingEndpointTest
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+----
+
+// =================================================================================================
+// Tear Down
+// =================================================================================================
+
+=== Tearing down the environment
+
+When you no longer need your deployed microservices, you can delete them with the following helm commands:
+
+[role=command]
+```
+helm delete --purge name-app
+helm delete --purge ping-app
+```
+
+Logout of your docker registry.
+
+[role=command]
+```
+docker logout registry.ng.bluemix.net
+```
+
+Remove your IKS cluster.
+
+[role=command]
+```
+ibmcloud ks cluster-rm guide-cluster
+```
+
+Logout of the `ibmcloud` command line tool.
+
+[role=command]
+```
+ibmcloud logout
+```
+
+== IBM Cloud Private
+
+Some may feel that public clouds are not secure enough for their workloads, or maybe you are under specific scrutiny that requires you to have on-premises solutions. If this is the case, then private clouds may be more suitable for your needs.
+
+https://www.ibm.com/cloud/private[IBM Cloud Private] (ICP) is an on-premises {kube} platform. A private cloud may be a more attractive option to those who need the security of having their services running on infrastructure controlled by them. While someone will still need to maintain this infrastructure, a private cloud still provides benefit to developers such that they don't need to think about infrastructure. {kube} acts as an abstraction of the infrastructure so the developers can request what they need and it is the responsibility of the infrastructure's maintainers to provide the necessary resources.
+
+Deploying microservices to ICP is a similar process as deploying to IKS. The main differences you will notice are in the setup process and how you tag your Docker images. With respect to the setup process, you will not need to run `helm init` or deploy the cluster role binding and service account to your cluster because ICP has Helm's Tiller setup for you out of the box. When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. You can learn more about deploying microservices to ICP by following an https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo].
+
+// =================================================================================================
+// finish
+// =================================================================================================
+
+== Great work! You're done!
+
+You have just deployed two microservices to IBM Cloud. You have learned to use Helm to install your microservices
+on a {kube} cluster using IBM's helm chart for Open Liberty.
 
 // Multipane
 include::https://raw.githubusercontent.com/OpenLiberty/guides-common/multipane/attribution.adoc[subs="attributes"]
