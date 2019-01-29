@@ -252,10 +252,10 @@ Verify that the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images are listed am
 
 [source, role="no_copy"]
 ----
-REPOSITORY                                                       TAG
-ping                                                             1.0-SNAPSHOT
-name                                                             1.0-SNAPSHOT
-open-liberty                                                     latest
+REPOSITORY               TAG
+ping                     1.0-SNAPSHOT
+name                     1.0-SNAPSHOT
+open-liberty             latest
 ----
 
 If you don't see the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images, then check the Maven
