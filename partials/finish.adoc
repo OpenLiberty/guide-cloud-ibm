@@ -1,8 +1,0 @@
-// =================================================================================================
-// finish
-// =================================================================================================
-
-== Great work! You're done!
-
-You have just deployed two microservices to IBM Cloud. You have learned to use Helm to install your microservices
-on a {kube} cluster using IBM's helm chart for Open Liberty.
