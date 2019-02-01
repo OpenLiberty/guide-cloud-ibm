@@ -45,9 +45,15 @@ Deploy microservices in Open Liberty Docker containers to IBM Cloud.
 
 == Why use cloud-hosted Kubernetes services?
 
-Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your microservices locally. In production, you'll want to use something more robust. Various clouds offer solutions for running your workloads in a {kube} cluster. Using cloud infrastructure allows you to focus on developing your microservices rather than worrying about details related to the servers you'll deploy them to. 
+Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your microservices locally. In production, you'll want to use something more robust. Various clouds offer solutions for running your workloads in a {kube} cluster. Using cloud infrastructure allows you to focus on developing your microservices rather than worrying about details related to the servers you'll deploy them to. Using cloud will allow you to more easily scale your microservices and serve them in a high-availability set up.
 
 IBM Cloud offers a managed Kubernetes service called IBM Cloud Kubernetes Service (IKS). IKS is a service offered as part of IBM's public cloud offerings. It provides a managed {kube} cluster that you may deploy your microservices to. You will use it in conjunction with IBM Cloud Container Registry.
+
+=== IBM Cloud Private (ICP)
+
+Some situations may require you to use on-premises solution. If this describes your needs, then private clouds may be a more suitable solution for you.
+
+https://www.ibm.com/cloud/private[IBM Cloud Private] (ICP) is an on-premises {kube} platform. A private cloud may be a more attractive option to those who must run their services running on infrastructure controlled by them. While someone will still need to maintain this infrastructure, a private cloud still provides benefit to developers such that they don't need to think about infrastructure. {kube} acts as an abstraction of the infrastructure so the developers can request what they need and it is the responsibility of the infrastructure's maintainers to provide the necessary resources.
 
 // =================================================================================================
 // Introduction
@@ -71,7 +77,7 @@ how communication can be established between pods inside a cluster.
 
 == Prerequisites
 
-You will need Docker to build your containers, refer to the https://docs.docker.com/install/[official Docker documentation] to install Docker.
+To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` access to IBM Cloud Kubernetes Service. Check by navigating to `Manage > Access (IAM) > Users > [Your Username] > Access Policies`. Ensure that `Administrator` is listed as a policy.
 
 // =================================================================================================
 // Getting Started
@@ -318,7 +324,7 @@ docker push registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
 
 === Deploying the microservices
 
-First, add the `ibm-charts` repository so that you may use the `ibm-open-liberty` chart.
+First, add the `ibm-charts` repository to your local list of helm repositories. Adding the repository allows you to use the `ibm-open-liberty` chart.
 
 [role=command]
 ```
@@ -326,7 +332,7 @@ helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/rep
 ```
 
 // Setup Tiller for IKS
-Set up Role Based Access Control (RBAC) to give Helm's tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the tiller.
+Set up Role Based Access Control (RBAC) to give Helm's Tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the tiller.
 
 [role=command]
 ```
@@ -339,12 +345,14 @@ serviceaccount/tiller created
 clusterrolebinding.rbac.authorization.k8s.io/tiller created
 ----
 
-Next, install the tiller to your cluster. Specify the service account that was created in the previous step.
+Next, install the tiller to your cluster. Specify that the tiller should run under the service account that was created in the previous step.
 
 [role=command]
 ```
 helm init --service-account tiller
 ```
+
+All pods run under a service account. By default, your pod will run as the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
 
 // Deploy to IKS
 Use helm to deploy the `name` microservice.
@@ -374,11 +382,36 @@ helm install --name ping-app \
 ```
 
 The `--name` flag specifies the release name. This is the name that helm uses to identify this specific
-deployment of your chart.
+deployment of your chart. The following table gives an overview for each of the parameters specified using `--set`.
+
+|===
+| *Parameter* | *Description*
+| image.repository | The name of your Docker image including registry/repository prefix
+| image.tag | The tag for your Docker image
+| service.port | The port exposed by the service
+| service.targetPort | The port exposed by the pod
+| ssl.enabled | Specify if SSL is enabled
+|===
 
 === Making requests to the microservices
 
-Get the ip address of the cluster.
+Make a request to the `name` microservice substituting in `ip-address` and `name-node-port` where appropriate.
+
+[role=command]
+```
+curl http://[ip-address]:[name-node-port]/api/name
+```
+
+Make a request to the `ping` microservice substituting in `ip-address` and `ping-node-port` where appropriate.
+
+[role=command]
+```
+curl http://[ip-address]:[ping-node-port]/api/ping/name-app-ibm-open-libert
+```
+
+If you don't know the IP address and ports you can get them using the following commands.
+
+Get the IP address of the cluster.
 
 [role=command]
 ```
@@ -399,21 +432,8 @@ Get the node port of the `ping` microservice.
 kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
 ```
 
-Take note of the ip address and ports. They are required to make the HTTP requests.
+Take note of the IP address and ports. They are required to make the HTTP requests.
 
-Make a request to the `name` microservice.
-
-[role=command]
-```
-curl http://[ip-address]:[nameNodePort]/api/name
-```
-
-Make a request to the `ping` microservice.
-
-[role=command]
-```
-curl http://[ip-address]:[pingNodePort]/api/ping/name-app-ibm-open-libert
-```
 
 // =================================================================================================
 // Testing microservices that are running on IBM Cloud
@@ -513,13 +533,14 @@ Logout of the `ibmcloud` command line tool.
 ibmcloud logout
 ```
 
-== IBM Cloud Private
 
-Some may feel that public clouds are not secure enough for their workloads, or maybe you are under specific scrutiny that requires you to have on-premises solutions. If this is the case, then private clouds may be more suitable for your needs.
+== Deploying to IBM Cloud Private (Optional)
 
-https://www.ibm.com/cloud/private[IBM Cloud Private] (ICP) is an on-premises {kube} platform. A private cloud may be a more attractive option to those who need the security of having their services running on infrastructure controlled by them. While someone will still need to maintain this infrastructure, a private cloud still provides benefit to developers such that they don't need to think about infrastructure. {kube} acts as an abstraction of the infrastructure so the developers can request what they need and it is the responsibility of the infrastructure's maintainers to provide the necessary resources.
+Deploying microservices to ICP is a similar process as deploying to IKS. The main differences you will notice are in the setup process and how you tag your Docker images.
 
-Deploying microservices to ICP is a similar process as deploying to IKS. The main differences you will notice are in the setup process and how you tag your Docker images. With respect to the setup process, you will not need to run `helm init` or deploy the cluster role binding and service account to your cluster because ICP has Helm's Tiller setup for you out of the box. When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. You can learn more about deploying microservices to ICP by following an https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo].
+To obtain an ICP instance see the https://www.ibm.com/cloud/private[IBM Cloud Private] website. To set up your local environment, navigate to the `Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions to set up each CLI tool. Unlike IKS, you will not need to run `helm init` or deploy the cluster role binding and service account to your cluster because ICP has Helm's Tiller setup for you out of the box. To connect your local command line tools to the ICP instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login].
+
+When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. For example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your image appropriately, you must prefix the image name with the registry and namespace. Let's say you want to push your image to a repository in the default namespace, then you would tag your `name` microservice's image `mycluster.icp:8500/default/name`. This tag specifies `mycluster.icp:8500` as the docker registry to push to and it specifies `default` as the namespace your image's repository will reside in. You can learn more about deploying microservices to ICP by following an https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo].
 
 // =================================================================================================
 // finish
