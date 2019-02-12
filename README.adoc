@@ -43,11 +43,9 @@ Explore how to push Docker images to a custom registry and run them inside of co
 // What is {kube}
 // =================================================================================================
 
-== Why use cloud-hosted Kubernetes services?
+== Why use Kubernetes services in the cloud?
 
-Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your microservices locally, but ultimately you will want a system that can handle production workloads. Various clouds offer solutions for running your workloads in a {kube} cluster. Using cloud infrastructure allows you to focus on developing your microservices rather than worrying about details related to the servers you'll deploy them to. Using cloud will allow you to more easily scale your microservices and serve them in a high-availability set up.
-
-IBM Cloud offers a hosted Kubernetes service called IBM Cloud Kubernetes Service (IKS). IKS is a service offered as part of IBM's public cloud offerings. It provides a hosted {kube} cluster that you may deploy your microservices to. You will use it in conjunction with IBM Cloud Container Registry.
+Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your microservices locally, but ultimately you will want a system that can handle production workloads. Various clouds offer solutions for running your workloads in a {kube} cluster. Using a cloud-based infrastructure allows you to focus on developing your microservices rather than worrying about details related to the servers you'll deploy them to. Using cloud will allow you to more easily scale your microservices and serve them in a high-availability set up.
 
 // =================================================================================================
 // Introduction
@@ -56,8 +54,10 @@ IBM Cloud offers a hosted Kubernetes service called IBM Cloud Kubernetes Service
 == What you'll learn
 
 You will learn how to deploy two microservices in Open Liberty containers to a {kube}
-cluster on IBM Cloud. You will use `helm` to deploy these microservices using IBM's
+cluster on IBM Cloud. You will use `helm` to deploy these microservices using
 Open Liberty Helm charts.
+
+IBM Cloud offers a hosted Kubernetes service called IBM Cloud Kubernetes Service (IKS). IKS is a service offered as part of IBM's public cloud offerings. It provides a hosted {kube} cluster that you may deploy your microservices to. You will use it in conjunction with IBM Cloud Container Registry.
 
 The two microservices you'll deploy are called `name` and `ping`. The `name` microservice
 displays a brief greeting and the name of the
@@ -234,8 +234,7 @@ https://openliberty.io/guides/docker.html[Using Docker containers to develop mic
 It covers Dockerfiles in depth.
 
 If you're familiar with Maven and Docker, you might be tempted to run a Maven build first and then
-use the `.war` file to build a Docker image. While it's by no means a wrong
-approach, we've setup the projects such that this process is automated
+use the `.war` file to build a Docker image. We've setup the projects such that this process is automated
 as a part of a single Maven build. It's created by using the `dockerfile-maven` plug-in. The plug-in automatically
 picks up the Dockerfile located in the same directory as its POM file and builds a Docker image from it.
 If you're using Docker for Windows ensure that, on the Docker for Windows _General Setting_ page, the option is set to `Expose daemon on tcp://localhost:2375 without TLS`. This configuration is required by the `dockerfile-maven` part of the build.
@@ -276,13 +275,13 @@ build log for any potential errors.
 // Pushing the images to a docker registry
 // =================================================================================================
 
-=== Pushing the images to a docker registry
+=== Pushing the images to a Docker registry
 
-Pushing the images a registry will allow the cluster to create pods using your docker images. Since it's a private repository, only users with access to your IBM Cloud account will have access to access these images.
+Pushing the images a registry will allow the cluster to create pods using your Docker images. Since it's a private repository, only users with access to your IBM Cloud account will have access to access these images.
 
-The registry you will use is called IBM Cloud Container registry (ICR).
+The registry you will use is called IBM Cloud Container Registry.
 
-// ICR Login
+// Container Registry Login
 Install the container registry plugin.
 
 [role=command]
@@ -298,7 +297,7 @@ The namespace must be unique within IBM Cloud, so choose something relevant that
 ibmcloud cr namespace-add [your-namespace]
 ```
 
-Use the plugin again to login to the docker registry.
+Use the plugin again to login to the Docker registry.
 
 [role=command]
 ```
@@ -306,7 +305,7 @@ ibmcloud cr login
 ```
 
 // Tagging images
-Next, you need to tag your docker images with the relevant data about your registry.
+Next, you need to tag your Docker images with the relevant data about your registry.
 
 [role=command]
 ```
@@ -334,7 +333,7 @@ When tagging and pushing your images, remeber to subtitute `[your-namespace]` fo
 https://helm.sh/[Helm] is a package manager for {kube}. It allows you to create a package called a chart. You can install a chart on your cluster as a release and then manage the release using Helm.
 
 // Setup Tiller for IKS
-Set up Role Based Access Control (RBAC) to give Helm's Tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the tiller.
+Set up Role Based Access Control (RBAC) to give Helm's Tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the Tiller.
 
 [role=command]
 ```
@@ -347,7 +346,7 @@ serviceaccount/tiller created
 clusterrolebinding.rbac.authorization.k8s.io/tiller created
 ----
 
-Next, install the tiller to your cluster. Specify that the tiller should run under the service account that was created in the previous step.
+Next, install Tiller to your cluster. Specify that the Tiller should run under the service account that was created in the previous step.
 
 [role=command]
 ```
@@ -368,10 +367,10 @@ For more information on securing your installation see: https://docs.helm.sh/usi
 Happy Helming!
 ----
 
-All pods run under a service account. By default, your pod will run as the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
+All pods run under a service account. By default, your pod will run under the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
 
 // Add repo
-Add the `ibm-charts` repository to your local list of helm repositories. Adding the repository allows you to use the `ibm-open-liberty` chart.
+Add the `ibm-charts` repository to your local list of Helm repositories. Adding the repository allows you to use the `ibm-open-liberty` chart.
 
 [role=command]
 ```
@@ -379,7 +378,7 @@ helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/rep
 ```
 
 // Deploy to IKS
-Use helm to deploy the `name` microservice. Remeber to substitute `[your-namespace]` for the namespace you created earlier in the guide.
+Use Helm to deploy the `name` microservice. Remeber to substitute `[your-namespace]` for the namespace you created earlier in the guide.
 
 [role=command]
 ```
@@ -392,7 +391,7 @@ helm install --name name-app \
     ibm-charts/ibm-open-liberty
 ```
 
-Use helm to deploy the `ping` microservice. Remeber to substitute `[your-namespace]` for the namespace you created earlier in the guide.
+Use Helm to deploy the `ping` microservice. Remeber to substitute `[your-namespace]` for the namespace you created earlier in the guide.
 
 [role=command]
 ```
@@ -407,7 +406,7 @@ helm install --name ping-app \
 
 After running `helm install` output will be displayed providing instructions on how to access your deployed microservices. Ignore these instructions for now, you will learn how to access your microservices in the next section.
 
-The `--name` flag specifies the release name. This is the name that helm uses to identify this specific
+The `--name` flag specifies the release name. This is the name that Helm uses to identify this specific
 deployment of your chart. The following table gives an overview for each of the parameters specified using `--set`.
 
 |===
@@ -527,7 +526,9 @@ Results :
 Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 ----
 
-=== Deploying new version of name microservice (Optional)
+=== Deploying new version of name microservice
+
+Optionally, you may want to learn how to re-deploy a microservice. You can re-deploy a microservice using Helm to upgrade the release.
 
 Use the following Maven command to bump the version of the microservice to 2.0-SNAPSHOT.
 
@@ -543,7 +544,7 @@ Use Maven to package your microservice.
 mvn package
 ```
 
-Use helm to re-deploy the `name` microservice.
+Use Helm to re-deploy the `name` microservice.
 
 [role=command]
 ```
@@ -597,9 +598,9 @@ Events:
 // Tear Down
 // =================================================================================================
 
-=== Tearing down the environment
+== Tearing down the environment
 
-When you no longer need your deployed microservices, you can delete them with the following helm commands:
+When you no longer need your deployed microservices, you can delete them with the following Helm commands:
 
 [role=command]
 ```
@@ -607,7 +608,7 @@ helm delete --purge name-app
 helm delete --purge ping-app
 ```
 
-Logout of your docker registry.
+Logout of your Docker registry.
 
 [role=command]
 ```
@@ -629,17 +630,19 @@ ibmcloud logout
 ```
 
 
-== Deploying to IBM Cloud Private (Optional)
+== Deploying to IBM Cloud Private
 
 Some situations may require you to manage your own infrastructure, such as if you want to deploy on-premises. If this describes your needs, then private clouds may be a more suitable solution for you.
 
-https://www.ibm.com/cloud/private[IBM Cloud Private] (ICP) is a {kube} platform. A private cloud may be a more attractive option to those who must run their services running on infrastructure controlled by them. While someone will still need to maintain this infrastructure, a private cloud still provides benefit to developers so they don't need to think about infrastructure. {kube} acts as an abstraction of the infrastructure so the developers can request what they need and it is the responsibility of the infrastructure's maintainers to provide the necessary resources.
+https://www.ibm.com/cloud/private[IBM Cloud Private] (ICP) is a {kube} platform. A private cloud may be a more attractive option to those who must run their services running on infrastructure controlled by them. While the operations team will still need to maintain this infrastructure, a private cloud still provides benefit to developers so they don't need to think about infrastructure. {kube} acts as an abstraction of the infrastructure so the developers can request what they need and it is the responsibility of the infrastructure's maintainers to provide the necessary resources.
 
 Deploying microservices to ICP is a similar process as deploying to IKS. The main differences you will notice are in the setup process and how you tag your Docker images.
 
-To obtain an ICP instance see the https://www.ibm.com/cloud/private[IBM Cloud Private] website. To set up your local environment, navigate to the `Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions to set up each CLI tool. Unlike IKS, you will not need to run `helm init` or deploy the cluster role binding and service account to your cluster because ICP has Helm's Tiller setup for you out of the box. To connect your local command line tools to the ICP instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login].
+To obtain an ICP instance see the https://www.ibm.com/cloud/private[IBM Cloud Private] website. To set up your local environment, from the ICP Dashboard navigate to the `Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions to set up each CLI tool. Unlike IKS, you will not need to run `helm init` or deploy the cluster role binding and service account to your cluster because ICP has Helm's Tiller setup for you out of the box. To connect your local command line tools to the ICP instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login].
 
-When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. For example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your image appropriately, you must prefix the image name with the registry and namespace. Let's say you want to push your image to a repository in the default namespace, then you would tag your `name` microservice's image `mycluster.icp:8500/default/name`. This tag specifies `mycluster.icp:8500` as the docker registry to push to and it specifies `default` as the namespace your image's repository will reside in. You can learn more about deploying microservices to ICP by following an https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo].
+When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. For example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your image appropriately, you must prefix the image name with the registry and namespace. Let's say you want to push your image to a repository in the default namespace, then you would tag your `name` microservice's image `mycluster.icp:8500/default/name`. This tag specifies `mycluster.icp:8500` as the Docker registry to push to and it specifies `default` as the namespace your image's repository will reside in.
+
+You can learn more about deploying microservices to ICP by following an https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo].
 
 // =================================================================================================
 // finish
@@ -648,7 +651,7 @@ When you tag a Docker image, you must tag the image with the registry as a prefi
 == Great work! You're done!
 
 You have just deployed two microservices to IBM Cloud. You have learned to use Helm to install your microservices
-on a {kube} cluster using IBM's helm chart for Open Liberty.
+on a {kube} cluster using the Open Liberty helm chart.
 
 // Multipane
 include::https://raw.githubusercontent.com/OpenLiberty/guides-common/multipane/attribution.adoc[subs="attributes"]
