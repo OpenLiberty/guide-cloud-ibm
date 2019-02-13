@@ -544,6 +544,24 @@ Use Maven to package your microservice.
 mvn package
 ```
 
+Since you built a new image, it will have to be pushed to the repository again.
+
+// Tagging images
+Tag your Docker image with the relevant data about your registry.
+
+[role=command]
+```
+docker tag name:2.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:2.0-SNAPSHOT
+```
+
+// Pushing images
+Push your image to the registry.
+
+[role=command]
+```
+docker push registry.ng.bluemix.net/[your-namespace]/name:2.0-SNAPSHOT
+```
+
 Use Helm to re-deploy the `name` microservice.
 
 [role=command]
