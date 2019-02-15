@@ -10,7 +10,7 @@
 //     IBM Corporation
 //
 :projectid: cloud-ibm
-:page-layout: guide-multipane
+:page-layout: guide
 :page-duration: 4 hours
 :page-releasedate: 2018-10-05
 :page-description: Explore how to deploy microservices to IBM Cloud Private and manage your cluster.
