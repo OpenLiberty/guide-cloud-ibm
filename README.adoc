@@ -672,7 +672,7 @@ You have just deployed two microservices to IBM Cloud. You have learned to use H
 on a {kube} cluster using the Open Liberty helm chart.
 
 // Multipane
-include::https://raw.githubusercontent.com/OpenLiberty/guides-common/multipane/attribution.adoc[subs="attributes"]
+include::{common-includes}/attribution.adoc[subs="attributes"]
 
 // DO NO CREATE ANYMORE SECTIONS AT THIS POINT
 // Related guides will be added in automatically here if you included them in ":page-related-guides"
