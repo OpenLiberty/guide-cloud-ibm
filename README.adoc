@@ -616,6 +616,9 @@ docker push registry.ng.bluemix.net/[your-namespace]/name:2.0-SNAPSHOT
 
 Use Helm to re-deploy the `name` microservice.
 
+****
+[system]#*{linux} | {mac}*#
+
 [role=command]
 ```
 helm upgrade \
@@ -626,6 +629,21 @@ helm upgrade \
     --set ssl.enabled=false \
     name-app ibm-charts/ibm-open-liberty
 ```
+
+[system]#*{win}*#
+
+[role=command]
+```
+helm upgrade ^
+    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name ^
+    --set image.tag=2.0-SNAPSHOT ^
+    --set service.port=9080 ^
+    --set service.targetPort=9080 ^
+    --set ssl.enabled=false ^
+    name-app ibm-charts/ibm-open-liberty
+```
+
+****
 
 Use the following command to find the name of the pod running the `name` microservice.
 
