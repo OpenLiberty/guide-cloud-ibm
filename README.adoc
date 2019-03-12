@@ -331,7 +331,7 @@ When tagging and pushing your images, remeber to subtitute `[your-namespace]` fo
 
 === Deploying the microservices
 
-https://helm.sh/[Helm] is a package manager for {kube}. It allows you to create a package called a chart. You can install a chart on your cluster as a release and then manage the release using Helm.
+https://helm.sh/[Helm^] is a package manager for {kube}. It allows you to create a package called a chart. You can install a chart on your cluster as a release and then manage the release using Helm.
 
 // Setup Tiller for IKS
 Set up Role Based Access Control (RBAC) to give Helm's Tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the Tiller.
