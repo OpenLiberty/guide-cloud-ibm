@@ -12,6 +12,11 @@ mvn -q package
 printf "\nhelm init\n"
 helm init
 
+sleep 30
+
+printf "\nhelm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/\n"
+helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
+
 printf "\nhelm install ... name-app\n"
 helm install --name name-app \
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
