@@ -10,7 +10,7 @@ printf "\nmvn -q package\n"
 mvn -q package
 
 printf "\nhelm init\n"
-helm init
+helm init --tls
 
 sleep 30
 
@@ -24,7 +24,7 @@ helm install --name name-app \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty
+    ibm-charts/ibm-open-liberty --tls
 
 
 printf "\nhelm install ... ping-app\n"
@@ -34,7 +34,7 @@ helm install --name ping-app \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty
+    ibm-charts/ibm-open-liberty --tls
 
 
 printf "\nsleep 120\n"
