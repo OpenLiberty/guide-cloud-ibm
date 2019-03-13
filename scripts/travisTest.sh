@@ -25,7 +25,7 @@ helm template --name name-app \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    ./ibm-open-liberty | kubectl apply -f -
+    ./ibm-open-liberty | kubectl apply -f - --validate=false
 
 
 printf "\nhelm install ... ping-app\n"
@@ -35,7 +35,7 @@ helm template --name ping-app \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    ./ibm-open-liberty | kubectl apply -f -
+    ./ibm-open-liberty | kubectl apply -f - --validate=false
 
 
 printf "\nsleep 120\n"
