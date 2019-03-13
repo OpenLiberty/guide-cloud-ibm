@@ -9,6 +9,9 @@
 printf "\nmvn -q package\n"
 mvn -q package
 
+printf "\nhelm init\n"
+helm init --client-only
+
 printf "\nhelm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/\n"
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
 
