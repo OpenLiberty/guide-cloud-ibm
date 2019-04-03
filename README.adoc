@@ -468,6 +468,14 @@ an overview for each of the parameters specified using `--set`.
 
 === Finding the microservice's IP address and ports
 
+The service used to expose our deployments has a type of `NodePort`. This means you can 
+access these services from outside of your cluster via a specific port. In this case,
+since we do not specify the `nodePort`, the ports will be randomized so we must obtain 
+the ports before making requests to our services. We must also onbtain the public IP address 
+of our cluster. Note that there are other ways to expose your services such as using a 
+`LoadBalancer` service type or using an `Ingress`. In production, you would most likely 
+use an `Ingress`.
+
 First, find the current context of your cluster.
 
 [role=command]
@@ -527,7 +535,7 @@ Make a request to the `ping` microservice substituting in `ip-address` and `ping
 
 [role=command]
 ```
-curl http://[ip-address]:[ping-node-port]/api/ping/name-app-ibm-open-libert
+curl http://[ip-address]:[ping-node-port]/api/ping/name-service
 ```
 
 // =================================================================================================
