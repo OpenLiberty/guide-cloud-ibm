@@ -280,18 +280,11 @@ build log for any potential errors.
 
 Pushing the images a registry will allow the cluster to create pods using your Docker images. Since it's a private repository, only users with access to your IBM Cloud account will have access to access these images.
 
-The registry you will use is called IBM Cloud Container Registry.
-
-// Container Registry Login
-Install the container registry plugin.
-
-[role=command]
-```
-ibmcloud plugin install container-registry -r Bluemix
-```
-
+The registry you will use is called IBM Cloud Container Registry. The container registry
+plugin was installed automatically while running the `idt-installer` earlier in this guide.
 Use the container registry plugin to create a namespace for your container images.
-The namespace must be unique within IBM Cloud, so choose something relevant that you'll remember for the duration of the guide.
+The namespace must be unique within IBM Cloud, so choose something relevant that you'll 
+remember for the duration of the guide.
 
 [role=command]
 ```
@@ -310,8 +303,8 @@ Next, you need to tag your Docker images with the relevant data about your regis
 
 [role=command]
 ```
-docker tag name:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
-docker tag ping:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
+docker tag name:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/name:1.0-SNAPSHOT
+docker tag ping:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/ping:1.0-SNAPSHOT
 ```
 
 // Pushing images
@@ -319,8 +312,8 @@ Finally, push your images to the registry.
 
 [role=command]
 ```
-docker push registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
-docker push registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/name:1.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/ping:1.0-SNAPSHOT
 ```
 
 When tagging and pushing your images, remeber to subtitute `[your-namespace]` for the namespace you previously created.
@@ -387,7 +380,7 @@ Use Helm to deploy the `name` microservice. Remeber to substitute `[your-namespa
 [role=command]
 ```
 helm install --name name-app \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
+    --set image.repository=us-south.icr.io/[your-namespace]/name \
     --set image.tag=1.0-SNAPSHOT \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -400,7 +393,7 @@ helm install --name name-app \
 [role=command]
 ```
 helm install --name name-app ^
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name ^
+    --set image.repository=us-south.icr.io/[your-namespace]/name ^
     --set image.tag=1.0-SNAPSHOT ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -418,7 +411,7 @@ Use Helm to deploy the `ping` microservice. Remeber to substitute `[your-namespa
 [role=command]
 ```
 helm install --name ping-app \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping \
+    --set image.repository=us-south.icr.io/[your-namespace]/ping \
     --set image.tag=1.0-SNAPSHOT \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -431,7 +424,7 @@ helm install --name ping-app \
 [role=command]
 ```
 helm install --name ping-app ^
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping ^
+    --set image.repository=us-south.icr.io/[your-namespace]/ping ^
     --set image.tag=1.0-SNAPSHOT ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -603,7 +596,7 @@ Tag your Docker image with the relevant data about your registry.
 
 [role=command]
 ```
-docker tag name:2.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:2.0-SNAPSHOT
+docker tag name:2.0-SNAPSHOT us-south.icr.io/[your-namespace]/name:2.0-SNAPSHOT
 ```
 
 // Pushing images
@@ -611,7 +604,7 @@ Push your image to the registry.
 
 [role=command]
 ```
-docker push registry.ng.bluemix.net/[your-namespace]/name:2.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/name:2.0-SNAPSHOT
 ```
 
 Use Helm to re-deploy the `name` microservice.
@@ -622,7 +615,7 @@ Use Helm to re-deploy the `name` microservice.
 [role=command]
 ```
 helm upgrade \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
+    --set image.repository=us-south.icr.io/[your-namespace]/name \
     --set image.tag=2.0-SNAPSHOT \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -635,7 +628,7 @@ helm upgrade \
 [role=command]
 ```
 helm upgrade ^
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name ^
+    --set image.repository=us-south.icr.io/[your-namespace]/name ^
     --set image.tag=2.0-SNAPSHOT ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -707,7 +700,7 @@ Logout of your Docker registry.
 
 [role=command]
 ```
-docker logout registry.ng.bluemix.net
+docker logout us-south.icr.io
 ```
 
 Remove your IKS cluster.
