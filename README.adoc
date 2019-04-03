@@ -1,7 +1,7 @@
 // INSTRUCTION: Please remove all comments that start INSTRUCTION prior to commit. Most comments should be removed, although not the copyright.
 // INSTRUCTION: The copyright statement must appear at the top of the file
 //
-// Copyright (c) 2018 IBM Corporation and others.
+// Copyright (c) 2018, 2019 IBM Corporation and others.
 // Licensed under Creative Commons Attribution-NoDerivatives
 // 4.0 International (CC BY-ND 4.0)
 //   https://creativecommons.org/licenses/by-nd/4.0/
@@ -278,7 +278,7 @@ build log for any potential errors.
 
 === Pushing the images to a Docker registry
 
-Pushing the images a registry will allow the cluster to create pods using your Docker images. Since it's a private repository, only users with access to your IBM Cloud account will have access to access these images.
+Pushing the images to a registry will allow the cluster to create pods using your Docker images. Since it's a private repository, only users with access to your IBM Cloud account will have access to these images.
 
 The registry you will use is called IBM Cloud Container Registry.
 
@@ -291,7 +291,8 @@ ibmcloud plugin install container-registry -r Bluemix
 ```
 
 Use the container registry plugin to create a namespace for your container images.
-The namespace must be unique within IBM Cloud, so choose something relevant that you'll remember for the duration of the guide.
+The namespace must be unique within IBM Cloud for the region you selected, so choose something 
+relevant that you'll remember for the duration of the guide.
 
 [role=command]
 ```
@@ -306,7 +307,8 @@ ibmcloud cr login
 ```
 
 // Tagging images
-Next, you need to tag your Docker images with the relevant data about your registry.
+Next, you need to tag your Docker images with the relevant data about your registry. 
+Remeber to subtitute `[your-namespace]` for the namespace you previously created.
 
 [role=command]
 ```
@@ -315,7 +317,8 @@ docker tag ping:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/ping:1.0-S
 ```
 
 // Pushing images
-Finally, push your images to the registry.
+Finally, push your images to the registry. Remeber to subtitute `[your-namespace]` for the 
+namespace you previously created.
 
 [role=command]
 ```
@@ -323,7 +326,6 @@ docker push registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
 docker push registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
 ```
 
-When tagging and pushing your images, remeber to subtitute `[your-namespace]` for the namespace you previously created.
 
 // =================================================================================================
 // Deploying the microservices
@@ -389,6 +391,7 @@ Use Helm to deploy the `name` microservice. Remeber to substitute `[your-namespa
 helm install --name name-app \
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
     --set image.tag=1.0-SNAPSHOT \
+    --set service.name=name-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
@@ -402,6 +405,7 @@ helm install --name name-app \
 helm install --name name-app ^
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/name ^
     --set image.tag=1.0-SNAPSHOT ^
+    --set service.name=name-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
     --set ssl.enabled=false ^
@@ -420,6 +424,7 @@ Use Helm to deploy the `ping` microservice. Remeber to substitute `[your-namespa
 helm install --name ping-app \
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping \
     --set image.tag=1.0-SNAPSHOT \
+    --set service.name=ping-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
@@ -433,6 +438,7 @@ helm install --name ping-app \
 helm install --name ping-app ^
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping ^
     --set image.tag=1.0-SNAPSHOT ^
+    --set service.name=ping-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
     --set ssl.enabled=false ^
@@ -442,15 +448,19 @@ helm install --name ping-app ^
 ****
 
 
-After running `helm install` output will be displayed providing instructions on how to access your deployed microservices. Ignore these instructions for now, you will learn how to access your microservices in the next section.
+After running `helm install`, an output will be displayed providing instructions on how 
+to access your deployed microservices. Ignore these instructions for now, you will learn 
+how to access your microservices in the next section.
 
-The `--name` flag specifies the release name. This is the name that Helm uses to identify this specific
-deployment of your chart. The following table gives an overview for each of the parameters specified using `--set`.
+The `--name` flag specifies the release name, which must be unique. This is the name that 
+Helm uses to identify this specific deployment of your chart. The following table gives 
+an overview for each of the parameters specified using `--set`.
 
 |===
 | *Parameter* | *Description*
 | image.repository | The name of your Docker image including registry/repository prefix
 | image.tag | The tag for your Docker image
+| service.name | The name of the service
 | service.port | The port exposed by the service
 | service.targetPort | The port exposed by the pod
 | ssl.enabled | Specify if SSL is enabled
@@ -492,14 +502,14 @@ Get the node port of the `name` microservice.
 
 [role=command]
 ```
-kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+kubectl get service name-service -o jsonpath="{.spec.ports[0].nodePort}"
 ```
 
 Get the node port of the `ping` microservice.
 
 [role=command]
 ```
-kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"
+kubectl get service ping-service -o jsonpath="{.spec.ports[0].nodePort}"
 ```
 
 Take note of the IP address and ports. They are required to make the HTTP requests.
@@ -539,13 +549,12 @@ in the ready state before proceeding further. The default properties defined in 
 | ping.node.port    | The NodePort of the {kube} Service `ping-service`, 32000 by default.
 |===
 
-Navigate back to the `start` directory.
-
-Use the following command to run the integration tests against your cluster. Subtitute `[ip-address]`, `[name-node-port]` and `[ping-node-port]` with the appropriate values.
+Use the following command to run the integration tests against your cluster. Subtitute 
+`[ip-address]`, `[name-node-port]` and `[ping-node-port]` with the appropriate values.
 
 [role=command]
 ```
-mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dname.node.port=[name-node-port] -Dping.node.port=[ping-node-port] -Dname.kube.service=name-app-ibm-open-libert
+mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dname.node.port=[name-node-port] -Dping.node.port=[ping-node-port]
 ```
 
 The `dockerfile.skip` parameter is set to `true` in order to skip building a new Docker image.
@@ -580,7 +589,8 @@ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 
 === Deploying new version of name microservice
 
-Optionally, you may want to learn how to re-deploy a microservice. You can re-deploy a microservice using Helm to upgrade the release.
+Optionally, you may want to learn how to re-deploy a microservice. You can re-deploy a 
+microservice using Helm to upgrade the release.
 
 Use the following Maven command to bump the version of the microservice to 2.0-SNAPSHOT.
 
@@ -624,6 +634,7 @@ Use Helm to re-deploy the `name` microservice.
 helm upgrade \
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
     --set image.tag=2.0-SNAPSHOT \
+    --set service.name=name-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
@@ -637,6 +648,7 @@ helm upgrade \
 helm upgrade ^
     --set image.repository=registry.ng.bluemix.net/[your-namespace]/name ^
     --set image.tag=2.0-SNAPSHOT ^
+    --set service.name=name-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
     --set ssl.enabled=false ^
