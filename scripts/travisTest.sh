@@ -22,6 +22,7 @@ printf "\nhelm install ... name-app\n"
 helm template --name name-app \
     --set image.repository=name \
     --set image.tag=1.0-SNAPSHOT \
+    --set service.name=name-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
@@ -32,6 +33,7 @@ printf "\nhelm install ... ping-app\n"
 helm template --name ping-app \
     --set image.repository=ping \
     --set image.tag=1.0-SNAPSHOT \
+    --set service.name=ping-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
@@ -45,8 +47,8 @@ printf "\nkubectl get pods\n"
 kubectl get pods
 
 GUIDE_IP=`minikube ip`
-GUIDE_NAME_PORT=`kubectl get service name-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"`
-GUIDE_PING_PORT=`kubectl get service ping-app-ibm-open-libert -o jsonpath="{.spec.ports[0].nodePort}"`
+GUIDE_NAME_PORT=`kubectl get service name-service -o jsonpath="{.spec.ports[0].nodePort}"`
+GUIDE_PING_PORT=`kubectl get service ping-service -o jsonpath="{.spec.ports[0].nodePort}"`
 
 printf "\nMinikube IP: $GUIDE_IP\n"
 printf "\nName Port: $GUIDE_NAME_PORT\n"
@@ -59,7 +61,7 @@ printf "\ncurl http://$GUIDE_IP:$GUIDE_PING_PORT/api/ping/name-service\n"
 curl http://$GUIDE_IP:$GUIDE_PING_PORT/api/ping/name-app-ibm-open-libert
 
 printf "\nmvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dname.node.port=[name-node-port] -Dping.node.port=[ping-node-port] -Dname.kube.service=name-app-ibm-open-libert\n"
-mvn verify -Ddockerfile.skip=true -Dcluster.ip=$GUIDE_IP -Dname.node.port=$GUIDE_NAME_PORT -Dping.node.port=$GUIDE_PING_PORT -Dname.kube.service=name-app-ibm-open-libert
+mvn verify -Ddockerfile.skip=true -Dcluster.ip=$GUIDE_IP -Dname.node.port=$GUIDE_NAME_PORT -Dping.node.port=$GUIDE_PING_PORT 
 
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)\n"
