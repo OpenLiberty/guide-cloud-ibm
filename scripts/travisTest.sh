@@ -65,8 +65,8 @@ mvn verify -Ddockerfile.skip=true -Dcluster.ip=$GUIDE_IP -Dname.node.port=$GUIDE
 
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)\n"
-kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)
+kubectl logs name-app-ibm-open-libert-basic-test
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep ping)\n" 
-kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep ping)
+kubectl logs ping-app-ibm-open-libert-basic-test
 
