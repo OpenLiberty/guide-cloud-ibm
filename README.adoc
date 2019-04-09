@@ -35,8 +35,8 @@ Explore how to push Docker images to a custom registry and run them inside of co
 :win: WINDOWS
 :mac: MAC
 :linux: LINUX
-:name-api: http://[hostname]:31000/api/name
-:ping-api: http://[hostname]:32000/api/ping
+:system-api: http://[hostname]:[system-node-port]/system/properties
+:inventory-api: http://[hostname]:[inventory-node-port]/inventory/systems
 
 
 // =================================================================================================
@@ -60,12 +60,11 @@ generate {kube} yaml files and then deploys and manages them as releases to your
 
 IBM Cloud offers a hosted Kubernetes service called IBM Cloud Kubernetes Service (IKS). IKS is a service offered as part of IBM's public cloud offerings. It provides a hosted {kube} cluster that you may deploy your microservices to. You will use it in conjunction with IBM Cloud Container Registry.
 
-The two microservices you will deploy are called `system` and `inventory`. The `system` 
-microservice simply returns the JVM systems properties of the container it is running in 
-and it returns the Pod's name in the HTTP header making it easy to distinguish it from 
-its other replicas. The `inventory` microservice adds the properties from the `system` 
-microservice to the inventory. This demonstrates how communication can be established 
-between pods inside a cluster.
+The two microservices you will deploy are called `system` and `inventory`. The `system` microservice
+returns the JVM systems properties of the running container and it returns the pod's name in the HTTP header
+making replicas easy to distinquish from each other. The `inventory` microservice
+adds the properties from the `system` microservice to the inventory. This demonstrates
+how communication can be established between pods inside a cluster.
 
 // =================================================================================================
 // Prerequisites
@@ -518,7 +517,6 @@ Make a request to the `system` microservice substituting in `ip-address` and `sy
 [role=command]
 ```
 curl http://[ip-address]:[system-node-port]/system/properties 
-
 ```
 
 Make a request to the `inventory` microservice substituting in `ip-address` and `inventory-node-port` where appropriate.
@@ -526,8 +524,13 @@ Make a request to the `inventory` microservice substituting in `ip-address` and 
 [role=command]
 ```
 curl http://[ip-address]:[inventory-node-port]/inventory/systems/system-service
-
 ```
+
+The first URL returns system properties and the name of the pod in an HTTP header called `X-Pod-Name`.
+To view the header, you may use the `-I` option in the `curl` when making a request to `{system-api}`.
+The second URL adds proprties from `system-service` to the inventory.
+{kube} Service. Visiting `{inventory-api}/[kube-service]` in general adds to the inventory
+depending on whether `kube-service` is a valid {kube} Service that can be accessed.
 
 // =================================================================================================
 // Testing microservices that are running on IBM Cloud
