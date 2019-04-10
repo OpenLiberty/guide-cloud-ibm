@@ -1,3 +1,5 @@
+
+
 #!/bin/bash
 
 ##############################################################################
@@ -25,7 +27,7 @@ helm template --name name-app \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    ./ibm-open-liberty | kubectl apply -f -
+    ./ibm-open-liberty | kubectl apply -f - --validate=false
 
 
 printf "\nhelm install ... ping-app\n"
@@ -35,11 +37,11 @@ helm template --name ping-app \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    ./ibm-open-liberty | kubectl apply -f -
+    ./ibm-open-liberty | kubectl apply -f - --validate=false
 
 
-printf "\nsleep 160\n"
-sleep 160
+printf "\nsleep 120\n"
+sleep 120
 
 printf "\nkubectl get pods\n"
 kubectl get pods
@@ -63,8 +65,7 @@ mvn verify -Ddockerfile.skip=true -Dcluster.ip=$GUIDE_IP -Dname.node.port=$GUIDE
 
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)\n"
-kubectl logs name-app-ibm-open-libert-basic-test
+kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep ping)\n" 
-kubectl logs ping-app-ibm-open-libert-basic-test
-
+kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep ping)
