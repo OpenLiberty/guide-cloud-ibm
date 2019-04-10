@@ -502,14 +502,14 @@ Get the node port of the `name` microservice.
 
 [role=command]
 ```
-kubectl get service name-service -o jsonpath="{.spec.ports[0].nodePort}"
+kubectl get service name-service -o jsonpath="{.spec.ports[0].nodePort}{'\n'}"
 ```
 
 Get the node port of the `ping` microservice.
 
 [role=command]
 ```
-kubectl get service ping-service -o jsonpath="{.spec.ports[0].nodePort}"
+kubectl get service ping-service -o jsonpath="{.spec.ports[0].nodePort}{'\n'}"
 ```
 
 Take note of the IP address and ports. They are required to make the HTTP requests.
