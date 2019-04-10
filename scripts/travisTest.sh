@@ -38,8 +38,8 @@ helm template --name ping-app \
     ./ibm-open-liberty | kubectl apply -f - --validate=false
 
 
-printf "\nsleep 120\n"
-sleep 120
+printf "\nsleep 160\n"
+sleep 160
 
 printf "\nkubectl get pods\n"
 kubectl get pods
