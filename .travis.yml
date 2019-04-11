@@ -15,6 +15,7 @@ before_script:
 - chmod +x minikube
 - sudo ln -s $(pwd)/minikube /usr/local/bin/minikube
 - sudo minikube start --vm-driver=none --bootstrapper=localkube
+- sudo apt-get install -y --upgrade util-linux socat
 - wget https://storage.googleapis.com/kubernetes-helm/helm-v2.13.0-linux-amd64.tar.gz -q -O helm.tar.gz
 - tar -zxf helm.tar.gz
 - chmod +x ./linux-amd64/helm

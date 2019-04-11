@@ -12,32 +12,28 @@ printf "\nmvn -q package\n"
 mvn -q package
 
 printf "\nhelm init\n"
-helm init --client-only
+helm init
 
 printf "\nhelm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/\n"
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
 
-printf "\nhelm fetch ibm-charts/ibm-open-liberty --untar\n"
-helm fetch ibm-charts/ibm-open-liberty --untar
-
 printf "\nhelm install ... name-app\n"
-helm template --name name-app \
+helm install --name name-app \
     --set image.repository=name \
     --set image.tag=1.0-SNAPSHOT \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    ./ibm-open-liberty | kubectl apply -f - --validate=false
-
+    ibm-charts/ibm-open-liberty 
 
 printf "\nhelm install ... ping-app\n"
-helm template --name ping-app \
+helm install --name ping-app \
     --set image.repository=ping \
     --set image.tag=1.0-SNAPSHOT \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    ./ibm-open-liberty | kubectl apply -f - --validate=false
+    ibm-charts/ibm-open-liberty
 
 
 printf "\nsleep 120\n"
