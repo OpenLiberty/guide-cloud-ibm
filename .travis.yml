@@ -14,8 +14,16 @@ before_script:
 - wget https://github.com/kubernetes/minikube/releases/download/v0.28.2/minikube-linux-amd64 -q -O minikube
 - chmod +x minikube
 - sudo ln -s $(pwd)/minikube /usr/local/bin/minikube
+- cd /tmp
+- wget https://www.kernel.org/pub/linux/utils/util-linux/v2.25/util-linux-2.25.tar.gz
+- tar -xvf util-linux-2.25.tar.gz
+- cd util-linux-2.25
+- ./configure
+- make nsenter
+- sudo cp nsenter /usr/local/bin
+- cd ../..
+- nsenter -V 
 - sudo minikube start --vm-driver=none --bootstrapper=localkube
-- sudo apt-get install -y --upgrade util-linux socat
 - wget https://storage.googleapis.com/kubernetes-helm/helm-v2.13.0-linux-amd64.tar.gz -q -O helm.tar.gz
 - tar -zxf helm.tar.gz
 - chmod +x ./linux-amd64/helm
