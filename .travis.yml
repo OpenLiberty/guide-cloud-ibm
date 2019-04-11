@@ -28,6 +28,7 @@ before_script:
 - make nsenter
 - sudo cp nsenter /usr/local/bin
 - cd ../..
+- ls
 - nsenter -V 
 script: ../scripts/travisTest.sh
 notifications:
