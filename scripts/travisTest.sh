@@ -14,6 +14,9 @@ mvn -q package
 printf "\nhelm init\n"
 helm init
 
+sleep 20
+kubectl -n kube-system get po
+
 printf "\nhelm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/\n"
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
 
