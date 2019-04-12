@@ -23,7 +23,6 @@ before_script:
 - chmod +x ./linux-amd64/helm
 - sudo ln -s $(pwd)/linux-amd64/helm /usr/local/bin/helm
 - chmod +x ../scripts/travisTest.sh
-- cd $TRAVIS_BUILD_DIR/finish
 script: ../scripts/travisTest.sh
 notifications:
   slack:

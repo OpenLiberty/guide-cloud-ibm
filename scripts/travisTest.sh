@@ -14,8 +14,8 @@ mvn -q package
 printf "\nhelm init\n"
 helm init
 
+printf "\nsleep 20\n"
 sleep 20
-kubectl -n kube-system get po
 
 printf "\nhelm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/\n"
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
@@ -40,7 +40,9 @@ helm install --name ping-app \
 
 
 printf "\nsleep 120\n"
-sleep 160
+sleep 120
+
+kubectl get pod $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name) -o go-template="{{range .status.containerStatuses}}{{.lastState.terminated.message}}{{end}}"
 
 printf "\nkubectl get pods\n"
 kubectl get pods
