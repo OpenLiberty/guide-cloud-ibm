@@ -1,4 +1,5 @@
 sudo: required
+dist: xenial
 language: java
 services:
 - docker
@@ -21,15 +22,7 @@ before_script:
 - chmod +x ./linux-amd64/helm
 - sudo ln -s $(pwd)/linux-amd64/helm /usr/local/bin/helm
 - chmod +x ../scripts/travisTest.sh
-- cd /tmp
-- wget https://www.kernel.org/pub/linux/utils/util-linux/v2.25/util-linux-2.25.tar.gz
-- tar -xvf util-linux-2.25.tar.gz
-- cd util-linux-2.25
-- ./configure
-- make nsenter
-- sudo cp nsenter /usr/local/bin
 - cd $TRAVIS_BUILD_DIR/finish
-- nsenter -V 
 script: ../scripts/travisTest.sh
 notifications:
   slack:
