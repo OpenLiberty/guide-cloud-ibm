@@ -40,9 +40,7 @@ helm install --name ping-app \
     --set ssl.enabled=false \
     ibm-charts/ibm-open-liberty
 
-
-printf "\nsleep 120\n"
-sleep 120
+JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}'; until kubectl -n default get pods -o jsonpath="$JSONPATH" | grep -q "Ready=True"; do sleep 5;echo "waiting for deployments to be available"; kubectl get pods -n default; done
 
 printf "\nkubectl get pods\n"
 kubectl get pods
