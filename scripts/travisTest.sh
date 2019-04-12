@@ -11,8 +11,10 @@
 printf "\nmvn -q package\n"
 mvn -q package
 
+kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
+
 printf "\nhelm init\n"
-helm init
+helm init --service-account tiller
 
 printf "\nsleep 20\n"
 sleep 20
@@ -41,8 +43,6 @@ helm install --name ping-app \
 
 printf "\nsleep 120\n"
 sleep 120
-
-kubectl get pod $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name) -o go-template="{{range .status.containerStatuses}}{{.lastState.terminated.message}}{{end}}"
 
 printf "\nkubectl get pods\n"
 kubectl get pods
