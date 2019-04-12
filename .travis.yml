@@ -11,10 +11,11 @@ before_script:
 - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 - chmod +x kubectl
 - sudo ln -s $(pwd)/kubectl /usr/local/bin/kubectl
-- wget https://github.com/kubernetes/minikube/releases/download/v0.28.2/minikube-linux-amd64 -q -O minikube
+- wget https://storage.googleapis.com/minikube/releases/v0.30.0/minikube-linux-amd64 -q -O minikube
 - chmod +x minikube
 - sudo ln -s $(pwd)/minikube /usr/local/bin/minikube
-- sudo minikube start --vm-driver=none --bootstrapper=kubeadm --kubernetes-version=v1.13.0 
+- sudo minikube start --vm-driver=none --bootstrapper=kubeadm --kubernetes-version=v1.12.0 
+- minikube update-context 
 - wget https://storage.googleapis.com/kubernetes-helm/helm-v2.13.0-linux-amd64.tar.gz -q -O helm.tar.gz
 - tar -zxf helm.tar.gz
 - chmod +x ./linux-amd64/helm
