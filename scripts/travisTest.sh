@@ -64,6 +64,11 @@ curl http://$GUIDE_IP:$GUIDE_PING_PORT/api/ping/name-app-ibm-open-libert
 printf "\nmvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dname.node.port=[name-node-port] -Dping.node.port=[ping-node-port] -Dname.kube.service=name-app-ibm-open-libert\n"
 mvn verify -Ddockerfile.skip=true -Dcluster.ip=$GUIDE_IP -Dname.node.port=$GUIDE_NAME_PORT -Dping.node.port=$GUIDE_PING_PORT -Dname.kube.service=name-app-ibm-open-libert
 
+printf "\nkubectl describe $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)\n"
+kubectl describe $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)
+
+printf "\nkubectl describe $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep ping)\n" 
+kubectl describe $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep ping)
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)\n"
 kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep name)
