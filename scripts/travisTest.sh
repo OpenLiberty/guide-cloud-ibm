@@ -40,7 +40,7 @@ helm install --name ping-app \
 
 
 printf "\nsleep 120\n"
-sleep 120
+sleep 160
 
 printf "\nkubectl get pods\n"
 kubectl get pods
