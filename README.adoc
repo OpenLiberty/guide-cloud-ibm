@@ -72,7 +72,7 @@ how communication can be established between pods inside a cluster.
 
 == Prerequisites
 
-To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and ensure that `Administrator` is listed as a policy.
+To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and ensure that `Administrator` is listed as a policy for all resources in the account or for the Kubernetes service.
 
 // =================================================================================================
 // Getting Started
@@ -280,16 +280,8 @@ build log for any potential errors.
 
 Pushing the images to a registry will allow the cluster to create pods using your Docker images. Since it's a private repository, only users with access to your IBM Cloud account will have access to these images.
 
-The registry you will use is called IBM Cloud Container Registry.
-
-// Container Registry Login
-Install the container registry plugin.
-
-[role=command]
-```
-ibmcloud plugin install container-registry -r Bluemix
-```
-
+The registry you will use is called IBM Cloud Container Registry. The container registry
+plugin was installed automatically while running the `idt-installer` earlier in this guide.
 Use the container registry plugin to create a namespace for your container images.
 The namespace must be unique within IBM Cloud for the region you selected, so choose something 
 relevant that you'll remember for the duration of the guide.
@@ -312,8 +304,8 @@ Remeber to subtitute `[your-namespace]` for the namespace you previously created
 
 [role=command]
 ```
-docker tag name:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
-docker tag ping:1.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
+docker tag name:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/name:1.0-SNAPSHOT
+docker tag ping:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/ping:1.0-SNAPSHOT
 ```
 
 // Pushing images
@@ -322,8 +314,8 @@ namespace you previously created.
 
 [role=command]
 ```
-docker push registry.ng.bluemix.net/[your-namespace]/name:1.0-SNAPSHOT
-docker push registry.ng.bluemix.net/[your-namespace]/ping:1.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/name:1.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/ping:1.0-SNAPSHOT
 ```
 
 
@@ -389,7 +381,7 @@ Use Helm to deploy the `name` microservice. Remeber to substitute `[your-namespa
 [role=command]
 ```
 helm install --name name-app \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
+    --set image.repository=us-south.icr.io/[your-namespace]/name \
     --set image.tag=1.0-SNAPSHOT \
     --set service.name=name-service \
     --set service.port=9080 \
@@ -403,7 +395,7 @@ helm install --name name-app \
 [role=command]
 ```
 helm install --name name-app ^
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name ^
+    --set image.repository=us-south.icr.io/[your-namespace]/name ^
     --set image.tag=1.0-SNAPSHOT ^
     --set service.name=name-service ^
     --set service.port=9080 ^
@@ -422,7 +414,7 @@ Use Helm to deploy the `ping` microservice. Remeber to substitute `[your-namespa
 [role=command]
 ```
 helm install --name ping-app \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping \
+    --set image.repository=us-south.icr.io/[your-namespace]/ping \
     --set image.tag=1.0-SNAPSHOT \
     --set service.name=ping-service \
     --set service.port=9080 \
@@ -436,7 +428,7 @@ helm install --name ping-app \
 [role=command]
 ```
 helm install --name ping-app ^
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/ping ^
+    --set image.repository=us-south.icr.io/[your-namespace]/ping ^
     --set image.tag=1.0-SNAPSHOT ^
     --set service.name=ping-service ^
     --set service.port=9080 ^
@@ -510,14 +502,14 @@ Get the node port of the `name` microservice.
 
 [role=command]
 ```
-kubectl get service name-service -o jsonpath="{.spec.ports[0].nodePort}"
+kubectl get service name-service -o jsonpath="{.spec.ports[0].nodePort}{'\n'}"
 ```
 
 Get the node port of the `ping` microservice.
 
 [role=command]
 ```
-kubectl get service ping-service -o jsonpath="{.spec.ports[0].nodePort}"
+kubectl get service ping-service -o jsonpath="{.spec.ports[0].nodePort}{'\n'}"
 ```
 
 Take note of the IP address and ports. They are required to make the HTTP requests.
@@ -621,7 +613,7 @@ Tag your Docker image with the relevant data about your registry.
 
 [role=command]
 ```
-docker tag name:2.0-SNAPSHOT registry.ng.bluemix.net/[your-namespace]/name:2.0-SNAPSHOT
+docker tag name:2.0-SNAPSHOT us-south.icr.io/[your-namespace]/name:2.0-SNAPSHOT
 ```
 
 // Pushing images
@@ -629,7 +621,7 @@ Push your image to the registry.
 
 [role=command]
 ```
-docker push registry.ng.bluemix.net/[your-namespace]/name:2.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/name:2.0-SNAPSHOT
 ```
 
 Use Helm to re-deploy the `name` microservice.
@@ -640,7 +632,7 @@ Use Helm to re-deploy the `name` microservice.
 [role=command]
 ```
 helm upgrade \
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name \
+    --set image.repository=us-south.icr.io/[your-namespace]/name \
     --set image.tag=2.0-SNAPSHOT \
     --set service.name=name-service \
     --set service.port=9080 \
@@ -654,7 +646,7 @@ helm upgrade \
 [role=command]
 ```
 helm upgrade ^
-    --set image.repository=registry.ng.bluemix.net/[your-namespace]/name ^
+    --set image.repository=us-south.icr.io/[your-namespace]/name ^
     --set image.tag=2.0-SNAPSHOT ^
     --set service.name=name-service ^
     --set service.port=9080 ^
@@ -727,7 +719,7 @@ Logout of your Docker registry.
 
 [role=command]
 ```
-docker logout registry.ng.bluemix.net
+docker logout us-south.icr.io
 ```
 
 Remove your IKS cluster.
