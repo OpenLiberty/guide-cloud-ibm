@@ -65,7 +65,7 @@ generate {kube} yaml files and then deploys and manages them as releases to your
 
 IBM Cloud offers a hosted Kubernetes service that is called IBM Cloud Kubernetes Service (IKS). 
 IKS is a service that is offered as part of IBM's public cloud offerings. It provides a 
-hosted {kube} cluster that you can deploy your microservices to. You will use it in conjunction 
+hosted {kube} cluster that you can deploy your microservices to. You will use it 
 with IBM Cloud Container Registry.
 
 The two microservices you will deploy are called `system` and `inventory`. The `system` microservice
@@ -551,7 +551,7 @@ in the ready state before proceeding further. The default properties that are de
 |===
 | *Property*        | *Description*
 | cluster.ip        | IP or hostname for your cluster
-| system.kube.service | Name of the {kube} Service wrapping the `name` pods, `system-service` by default.
+| system.kube.service | Name of the {kube} Service wrapping the `system` pods, `system-service` by default.
 | system.node.port    | The NodePort of the {kube} Service `system-service`, 31000 by default.
 | inventory.node.port    | The NodePort of the {kube} Service `inventory-service`, 32000 by default.
 |===
@@ -594,7 +594,7 @@ Results:
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 ----
 
-=== Deploying new version of name microservice
+=== Deploying new version of system microservice
 
 Optionally, you may want to learn how to re-deploy a microservice. You can re-deploy a 
 microservice using Helm to upgrade the release.
@@ -664,7 +664,7 @@ helm upgrade ^
 
 ****
 
-Use the following command to find the name of the pod running the `name` microservice.
+Use the following command to find the name of the pod running the `system` microservice.
 
 [role=command]
 ```
@@ -750,7 +750,7 @@ https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform
 
 Deploying microservices to ICP is a similar process as deploying to IKS. The main differences that you will notice are in the setup process and how you tag your Docker images.
 
-To obtain an ICP instance, see the https://www.ibm.com/cloud/private[IBM Cloud Private^] website. To set up your local environment, from the ICP Dashboard navigate to the `Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions to set up each CLI tool. Unlike IKS, you will not need to run `helm init` or deploy the cluster role binding and service account to your cluster because ICP has Helm's Tiller setup for you out of the box. To connect your local command line tools to the ICP instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
+To obtain an ICP instance, see the https://www.ibm.com/cloud/private[IBM Cloud Private^] website. To set up your local environment, from the ICP Dashboard navigate to the `Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions to set up each CLI tool. Unlike IKS, you will not need to run `helm init` or deploy the cluster role binding and service account to your cluster. This is because ICP has Helm's Tiller setup for you out of the box. To connect your local command line tools to the ICP instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
 
 When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. For example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your image, you must prefix the image name with the registry and namespace. Let's say you want to push your image to a repository in the default namespace, then you would tag your `system` microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` as the Docker registry to push to and it specifies `default` as the namespace your image's repository will reside in.
 
