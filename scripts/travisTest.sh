@@ -30,6 +30,9 @@ helm install --name system-app \
     --set ssl.enabled=false \
     ibm-charts/ibm-open-liberty 
 
+printf "\n sleep 60\n"
+sleep 60
+
 printf "\nhelm install ... inventory-app\n"
 helm install --name inventory-app \
     --set image.repository=inventory \
@@ -40,8 +43,8 @@ helm install --name inventory-app \
     --set ssl.enabled=false \
     ibm-charts/ibm-open-liberty
 
-printf "\n sleep 120\n"
-sleep 120
+printf "\n sleep 60\n"
+sleep 60
 
 printf "\nkubectl get pods\n"
 kubectl get pods
