@@ -328,7 +328,7 @@ called a chart. You can install a chart on your cluster as a release and then ma
 release using Helm.
 
 // Setup Tiller for IKS
-Set up Role Based Access Control (RBAC) to give Helm's Tiller server admin access to your 
+Set up role-based access control (RBAC) to give Helm's Tiller server admin access to your 
 cluster. Deploy the service account and cluster role binding that is required for the Tiller.
 
 [role=command]
@@ -363,7 +363,7 @@ For more information on securing your installation see: https://docs.helm.sh/usi
 Happy Helming!
 ----
 
-All pods run under a service account. By default, your pod run under the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
+All pods run under a service account. By default, your pod runs under the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
 
 // Add repo
 Add the `ibm-charts` repository to your local list of Helm repositories. Adding the repository allows you to use the `ibm-open-liberty` chart.
