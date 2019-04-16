@@ -328,7 +328,7 @@ called a chart. You can install a chart on your cluster as a release and then ma
 release using Helm.
 
 // Setup Tiller for IKS
-Set up Role Based Access Control (RBAC) to give Helm's Tiller server admin access to your 
+Set up role-based access control (RBAC) to give Helm's Tiller server admin access to your 
 cluster. Deploy the service account and cluster role binding that is required for the Tiller.
 
 [role=command]
