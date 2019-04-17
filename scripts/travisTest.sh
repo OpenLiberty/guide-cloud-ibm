@@ -64,7 +64,7 @@ printf "\ncurl http://$GUIDE_IP:$GUIDE_INVENTORY_PORT/inventory/systems/system-s
 curl http://$GUIDE_IP:$GUIDE_INVENTORY_PORT/inventory/systems/system-service
 
 printf "\nmvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]\n"
-mvn verify -Ddockerfile.skip=true -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dping.inventory.port=$GUIDE_INVENTORY_PORT 
+mvn verify -Ddockerfile.skip=true -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dinventory.node.port=$GUIDE_INVENTORY_PORT 
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)\n"
 kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)
