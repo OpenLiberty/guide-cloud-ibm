@@ -35,8 +35,8 @@ Explore how to push Docker images to a custom registry and run them inside of co
 :win: WINDOWS
 :mac: MAC
 :linux: LINUX
-:name-api: http://[hostname]:31000/api/name
-:ping-api: http://[hostname]:32000/api/ping
+:system-api: http://[hostname]:[system-node-port]/system/properties
+:inventory-api: http://[hostname]:[inventory-node-port]/inventory/systems
 
 
 // =================================================================================================
@@ -45,7 +45,12 @@ Explore how to push Docker images to a custom registry and run them inside of co
 
 == Why use Kubernetes services in the cloud?
 
-Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your microservices locally, but ultimately you will want a system that can handle production workloads. Various clouds offer solutions for running your workloads in a {kube} cluster. Using a cloud-based infrastructure allows you to focus on developing your microservices rather than worrying about details related to the servers you'll deploy them to. Using cloud will allow you to more easily scale your microservices and serve them in a high-availability set up.
+Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your 
+microservices locally, but ultimately you will want a system that can handle production workloads. 
+Various clouds offer solutions for running your workloads in a {kube} cluster. Using a 
+cloud-based infrastructure allows you to focus on developing your microservices rather than 
+worrying about details that are related to the servers you deploy them to. Using cloud allows
+you to more easily scale your microservices and serve them in a high-availability setup.
 
 // =================================================================================================
 // Introduction
@@ -58,12 +63,15 @@ cluster on IBM Cloud. You will use `helm` to deploy these microservices using
 Open Liberty Helm charts. Helm is a package manager for {kube}. It uses templates to
 generate {kube} yaml files and then deploys and manages them as releases to your cluster.
 
-IBM Cloud offers a hosted Kubernetes service called IBM Cloud Kubernetes Service (IKS). IKS is a service offered as part of IBM's public cloud offerings. It provides a hosted {kube} cluster that you may deploy your microservices to. You will use it in conjunction with IBM Cloud Container Registry.
+IBM Cloud offers a hosted Kubernetes service that is called IBM Cloud Kubernetes Service (IKS). 
+IKS is a service that is offered as part of IBM's public cloud offerings. It provides a 
+hosted {kube} cluster that you can deploy your microservices to. You will use it 
+with IBM Cloud Container Registry.
 
-The two microservices you'll deploy are called `name` and `ping`. The `name` microservice
-displays a brief greeting and the name of the
-container it's running in. This message makes it easy to differentiate it from its other replicas. The `ping` microservice
-pings the {kube} Service that encapsulates the `name` pods. This communication demonstrates
+The two microservices you will deploy are called `system` and `inventory`. The `system` microservice
+returns the JVM systems properties of the running container and it returns the pod's name in the HTTP header
+making replicas easy to distinguish from each other. The `inventory` microservice
+adds the properties from the `system` microservice to the inventory. This demonstrates
 how communication can be established between pods inside a cluster.
 
 // =================================================================================================
@@ -87,10 +95,10 @@ include::{common-includes}/gitclone.adoc[]
 
 === Installing command line tools for IBM Cloud
 
-Use the following command to download and install everything you will need to interact with IBM Cloud.
-Running this script will install https://console.bluemix.net/docs/cli/index.html#overview[several tools^]
-that will be useful for interacting with IBM Cloud. It will install the `ibmcloud`, `kubectl`, `helm`,
-and `curl` tools which are needed to complete this guide.
+Use the following command to download and install everything that you need to interact with IBM Cloud.
+Running this script installs https://console.bluemix.net/docs/cli/index.html#overview[several tools^]
+that are useful for interacting with IBM Cloud. It installs the `ibmcloud`, `kubectl`, `helm`,
+and `curl` tools, which are needed to complete this guide.
 
 ****
 [system]#*{linux} | {mac}*#
@@ -110,15 +118,15 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 ```
 ****
 
-After the script has finished running, login to IBM Cloud by using the `ibmcloud` command line. When you are prompted to select a region, choose `us-south`. Creating a free cluster is limited to specific regions, choosing `us-south` will allow you to create a free cluster.
+After the script is finished running, login to IBM Cloud by using the `ibmcloud` command line. When you are prompted to select a region, choose `us-south`. Creating a free cluster is limited to specific regions, choosing `us-south` allows you to create a free cluster.
 
 [role=command]
 ```
 ibmcloud login
 ```
 
-If you're logging in with organization credentials, you may need to pass in the `--sso` flag
-to get a one time code for single sign-on. Follow the instructions given on the prompt and in
+If you're logging in with organization credentials, you will need to pass in the `--sso` flag
+to get a one time code for single sign-on. Follow the instructions that are given on the prompt and in
 your web browser to complete the login process.
 
 [role=command]
@@ -130,24 +138,12 @@ ibmcloud login --sso
 
 Use the following command to provision a cluster.
 
-// ```
-// ibmcloud ks cluster-create \
-//     --zone dal10 \
-//     --machine-type b2c.4x16 \
-//     --hardware <shared_or_dedicated> \
-//     --public-vlan <public_VLAN_ID> \
-//     --private-vlan <private_VLAN_ID> \
-//     --workers 3 \
-//     --name <cluster_name> \
-//     --kube-version <major.minor.patch>
-// ```
-
 [role=command]
 ```
 ibmcloud ks cluster-create --name guide-cluster
 ```
 
-This command provisions a free cluster that will expire in a month if you do not delete it.
+This command provisions a free cluster that expires in a month if you do not delete it.
 
 [source, role="no_copy"]
 ----
@@ -228,8 +224,8 @@ NAME           STATUS    ROLES     AGE       VERSION
 The first step of deploying to {kube} is to build your microservices and containerize them with Docker.
 
 The starting Java project, which you can find in the `start` directory, is a multi-module Maven
-project. It's made up of the `name` and `ping` microservices. Each microservice resides in its own directory,
-`start/name` and `start/ping`. Each of these directories also contains a Dockerfile, which is necessary
+project. It's made up of the `system` and `inventory` microservices. Each microservice resides in its own directory,
+`start/system` and `start/inventory`. Each of these directories also contains a Dockerfile, which is necessary
 for building Docker images. If you're unfamiliar with Dockerfiles, check out the
 https://openliberty.io/guides/docker.html[Using Docker containers to develop microservices^] guide.
 It covers Dockerfiles in depth.
@@ -259,17 +255,17 @@ built. When the build finishes, run the following command to list all local Dock
 docker images
 ```
 
-Verify that the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images are listed among them, for example:
+Verify that the `system:1.0-SNAPSHOT` and `inventory:1.0-SNAPSHOT` images are listed among them, for example:
 
 [source, role="no_copy"]
 ----
-REPOSITORY               TAG
-ping                     1.0-SNAPSHOT
-name                     1.0-SNAPSHOT
-open-liberty             latest
+REPOSITORY                 TAG
+system                     1.0-SNAPSHOT
+inventory                  1.0-SNAPSHOT
+open-liberty               latest
 ----
 
-If you don't see the `name:1.0-SNAPSHOT` and `ping:1.0-SNAPSHOT` images, then check the Maven
+If you don't see the `system:1.0-SNAPSHOT` and `inventory:1.0-SNAPSHOT` images, then check the Maven
 build log for any potential errors.
 
 // =================================================================================================
@@ -278,7 +274,9 @@ build log for any potential errors.
 
 === Pushing the images to a Docker registry
 
-Pushing the images to a registry will allow the cluster to create pods using your Docker images. Since it's a private repository, only users with access to your IBM Cloud account will have access to these images.
+Pushing the images to a registry allow the cluster to create pods using your Docker images. 
+Since it's a private repository, only users with access to your IBM Cloud account will have 
+access to these images.
 
 The registry you will use is called IBM Cloud Container Registry. The container registry
 plugin was installed automatically while running the `idt-installer` earlier in this guide.
@@ -300,22 +298,22 @@ ibmcloud cr login
 
 // Tagging images
 Next, you need to tag your Docker images with the relevant data about your registry. 
-Remeber to subtitute `[your-namespace]` for the namespace you previously created.
+Remember to substitute `[your-namespace]` for the namespace you previously created.
 
 [role=command]
 ```
-docker tag name:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/name:1.0-SNAPSHOT
-docker tag ping:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/ping:1.0-SNAPSHOT
+docker tag system:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/system:1.0-SNAPSHOT
+docker tag inventory:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
 ```
 
 // Pushing images
-Finally, push your images to the registry. Remeber to subtitute `[your-namespace]` for the 
+Finally, push your images to the registry. Remember to substitute `[your-namespace]` for the 
 namespace you previously created.
 
 [role=command]
 ```
-docker push us-south.icr.io/[your-namespace]/name:1.0-SNAPSHOT
-docker push us-south.icr.io/[your-namespace]/ping:1.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/system:1.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
 ```
 
 
@@ -325,10 +323,13 @@ docker push us-south.icr.io/[your-namespace]/ping:1.0-SNAPSHOT
 
 === Deploying the microservices
 
-https://helm.sh/[Helm^] is a package manager for {kube}. It allows you to create a package called a chart. You can install a chart on your cluster as a release and then manage the release using Helm.
+https://helm.sh/[Helm^] is a package manager for {kube}. It allows you to create a package 
+called a chart. You can install a chart on your cluster as a release and then manage the 
+release using Helm.
 
 // Setup Tiller for IKS
-Set up Role Based Access Control (RBAC) to give Helm's Tiller server admin access to your cluster. Deploy the service account and cluster role binding required for the Tiller.
+Set up role-based access control (RBAC) to give Helm's Tiller server admin access to your 
+cluster. Deploy the service account and cluster role binding that is required for the Tiller.
 
 [role=command]
 ```
@@ -362,7 +363,7 @@ For more information on securing your installation see: https://docs.helm.sh/usi
 Happy Helming!
 ----
 
-All pods run under a service account. By default, your pod will run under the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
+All pods run under a service account. By default, your pod runs under the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
 
 // Add repo
 Add the `ibm-charts` repository to your local list of Helm repositories. Adding the repository allows you to use the `ibm-open-liberty` chart.
@@ -373,17 +374,17 @@ helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/rep
 ```
 
 // Deploy to IKS
-Use Helm to deploy the `name` microservice. Remeber to substitute `[your-namespace]` for the namespace you created earlier in the guide.
+Use Helm to deploy the `system` microservice. Remember to substitute `[your-namespace]` for the namespace you created earlier in the guide.
 
 ****
 [system]#*{linux} | {mac}*#
 
 [role=command]
 ```
-helm install --name name-app \
-    --set image.repository=us-south.icr.io/[your-namespace]/name \
+helm install --name system-app \
+    --set image.repository=us-south.icr.io/[your-namespace]/system \
     --set image.tag=1.0-SNAPSHOT \
-    --set service.name=name-service \
+    --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
@@ -394,10 +395,10 @@ helm install --name name-app \
 
 [role=command]
 ```
-helm install --name name-app ^
-    --set image.repository=us-south.icr.io/[your-namespace]/name ^
+helm install --name system-app ^
+    --set image.repository=us-south.icr.io/[your-namespace]/system ^
     --set image.tag=1.0-SNAPSHOT ^
-    --set service.name=name-service ^
+    --set service.name=system-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
     --set ssl.enabled=false ^
@@ -406,17 +407,17 @@ helm install --name name-app ^
 
 ****
 
-Use Helm to deploy the `ping` microservice. Remeber to substitute `[your-namespace]` for the namespace you created earlier in the guide.
+Use Helm to deploy the `inventory` microservice. Remember to substitute `[your-namespace]` for the namespace you created earlier in the guide.
 
 ****
 [system]#*{linux} | {mac}*#
 
 [role=command]
 ```
-helm install --name ping-app \
-    --set image.repository=us-south.icr.io/[your-namespace]/ping \
+helm install --name inventory-app \
+    --set image.repository=us-south.icr.io/[your-namespace]/inventory \
     --set image.tag=1.0-SNAPSHOT \
-    --set service.name=ping-service \
+    --set service.name=inventory-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
@@ -427,10 +428,10 @@ helm install --name ping-app \
 
 [role=command]
 ```
-helm install --name ping-app ^
-    --set image.repository=us-south.icr.io/[your-namespace]/ping ^
+helm install --name inventory-app ^
+    --set image.repository=us-south.icr.io/[your-namespace]/inventory ^
     --set image.tag=1.0-SNAPSHOT ^
-    --set service.name=ping-service ^
+    --set service.name=inventory-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
     --set ssl.enabled=false ^
@@ -462,7 +463,7 @@ an overview for each of the parameters specified using `--set`.
 
 The service used to expose our deployments has a type of `NodePort`. This means you can 
 access these services from outside of your cluster via a specific port. In this case,
-since we do not specify the `nodePort`, the ports will be randomized so we must obtain 
+since we do not specify the `nodePort`, the ports are randomized so we must obtain 
 the ports before making requests to our services. We must also obtain the public IP address 
 of our cluster. Note that there are other ways to expose your services such as using a 
 `LoadBalancer` service type or using an `Ingress`. In production, you would most likely 
@@ -498,37 +499,43 @@ ID                                                 Public IP       Private IP   
 kube-hou02-pad1539f4f9ee912ca08c6b187c2daa5f9-w1   172.173.65.24   10.77.198.71   free           normal   Ready    hou02   1.10.11_1538*
 ----
 
-Get the node port of the `name` microservice.
+Get the node port of the `system` microservice.
 
 [role=command]
 ```
-kubectl get service name-service -o jsonpath="{.spec.ports[0].nodePort}{'\n'}"
+kubectl get service system-service -o jsonpath="{.spec.ports[0].nodePort}{'\n'}"
 ```
 
-Get the node port of the `ping` microservice.
+Get the node port of the `inventory` microservice.
 
 [role=command]
 ```
-kubectl get service ping-service -o jsonpath="{.spec.ports[0].nodePort}{'\n'}"
+kubectl get service inventory-service -o jsonpath="{.spec.ports[0].nodePort}{'\n'}"
 ```
 
 Take note of the IP address and ports. They are required to make the HTTP requests.
 
 === Making requests to the microservices
 
-Make a request to the `name` microservice substituting in `ip-address` and `name-node-port` where appropriate.
+Make a request to the `system` microservice substituting in `ip-address` and `system-node-port` where appropriate.
 
 [role=command]
 ```
-curl http://[ip-address]:[name-node-port]/api/name
+curl http://[ip-address]:[system-node-port]/system/properties 
 ```
 
-Make a request to the `ping` microservice substituting in `ip-address` and `ping-node-port` where appropriate.
+Make a request to the `inventory` microservice substituting in `ip-address` and `inventory-node-port` where appropriate.
 
 [role=command]
 ```
-curl http://[ip-address]:[ping-node-port]/api/ping/name-service
+curl http://[ip-address]:[inventory-node-port]/inventory/systems/system-service
 ```
+
+The first URL returns system properties and the name of the pod in an HTTP header called `X-Pod-Name`.
+To view the header, you can use the `-I` option in the `curl` when making a request to `{system-api}`.
+The second URL adds properties from `system-service` to the inventory.
+{kube} Service. Visiting `{inventory-api}/[kube-service]` in general adds to the inventory
+depending on whether `kube-service` is a valid {kube} Service that can be accessed.
 
 // =================================================================================================
 // Testing microservices that are running on IBM Cloud
@@ -538,23 +545,23 @@ curl http://[ip-address]:[ping-node-port]/api/ping/name-service
 
 A few tests are included for you to test the basic functionality of the microservices. If a test failure
 occurs, then you might have introduced a bug into the code. To run the tests, wait for all pods to be
-in the ready state before proceeding further. The default properties defined in the `pom.xml` are:
+in the ready state before proceeding further. The default properties that are defined in the `pom.xml` are:
 
 [cols="15, 100", options="header"]
 |===
 | *Property*        | *Description*
 | cluster.ip        | IP or hostname for your cluster
-| name.kube.service | Name of the {kube} Service wrapping the `name` pods, `name-service` by default.
-| name.node.port    | The NodePort of the {kube} Service `name-service`, 31000 by default.
-| ping.node.port    | The NodePort of the {kube} Service `ping-service`, 32000 by default.
+| system.kube.service | Name of the {kube} Service wrapping the `system` pods, `system-service` by default.
+| system.node.port    | The NodePort of the {kube} Service `system-service`, 31000 by default.
+| inventory.node.port    | The NodePort of the {kube} Service `inventory-service`, 32000 by default.
 |===
 
-Use the following command to run the integration tests against your cluster. Subtitute 
-`[ip-address]`, `[name-node-port]` and `[ping-node-port]` with the appropriate values.
+Use the following command to run the integration tests against your cluster. Substitute 
+`[ip-address]`, `[system-node-port]` and `[inventory-node-port]` with the appropriate values.
 
 [role=command]
 ```
-mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dname.node.port=[name-node-port] -Dping.node.port=[ping-node-port]
+mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
 
 The `dockerfile.skip` parameter is set to `true` in order to skip building a new Docker image.
@@ -566,12 +573,12 @@ If the tests pass, you'll see an output similar to the following for each servic
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
-Running it.io.openliberty.guides.name.NameEndpointTest
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.673 sec - in it.io.openliberty.guides.name.NameEndpointTest
+Running it.io.openliberty.guides.system.SystemEndpointTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.673 sec - in it.io.openliberty.guides.system.SystemEndpointTest
 
-Results :
+Results:
 
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 ----
 
 [source, role="no_copy"]
@@ -579,15 +586,15 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
-Running it.io.openliberty.guides.ping.PingEndpointTest
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.222 sec - in it.io.openliberty.guides.ping.PingEndpointTest
+Running it.io.openliberty.guides.inventory.InventoryEndpointTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.222 sec - in it.io.openliberty.guides.inventory.InventoryEndpointTest
 
-Results :
+Results:
 
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 ----
 
-=== Deploying new version of name microservice
+=== Deploying new version of system microservice
 
 Optionally, you may want to learn how to re-deploy a microservice. You can re-deploy a 
 microservice using Helm to upgrade the release.
@@ -613,7 +620,7 @@ Tag your Docker image with the relevant data about your registry.
 
 [role=command]
 ```
-docker tag name:2.0-SNAPSHOT us-south.icr.io/[your-namespace]/name:2.0-SNAPSHOT
+docker tag system:2.0-SNAPSHOT us-south.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ```
 
 // Pushing images
@@ -621,10 +628,10 @@ Push your image to the registry.
 
 [role=command]
 ```
-docker push us-south.icr.io/[your-namespace]/name:2.0-SNAPSHOT
+docker push us-south.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ```
 
-Use Helm to re-deploy the `name` microservice.
+Use Helm to re-deploy the `system` microservice.
 
 ****
 [system]#*{linux} | {mac}*#
@@ -632,13 +639,13 @@ Use Helm to re-deploy the `name` microservice.
 [role=command]
 ```
 helm upgrade \
-    --set image.repository=us-south.icr.io/[your-namespace]/name \
+    --set image.repository=us-south.icr.io/[your-namespace]/system \
     --set image.tag=2.0-SNAPSHOT \
-    --set service.name=name-service \
+    --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
-    name-app ibm-charts/ibm-open-liberty
+    system-app ibm-charts/ibm-open-liberty
 ```
 
 [system]#*{win}*#
@@ -646,18 +653,18 @@ helm upgrade \
 [role=command]
 ```
 helm upgrade ^
-    --set image.repository=us-south.icr.io/[your-namespace]/name ^
+    --set image.repository=us-south.icr.io/[your-namespace]/system ^
     --set image.tag=2.0-SNAPSHOT ^
-    --set service.name=name-service ^
+    --set service.name=system-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
     --set ssl.enabled=false ^
-    name-app ibm-charts/ibm-open-liberty
+    system-app ibm-charts/ibm-open-liberty
 ```
 
 ****
 
-Use the following command to find the name of the pod running the `name` microservice.
+Use the following command to find the name of the pod running the `system` microservice.
 
 [role=command]
 ```
@@ -667,31 +674,29 @@ kubectl get pods
 [source, role="no_copy"]
 ----
 NAME                                        READY     STATUS    RESTARTS   AGE
-name-app-ibm-open-libert-7f78456848-pp46r   1/1       Running   0          6m
-ping-app-ibm-open-libert-6fd6b9dc4-942s2    1/1       Running   0          20m
+inventory-app-ibm-open-l-5c586b9cfc-h5zmg   1/1       Running   0          23s
+system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          2m15sm
 ----
 
-Observe that in this case the `name` microservice is running in the pod called `name-app-ibm-open-libert-7f78456848-pp46r`. Substitute the name of your pod into the following command to see more details about the pod.
+Observe that in this case the `system` microservice is running in the pod called `system-app-ibm-open-libe-84976bccfb-r22lj`. Substitute the name of your pod into the following command to see more details about the pod.
 
 [role=command]
 ```
 kubectl describe pod [pod-name]
 ```
 
-View the events at the bottom of the command's output. Observe that the pod is using the new Docker image `name:2.0-SNAPSHOT`.
+View the events at the bottom of the command's output. Observe that the pod is using the new Docker image `system:2.0-SNAPSHOT`.
 
 [source, role="no_copy"]
 ----
 Events:
-  Type     Reason                 Age   From                         Message
-  ----     ------                 ----  ----                         -------
-  Normal   Scheduled              10m   default-scheduler            Successfully assigned name-app-ibm-open-libert-7f78456848-pp46r to docker-for-desktop
-  Normal   SuccessfulMountVolume  10m   kubelet, docker-for-desktop  MountVolume.SetUp succeeded for volume "default-token-d89tg"
-  Normal   SuccessfulMountVolume  10m   kubelet, docker-for-desktop  MountVolume.SetUp succeeded for volume "liberty-overrides"
-  Normal   SuccessfulMountVolume  10m   kubelet, docker-for-desktop  MountVolume.SetUp succeeded for volume "liberty-config"
-  Normal   Pulled                 10m   kubelet, docker-for-desktop  Container image "name:2.0-SNAPSHOT" already present on machine
-  Normal   Created                10m   kubelet, docker-for-desktop  Created container
-  Normal   Started                10m   kubelet, docker-for-desktop  Started container
+  Type     Reason     Age                From                   Message
+  ----     ------     ----               ----                   -------
+  Normal   Scheduled  47s                default-scheduler      Successfully assigned default/system-app-ibm-open-libe-84976bccfb-r22lj 172.173.65.24
+  Normal   Pulling    47s                kubelet, 172.173.65.24  pulling image "registry.ng.bluemix.net/[your-namespace/system:2.0-SNAPSHOT"
+  Normal   Pulled     40s                kubelet, 172.173.65.24  Successfully pulled image "registry.ng.bluemix.net/[your-namespace]/system:2.0-SNAPSHOT"
+  Normal   Created    40s                kubelet, 172.173.65.24  Created container
+  Normal   Started    39s                kubelet, 172.173.65.24  Started containerr
 ----
 
 // =================================================================================================
@@ -704,8 +709,8 @@ When you no longer need your deployed microservices, you can delete them with th
 
 [role=command]
 ```
-helm delete --purge name-app
-helm delete --purge ping-app
+helm delete --purge system-app
+helm delete --purge inventory-app
 ```
 
 Uninstall Tiller from your cluster by running the following Helm command.
@@ -741,13 +746,13 @@ ibmcloud logout
 
 Some situations may require you to manage your own infrastructure, such as if you want to deploy on-premises. If this describes your needs, then private clouds may be a more suitable solution for you.
 
-https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform. A private cloud may be a more attractive option to those who must run their services running on infrastructure controlled by them. While the operations team will still need to maintain this infrastructure, a private cloud still provides benefit to developers so they don't need to think about infrastructure. {kube} acts as an abstraction of the infrastructure so the developers can request what they need and it is the responsibility of the infrastructure's maintainers to provide the necessary resources.
+https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform. A private cloud may be a more attractive option to those who must run their services running on infrastructure that is controlled by them. While the operations team will still need to maintain this infrastructure, a private cloud still provides benefit to developers so they don't need to think about infrastructure. {kube} acts as an abstraction of the infrastructure so the developers can request what they need and it is the responsibility of the infrastructure's maintainers to provide the necessary resources.
 
-Deploying microservices to ICP is a similar process as deploying to IKS. The main differences you will notice are in the setup process and how you tag your Docker images.
+Deploying microservices to ICP is a similar process as deploying to IKS. The main differences that you will notice are in the setup process and how you tag your Docker images.
 
-To obtain an ICP instance see the https://www.ibm.com/cloud/private[IBM Cloud Private^] website. To set up your local environment, from the ICP Dashboard navigate to the `Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions to set up each CLI tool. Unlike IKS, you will not need to run `helm init` or deploy the cluster role binding and service account to your cluster because ICP has Helm's Tiller setup for you out of the box. To connect your local command line tools to the ICP instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
+To obtain an ICP instance, see the https://www.ibm.com/cloud/private[IBM Cloud Private^] website. To set up your local environment, from the ICP Dashboard navigate to the `Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions to set up each CLI tool. Unlike IKS, you do not need to run `helm init` or deploy the cluster role binding and service account to your cluster. This is because ICP has Helm's Tiller setup for you out of the box. To connect your local command line tools to the ICP instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
 
-When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. For example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your image appropriately, you must prefix the image name with the registry and namespace. Let's say you want to push your image to a repository in the default namespace, then you would tag your `name` microservice's image `mycluster.icp:8500/default/name`. This tag specifies `mycluster.icp:8500` as the Docker registry to push to and it specifies `default` as the namespace your image's repository will reside in.
+When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. For example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your image, you must prefix the image name with the registry and namespace. Let's say you want to push your image to a repository in the default namespace, then you would tag your `system` microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` as the Docker registry to push to and it specifies `default` as the namespace your image's repository will reside in.
 
 You can learn more about deploying microservices to ICP by following an https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
 
