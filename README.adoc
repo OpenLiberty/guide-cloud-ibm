@@ -89,6 +89,7 @@ include::{common-includes}/gitclone.adoc[]
 
 == Creating a Kubernetes cluster on IBM Cloud
 
+Before you can deploy your microservices, you must create a {kube} cluster.
 To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` 
 access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. 
 Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and 
