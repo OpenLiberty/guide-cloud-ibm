@@ -83,13 +83,21 @@ include::{common-includes}/gitclone.adoc[]
 
 // no "try what you'll build" section in this guide since it would be too long due to all setup the user will have to do.
 
-== Provisioning a Kubernetes Cluster in IBM Cloud
+// =================================================================================================
+// Creating a Kubernetes cluster on IBM Cloud
+// =================================================================================================
+
+== Creating a Kubernetes cluster on IBM Cloud
 
 To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` 
 access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. 
 Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and 
 ensure that `Administrator` is listed as a policy for all resources in the account or for 
 the Kubernetes service.
+
+// =================================================================================================
+// Installing command line tools for IBM Cloud
+// =================================================================================================
 
 === Installing command line tools for IBM Cloud
 
@@ -131,6 +139,10 @@ your web browser to complete the login process.
 ```
 ibmcloud login --sso
 ```
+
+// =================================================================================================
+// Provisioning a cluster
+// =================================================================================================
 
 === Provisioning a cluster
 
@@ -212,6 +224,10 @@ kubectl get nodes
 NAME           STATUS    ROLES     AGE       VERSION
 10.70.200.73   Ready     <none>    1h        v1.10.11+IKS
 ----
+
+// =================================================================================================
+// Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+// =================================================================================================
 
 == Deploying microservices to IBM Cloud Kubernetes Service (IKS)
 
