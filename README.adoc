@@ -75,14 +75,6 @@ adds the properties from the `system` microservice to the inventory. This demons
 how communication can be established between pods inside a cluster.
 
 // =================================================================================================
-// Prerequisites
-// =================================================================================================
-
-== Prerequisites
-
-To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and ensure that `Administrator` is listed as a policy for all resources in the account or for the Kubernetes service.
-
-// =================================================================================================
 // Getting Started
 // =================================================================================================
 
@@ -91,12 +83,13 @@ include::{common-includes}/gitclone.adoc[]
 
 // no "try what you'll build" section in this guide since it would be too long due to all setup the user will have to do.
 
-== Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+== Provisioning a Kubernetes Cluster in IBM Cloud
 
-In this section, you will learn how to deploy two microservices in Open Liberty containers to a {kube}
-cluster on IBM Cloud. After provisioning a {kube} cluster, you will build and containerize 
-the `system` and `inventory` microservices, push them to a Docker registry and then deploy
-them to your {kube} cluster. 
+To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` 
+access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. 
+Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and 
+ensure that `Administrator` is listed as a policy for all resources in the account or for 
+the Kubernetes service.
 
 === Installing command line tools for IBM Cloud
 
@@ -219,6 +212,12 @@ kubectl get nodes
 NAME           STATUS    ROLES     AGE       VERSION
 10.70.200.73   Ready     <none>    1h        v1.10.11+IKS
 ----
+
+== Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+
+In this section, you will learn how to deploy two microservices in Open Liberty containers to a {kube}
+cluster on IBM Cloud. You will build and containerize the `system` and `inventory` microservices,
+push them to a Docker registry and then deploy them to your {kube} cluster. 
 
 // =================================================================================================
 // Building and containerizing the microservices
