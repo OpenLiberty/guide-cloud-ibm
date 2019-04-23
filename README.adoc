@@ -93,6 +93,11 @@ include::{common-includes}/gitclone.adoc[]
 
 == Deploying microservices to IBM Cloud Kubernetes Service (IKS)
 
+In this section you will learn how to deploy two microservices in Open Liberty containers to a {kube}
+cluster on IBM Cloud. After provisioning a {kube} cluster, you will build and containerize 
+the `system` and `inventory` microservices, push them to a Docker registry and then deploy
+them to your {kube} cluster. 
+
 === Installing command line tools for IBM Cloud
 
 Use the following command to download and install everything that you need to interact with IBM Cloud.
@@ -490,7 +495,8 @@ Then, substitute the context into the following command to get the public IP add
 ibmcloud ks workers [current-context]
 ```
 
-Take note of the `Public IP` in the command's output.
+Take note of the `Public IP` in the command's output. This will be the hostname you 
+substitue into commands later in this guide.
 
 [source, role="no_copy"]
 ----
@@ -517,19 +523,11 @@ Take note of the IP address and ports. They are required to make the HTTP reques
 
 === Making requests to the microservices
 
-Make a request to the `system` microservice substituting in `ip-address` and `system-node-port` where appropriate.
+To make a request to the `system` and `inventory` microservices,  `curl` or visit the 
+following URLs to access your microservices, substituting the appropriate hostname and node ports:
 
-[role=command]
-```
-curl http://[ip-address]:[system-node-port]/system/properties 
-```
-
-Make a request to the `inventory` microservice substituting in `ip-address` and `inventory-node-port` where appropriate.
-
-[role=command]
-```
-curl http://[ip-address]:[inventory-node-port]/inventory/systems/system-service
-```
+- `{system-api}`
+- `{inventory-api}/system-service`
 
 The first URL returns system properties and the name of the pod in an HTTP header called `X-Pod-Name`.
 To view the header, you can use the `-I` option in the `curl` when making a request to `{system-api}`.
@@ -596,18 +594,20 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 === Deploying new version of system microservice
 
-Optionally, you may want to learn how to re-deploy a microservice. You can re-deploy a 
-microservice using Helm to upgrade the release.
+Optionally, you may want to learn how to re-deploy a microservice. In this section we 
+will bump the version of the `system` microservice to `2.0-SNAPSHOT` and re-deploy
+the new version of the microservice. You can re-deploy a microservice using Helm to upgrade 
+the release.
 
-Use the following Maven command to bump the version of the microservice to 2.0-SNAPSHOT.
+The tag for the Docker image is dependent on the version specified in the pom.xml file. 
+Use the following Maven command to bump the version of the microservice to `2.0-SNAPSHOT`.
 
 [role=command]
 ```
 mvn versions:set -DnewVersion=2.0-SNAPSHOT
 ```
 
-Use Maven to package your microservice.
-
+Use Maven to repackage your microservice and build the new version of the Docker container.
 [role=command]
 ```
 mvn package
