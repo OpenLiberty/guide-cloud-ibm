@@ -69,18 +69,10 @@ hosted {kube} cluster that you can deploy your microservices to. You will use it
 with IBM Cloud Container Registry.
 
 The two microservices you will deploy are called `system` and `inventory`. The `system` microservice
-returns the JVM systems properties of the running container and it returns the pod's name in the HTTP header
+returns the JVM system properties of the running container and it returns the pod's name in the HTTP header
 making replicas easy to distinguish from each other. The `inventory` microservice
 adds the properties from the `system` microservice to the inventory. This demonstrates
 how communication can be established between pods inside a cluster.
-
-// =================================================================================================
-// Prerequisites
-// =================================================================================================
-
-== Prerequisites
-
-To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and ensure that `Administrator` is listed as a policy for all resources in the account or for the Kubernetes service.
 
 // =================================================================================================
 // Getting Started
@@ -91,7 +83,22 @@ include::{common-includes}/gitclone.adoc[]
 
 // no "try what you'll build" section in this guide since it would be too long due to all setup the user will have to do.
 
-== Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+// =================================================================================================
+// Creating a Kubernetes cluster on IBM Cloud
+// =================================================================================================
+
+== Creating a Kubernetes cluster on IBM Cloud
+
+Before you can deploy your microservices, you must create a {kube} cluster.
+To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` 
+access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. 
+Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and 
+ensure that `Administrator` is listed as a policy for all resources in the account or for 
+the Kubernetes service.
+
+// =================================================================================================
+// Installing command line tools for IBM Cloud
+// =================================================================================================
 
 === Installing command line tools for IBM Cloud
 
@@ -133,6 +140,10 @@ your web browser to complete the login process.
 ```
 ibmcloud login --sso
 ```
+
+// =================================================================================================
+// Provisioning a cluster
+// =================================================================================================
 
 === Provisioning a cluster
 
@@ -216,6 +227,16 @@ NAME           STATUS    ROLES     AGE       VERSION
 ----
 
 // =================================================================================================
+// Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+// =================================================================================================
+
+== Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+
+In this section, you will learn how to deploy two microservices in Open Liberty containers to a {kube}
+cluster on IBM Cloud. You will build and containerize the `system` and `inventory` microservices,
+push them to a Docker registry and then deploy them to your {kube} cluster. 
+
+// =================================================================================================
 // Building and containerizing the microservices
 // =================================================================================================
 
@@ -234,7 +255,15 @@ If you're familiar with Maven and Docker, you might be tempted to run a Maven bu
 use the `.war` file to build a Docker image. We've setup the projects such that this process is automated
 as a part of a single Maven build. It's created by using the `dockerfile-maven` plug-in. The plug-in automatically
 picks up the Dockerfile located in the same directory as its POM file and builds a Docker image from it.
-If you're using Docker for Windows ensure that, on the Docker for Windows _General Setting_ page, the option is set to `Expose daemon on tcp://localhost:2375 without TLS`. This configuration is required by the `dockerfile-maven` part of the build.
+
+****
+[system]#*{win}*#
+
+On the Docker Desktop General Setting page, ensure that the option Expose daemon on 
+tcp://localhost:2375 without TLS is enabled. This configuration is required by the `dockerfile-maven` 
+part of the build.
+
+****
 
 Navigate to the `start` directory and run the following command:
 
@@ -284,7 +313,7 @@ Use the container registry plugin to create a namespace for your container image
 The namespace must be unique within IBM Cloud for the region you selected, so choose something 
 relevant that you'll remember for the duration of the guide.
 
-[role=command]
+[source, role="no_copy"]
 ```
 ibmcloud cr namespace-add [your-namespace]
 ```
@@ -300,7 +329,7 @@ ibmcloud cr login
 Next, you need to tag your Docker images with the relevant data about your registry. 
 Remember to substitute `[your-namespace]` for the namespace you previously created.
 
-[role=command]
+[source, role="no_copy"]
 ```
 docker tag system:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/system:1.0-SNAPSHOT
 docker tag inventory:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
@@ -310,7 +339,7 @@ docker tag inventory:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/inventory:1.0
 Finally, push your images to the registry. Remember to substitute `[your-namespace]` for the 
 namespace you previously created.
 
-[role=command]
+[source, role="no_copy"]
 ```
 docker push us-south.icr.io/[your-namespace]/system:1.0-SNAPSHOT
 docker push us-south.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
@@ -379,7 +408,7 @@ Use Helm to deploy the `system` microservice. Remember to substitute `[your-name
 ****
 [system]#*{linux} | {mac}*#
 
-[role=command]
+[source, role="no_copy"]
 ```
 helm install --name system-app \
     --set image.repository=us-south.icr.io/[your-namespace]/system \
@@ -393,7 +422,7 @@ helm install --name system-app \
 
 [system]#*{win}*#
 
-[role=command]
+[source, role="no_copy"]
 ```
 helm install --name system-app ^
     --set image.repository=us-south.icr.io/[your-namespace]/system ^
@@ -412,7 +441,7 @@ Use Helm to deploy the `inventory` microservice. Remember to substitute `[your-n
 ****
 [system]#*{linux} | {mac}*#
 
-[role=command]
+[source, role="no_copy"]
 ```
 helm install --name inventory-app \
     --set image.repository=us-south.icr.io/[your-namespace]/inventory \
@@ -426,7 +455,7 @@ helm install --name inventory-app \
 
 [system]#*{win}*#
 
-[role=command]
+[source, role="no_copy"]
 ```
 helm install --name inventory-app ^
     --set image.repository=us-south.icr.io/[your-namespace]/inventory ^
@@ -490,7 +519,8 @@ Then, substitute the context into the following command to get the public IP add
 ibmcloud ks workers [current-context]
 ```
 
-Take note of the `Public IP` in the command's output.
+Take note of the `Public IP` in the command's output. This will be the hostname you 
+substitue into commands later in this guide.
 
 [source, role="no_copy"]
 ----
@@ -517,24 +547,16 @@ Take note of the IP address and ports. They are required to make the HTTP reques
 
 === Making requests to the microservices
 
-Make a request to the `system` microservice substituting in `ip-address` and `system-node-port` where appropriate.
+To make a request to the `system` and `inventory` microservices,  `curl` or visit the 
+following URLs to access your microservices, substituting the appropriate hostname and node ports:
 
-[role=command]
-```
-curl http://[ip-address]:[system-node-port]/system/properties 
-```
-
-Make a request to the `inventory` microservice substituting in `ip-address` and `inventory-node-port` where appropriate.
-
-[role=command]
-```
-curl http://[ip-address]:[inventory-node-port]/inventory/systems/system-service
-```
+- `{system-api}`
+- `{inventory-api}/system-service`
 
 The first URL returns system properties and the name of the pod in an HTTP header called `X-Pod-Name`.
 To view the header, you can use the `-I` option in the `curl` when making a request to `{system-api}`.
 The second URL adds properties from `system-service` to the inventory.
-{kube} Service. Visiting `{inventory-api}/[kube-service]` in general adds to the inventory
+Visiting `{inventory-api}/[kube-service]` in general adds to the inventory
 depending on whether `kube-service` is a valid {kube} Service that can be accessed.
 
 // =================================================================================================
@@ -559,7 +581,7 @@ in the ready state before proceeding further. The default properties that are de
 Use the following command to run the integration tests against your cluster. Substitute 
 `[ip-address]`, `[system-node-port]` and `[inventory-node-port]` with the appropriate values.
 
-[role=command]
+[source, role="no_copy"]
 ```
 mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
@@ -596,18 +618,20 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 === Deploying new version of system microservice
 
-Optionally, you may want to learn how to re-deploy a microservice. You can re-deploy a 
-microservice using Helm to upgrade the release.
+Optionally, you might want to learn how to redeploy a microservice. In this section, you 
+will bump the version of the `system` microservice to `2.0-SNAPSHOT` and redeploy
+the new version of the microservice. You can re-deploy a microservice using Helm to upgrade 
+the release.
 
-Use the following Maven command to bump the version of the microservice to 2.0-SNAPSHOT.
+The tag for the Docker image is dependent on the version specified in the pom.xml file. 
+Use the following Maven command to bump the version of the microservice to `2.0-SNAPSHOT`.
 
 [role=command]
 ```
 mvn versions:set -DnewVersion=2.0-SNAPSHOT
 ```
 
-Use Maven to package your microservice.
-
+Use Maven to repackage your microservice and build the new version of the Docker container.
 [role=command]
 ```
 mvn package
@@ -618,7 +642,7 @@ Since you built a new image, it will have to be pushed to the repository again.
 // Tagging images
 Tag your Docker image with the relevant data about your registry.
 
-[role=command]
+[source, role="no_copy"]
 ```
 docker tag system:2.0-SNAPSHOT us-south.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ```
@@ -636,7 +660,7 @@ Use Helm to re-deploy the `system` microservice.
 ****
 [system]#*{linux} | {mac}*#
 
-[role=command]
+[source, role="no_copy"]
 ```
 helm upgrade \
     --set image.repository=us-south.icr.io/[your-namespace]/system \
@@ -650,7 +674,7 @@ helm upgrade \
 
 [system]#*{win}*#
 
-[role=command]
+[source, role="no_copy"]
 ```
 helm upgrade ^
     --set image.repository=us-south.icr.io/[your-namespace]/system ^
@@ -680,7 +704,7 @@ system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          2m15s
 
 Observe that in this case the `system` microservice is running in the pod called `system-app-ibm-open-libe-84976bccfb-r22lj`. Substitute the name of your pod into the following command to see more details about the pod.
 
-[role=command]
+[source, role="no_copy"]
 ```
 kubectl describe pod [pod-name]
 ```
