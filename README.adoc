@@ -249,7 +249,6 @@ project. It's made up of the `system` and `inventory` microservices. Each micros
 `start/system` and `start/inventory`. Each of these directories also contains a Dockerfile, which is necessary
 for building Docker images. If you're unfamiliar with Dockerfiles, check out the
 https://openliberty.io/guides/docker.html[Using Docker containers to develop microservices^] guide.
-It covers Dockerfiles in depth.
 
 If you're familiar with Maven and Docker, you might be tempted to run a Maven build first and then
 use the `.war` file to build a Docker image. We've setup the projects such that this process is automated
@@ -259,8 +258,8 @@ picks up the Dockerfile located in the same directory as its POM file and builds
 ****
 [system]#*{win}*#
 
-On the Docker Desktop General Setting page, ensure that the option Expose daemon on 
-tcp://localhost:2375 without TLS is enabled. This configuration is required by the `dockerfile-maven` 
+On the Docker Desktop General Setting page, ensure that the option `Expose daemon on 
+tcp://localhost:2375 without TLS` is enabled. This configuration is required by the `dockerfile-maven` 
 part of the build.
 
 ****
@@ -492,8 +491,8 @@ an overview for each of the parameters specified using `--set`.
 
 The service used to expose our deployments has a type of `NodePort`. This means you can 
 access these services from outside of your cluster via a specific port. In this case,
-since we do not specify the `nodePort`, the ports are randomized so we must obtain 
-the ports before making requests to our services. We must also obtain the public IP address 
+since `nodePort` is not specified, the ports are randomized so you must obtain 
+the ports before making requests to the services. You must also obtain the public IP address 
 of our cluster. Note that there are other ways to expose your services such as using a 
 `LoadBalancer` service type or using an `Ingress`. In production, you would most likely 
 use an `Ingress`.
@@ -556,8 +555,6 @@ following URLs to access your microservices, substituting the appropriate hostna
 The first URL returns system properties and the name of the pod in an HTTP header called `X-Pod-Name`.
 To view the header, you can use the `-I` option in the `curl` when making a request to `{system-api}`.
 The second URL adds properties from `system-service` to the inventory.
-Visiting `{inventory-api}/[kube-service]` in general adds to the inventory
-depending on whether `kube-service` is a valid {kube} Service that can be accessed.
 
 // =================================================================================================
 // Testing microservices that are running on IBM Cloud
