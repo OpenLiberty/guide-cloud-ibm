@@ -11,12 +11,12 @@
 //
 :projectid: cloud-ibm
 :page-layout: guide
-:page-duration: 4 hours
+:page-duration: 1 hour
 :page-releasedate: 2018-10-05
 :page-description: Explore how to deploy microservices to IBM Cloud Private and manage your cluster.
-:page-tags: ['Kubernetes', 'Docker']
+:page-tags: ['kubernetes', 'docker']
 :page-permalink: /guides/{projectid}
-:page-related-guides: ['kubernetes-intro']
+:page-related-guides: ['kubernetes-intro', 'kubernetes-microprofile-config', 'kubernetes-microprofile-health']
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
 :source-highlighter: prettify
 :page-seo-title: IBM Cloud tutorial
@@ -50,7 +50,7 @@ microservices locally, but ultimately you will want a system that can handle pro
 Various clouds offer solutions for running your workloads in a {kube} cluster. Using a 
 cloud-based infrastructure allows you to focus on developing your microservices rather than 
 worrying about details that are related to the servers you deploy them to. Using cloud allows
-you to more easily scale your microservices and serve them in a high-availability setup.
+you to easily scale your microservices and serve them in a high-availability setup.
 
 // =================================================================================================
 // Introduction
@@ -59,9 +59,9 @@ you to more easily scale your microservices and serve them in a high-availabilit
 == What you'll learn
 
 You will learn how to deploy two microservices in Open Liberty containers to a {kube}
-cluster on IBM Cloud. You will use `helm` to deploy these microservices using
+cluster on IBM Cloud. You will use Helm to deploy these microservices using
 Open Liberty Helm charts. Helm is a package manager for {kube}. It uses templates to
-generate {kube} yaml files and then deploys and manages them as releases to your cluster.
+generate {kube} yaml files and then deploys and manages them as releases in your cluster.
 
 IBM Cloud offers a hosted Kubernetes service that is called IBM Cloud Kubernetes Service (IKS). 
 IKS is a service that is offered as part of IBM's public cloud offerings. It provides a 
@@ -90,7 +90,7 @@ include::{common-includes}/gitclone.adoc[]
 == Creating a Kubernetes cluster on IBM Cloud
 
 Before you can deploy your microservices, you must create a {kube} cluster.
-To create a {kube} cluster you need appropriate permission. Ensure that you have `Administrator` 
+To create a {kube} cluster, you need appropriate permission. Ensure that you have `Administrator` 
 access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. 
 Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and 
 ensure that `Administrator` is listed as a policy for all resources in the account or for 
@@ -125,7 +125,9 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 ```
 ****
 
-After the script is finished running, login to IBM Cloud by using the `ibmcloud` command line. When you are prompted to select a region, choose `us-south`. Creating a free cluster is limited to specific regions, choosing `us-south` allows you to create a free cluster.
+After the script is finished running, log in to IBM Cloud by using the `ibmcloud` command line. 
+When you are prompted to select a region, choose `us-south`. Creating a free cluster is 
+limited to specific regions, choosing `us-south` allows you to create a free cluster.
 
 [role=command]
 ```
@@ -330,8 +332,8 @@ Remember to substitute `[your-namespace]` for the namespace you previously creat
 
 [source, role="no_copy"]
 ```
-docker tag system:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/system:1.0-SNAPSHOT
-docker tag inventory:1.0-SNAPSHOT us-south.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
+docker tag system:1.0-SNAPSHOT us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
+docker tag inventory:1.0-SNAPSHOT us.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
 ```
 
 // Pushing images
@@ -340,8 +342,8 @@ namespace you previously created.
 
 [source, role="no_copy"]
 ```
-docker push us-south.icr.io/[your-namespace]/system:1.0-SNAPSHOT
-docker push us-south.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
+docker push us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
+docker push us.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
 ```
 
 
@@ -410,8 +412,9 @@ Use Helm to deploy the `system` microservice. Remember to substitute `[your-name
 [source, role="no_copy"]
 ```
 helm install --name system-app \
-    --set image.repository=us-south.icr.io/[your-namespace]/system \
+    --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=1.0-SNAPSHOT \
+    --set image.pullSecret=default-us-icr-io \
     --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -424,8 +427,9 @@ helm install --name system-app \
 [source, role="no_copy"]
 ```
 helm install --name system-app ^
-    --set image.repository=us-south.icr.io/[your-namespace]/system ^
+    --set image.repository=us.icr.io/[your-namespace]/system ^
     --set image.tag=1.0-SNAPSHOT ^
+    --set image.pullSecret=default-us-icr-io ^
     --set service.name=system-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -443,8 +447,9 @@ Use Helm to deploy the `inventory` microservice. Remember to substitute `[your-n
 [source, role="no_copy"]
 ```
 helm install --name inventory-app \
-    --set image.repository=us-south.icr.io/[your-namespace]/inventory \
+    --set image.repository=us.icr.io/[your-namespace]/inventory \
     --set image.tag=1.0-SNAPSHOT \
+    --set image.pullSecret=default-us-icr-io \
     --set service.name=inventory-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -457,8 +462,9 @@ helm install --name inventory-app \
 [source, role="no_copy"]
 ```
 helm install --name inventory-app ^
-    --set image.repository=us-south.icr.io/[your-namespace]/inventory ^
+    --set image.repository=us.icr.io/[your-namespace]/inventory ^
     --set image.tag=1.0-SNAPSHOT ^
+    --set image.pullSecret=default-us-icr-io ^
     --set service.name=inventory-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -479,12 +485,13 @@ an overview for each of the parameters specified using `--set`.
 
 |===
 | *Parameter* | *Description*
-| image.repository | The name of your Docker image including registry/repository prefix
-| image.tag | The tag for your Docker image
-| service.name | The name of the service
-| service.port | The port exposed by the service
-| service.targetPort | The port exposed by the pod
-| ssl.enabled | Specify if SSL is enabled
+| `image.repository` | The name of your Docker image including registry/repository prefix
+| `image.tag` | The tag for your Docker image
+| `image.pullSecret` | The image pull secret
+| `service.name` | The name of the service
+| `service.port` | The port exposed by the service
+| `service.targetPort` | The port exposed by the pod
+| `ssl.enabled` | Specify if SSL is enabled
 |===
 
 === Finding the microservice's IP address and ports
@@ -524,8 +531,8 @@ substitue into commands later in this guide.
 [source, role="no_copy"]
 ----
 OK
-ID                                                 Public IP       Private IP     Machine Type   State    Status   Zone    Version   
-kube-hou02-pad1539f4f9ee912ca08c6b187c2daa5f9-w1   172.173.65.24   10.77.198.71   free           normal   Ready    hou02   1.10.11_1538*
+ID                            Public IP       Private IP     Machine Type    State    Status   Zone    Version   
+kube-hou02-pad15e5f9-w1       172.173.65.24   10.77.198.71   free            normal   Ready    hou02   1.10.11_1538*
 ----
 
 Get the node port of the `system` microservice.
@@ -569,10 +576,10 @@ in the ready state before proceeding further. The default properties that are de
 [cols="15, 100", options="header"]
 |===
 | *Property*        | *Description*
-| cluster.ip        | IP or hostname for your cluster
-| system.kube.service | Name of the {kube} Service wrapping the `system` pods, `system-service` by default.
-| system.node.port    | The NodePort of the {kube} Service `system-service`, 31000 by default.
-| inventory.node.port    | The NodePort of the {kube} Service `inventory-service`, 32000 by default.
+| `cluster.ip`        | IP or hostname for your cluster
+| `system.kube.service` | Name of the {kube} Service wrapping the `system` pods, `system-service` by default.
+| `system.node.port`    | The NodePort of the {kube} Service `system-service`, 31000 by default.
+| `inventory.node.port`    | The NodePort of the {kube} Service `inventory-service`, 32000 by default.
 |===
 
 Use the following command to run the integration tests against your cluster. Substitute 
@@ -641,7 +648,7 @@ Tag your Docker image with the relevant data about your registry.
 
 [source, role="no_copy"]
 ```
-docker tag system:2.0-SNAPSHOT us-south.icr.io/[your-namespace]/system:2.0-SNAPSHOT
+docker tag system:2.0-SNAPSHOT us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ```
 
 // Pushing images
@@ -649,7 +656,7 @@ Push your image to the registry.
 
 [role=command]
 ```
-docker push us-south.icr.io/[your-namespace]/system:2.0-SNAPSHOT
+docker push us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ```
 
 Use Helm to re-deploy the `system` microservice.
@@ -660,8 +667,9 @@ Use Helm to re-deploy the `system` microservice.
 [source, role="no_copy"]
 ```
 helm upgrade \
-    --set image.repository=us-south.icr.io/[your-namespace]/system \
+    --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=2.0-SNAPSHOT \
+    --set image.pullSecret=default-us-icr-io \
     --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -674,8 +682,9 @@ helm upgrade \
 [source, role="no_copy"]
 ```
 helm upgrade ^
-    --set image.repository=us-south.icr.io/[your-namespace]/system ^
+    --set image.repository=us.icr.io/[your-namespace]/system ^
     --set image.tag=2.0-SNAPSHOT ^
+    --set image.pullSecret=default-us-icr-io ^
     --set service.name=system-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -765,17 +774,40 @@ ibmcloud logout
 
 == Deploying to IBM Cloud Private
 
-Some situations may require you to manage your own infrastructure, such as if you want to deploy on-premises. If this describes your needs, then private clouds may be a more suitable solution for you.
+Some situations may require you to manage your own infrastructure, such as if you want 
+to deploy on-premises. If this describes your needs, then private clouds may be a more 
+suitable solution for you.
 
-https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform. A private cloud may be a more attractive option to those who must run their services running on infrastructure that is controlled by them. While the operations team will still need to maintain this infrastructure, a private cloud still provides benefit to developers so they don't need to think about infrastructure. {kube} acts as an abstraction of the infrastructure so the developers can request what they need and it is the responsibility of the infrastructure's maintainers to provide the necessary resources.
+https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform. A private 
+cloud may be a more attractive option to those who must run their services on 
+infrastructure that is controlled by them. While the operations team will still need to 
+maintain this infrastructure, a private cloud still provides benefit to developers so 
+they don't need to think about infrastructure. {kube} acts as an abstraction of the 
+infrastructure so the developers can request what they need and it is the responsibility 
+of the infrastructure's maintainers to provide the necessary resources.
 
-Deploying microservices to ICP is a similar process as deploying to IKS. The main differences that you will notice are in the setup process and how you tag your Docker images.
+Deploying microservices to ICP is a similar process as deploying to IKS. The main differences 
+that you will notice are in the setup process and how you tag your Docker images.
 
-To obtain an ICP instance, see the https://www.ibm.com/cloud/private[IBM Cloud Private^] website. To set up your local environment, from the ICP Dashboard navigate to the `Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions to set up each CLI tool. Unlike IKS, you do not need to run `helm init` or deploy the cluster role binding and service account to your cluster. This is because ICP has Helm's Tiller setup for you out of the box. To connect your local command line tools to the ICP instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
+To obtain an ICP instance, see the https://www.ibm.com/cloud/private[IBM Cloud Private^] 
+website. To set up your local environment, from the ICP Dashboard navigate to the 
+`Command Line Tools > Cloud Private CLI` page from the menu and follow the instructions 
+to set up each CLI tool. Unlike IKS, you do not need to run `helm init` or deploy the 
+cluster role binding and service account to your cluster. This is because ICP has Helm's 
+Tiller setup for you out of the box. To connect your local command line tools to the ICP 
+instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
 
-When you tag a Docker image, you must tag the image with the registry as a prefix to your image name. This prefix is how Docker knows which registry to push your images to. For example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your image, you must prefix the image name with the registry and namespace. Let's say you want to push your image to a repository in the default namespace, then you would tag your `system` microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` as the Docker registry to push to and it specifies `default` as the namespace your image's repository will reside in.
+When you tag a Docker image, you must tag the image with the registry as a prefix to your 
+image name. This prefix is how Docker knows which registry to push your images to. For 
+example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your 
+image, you must prefix the image name with the registry and namespace. Let's say you want 
+to push your image to a repository in the default namespace, then you would tag your `system`
+microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` 
+as the Docker registry to push to and it specifies `default` as the namespace your image's 
+repository will reside in.
 
-You can learn more about deploying microservices to ICP by following an https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
+You can learn more about deploying microservices to ICP by following an 
+https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
 
 // =================================================================================================
 // finish
