@@ -20,14 +20,14 @@
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
 :source-highlighter: prettify
 :page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP)
-:page-seo-description: Learn how push Docker images to a custom registry and run your microservices inside of containers on IKS and ICP.
+:page-seo-description: A tutorial on how to deploy microservices to IKS and ICP using helm and IBM Cloud Container Registry.
 :guide-author: Open Liberty
 = Deploying microservices to IKS and ICP
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website^].
- 
-Explore how to push Docker images to a custom registry and run them inside of containers on IBM Cloud’s Kubernetes Service.
+
+Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP).
 
 :minikube-ip: 192.168.99.100
 :kube: Kubernetes
