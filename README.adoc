@@ -13,21 +13,21 @@
 :page-layout: guide
 :page-duration: 1 hour
 :page-releasedate: 2018-10-05
-:page-description: Explore how to deploy microservices to IBM Cloud Private and manage your cluster.
-:page-tags: ['kubernetes', 'docker']
+:page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP).
+:page-tags: ['Kubernetes', 'Docker']
 :page-permalink: /guides/{projectid}
-:page-related-guides: ['kubernetes-intro', 'kubernetes-microprofile-config', 'kubernetes-microprofile-health']
+:page-related-guides: ['kubernetes-intro', 'kubernetes-microprofile-config', 'kubernetes-microprofile-health', 'istio-intro']
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
 :source-highlighter: prettify
-:page-seo-title: IBM Cloud tutorial
-:page-seo-description: How to deploy microservices to IBM Cloud
+:page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP)
+:page-seo-description: Learn how push Docker images to a custom registry and run your microservices inside of containers on IKS and ICP.
 :guide-author: Open Liberty
-= Deploying microservices to IBM Cloud
+= Deploying microservices to IKS and ICP
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website^].
  
-Explore how to push Docker images to a custom registry and run them inside of containers on IBM Cloud’s Kubernetes service.
+Explore how to push Docker images to a custom registry and run them inside of containers on IBM Cloud’s Kubernetes Service.
 
 :minikube-ip: 192.168.99.100
 :kube: Kubernetes
@@ -40,19 +40,6 @@ Explore how to push Docker images to a custom registry and run them inside of co
 
 
 // =================================================================================================
-// What is {kube}
-// =================================================================================================
-
-== Why use Kubernetes services in the cloud?
-
-Single node {kube} clusters such as Minikube and Docker Desktop are great for testing your 
-microservices locally, but ultimately you will want a system that can handle production workloads. 
-Various clouds offer solutions for running your workloads in a {kube} cluster. Using a 
-cloud-based infrastructure allows you to focus on developing your microservices rather than 
-worrying about details that are related to the servers you deploy them to. Using cloud allows
-you to easily scale your microservices and serve them in a high-availability setup.
-
-// =================================================================================================
 // Introduction
 // =================================================================================================
 
@@ -62,6 +49,16 @@ You will learn how to deploy two microservices in Open Liberty containers to a {
 cluster on IBM Cloud. You will use Helm to deploy these microservices using
 Open Liberty Helm charts. Helm is a package manager for {kube}. It uses templates to
 generate {kube} yaml files and then deploys and manages them as releases in your cluster.
+
+Kubernetes is an open source container orchestrator that automates many tasks involved in 
+deploying, managing, and scaling containerized applications. Single node {kube} clusters 
+such as Minikube and Docker Desktop are great for testing your  microservices locally, 
+but ultimately you will want a system that can handle production workloads and be able to 
+deploy your microservices to the cloud as part of DevOps. Various clouds offer solutions 
+for running your workloads in a {kube} cluster. Using a cloud-based infrastructure allows 
+you to focus on developing your microservices rather than worrying about details that are 
+related to the servers you deploy them to. Using cloud allows you to easily scale your 
+microservices and serve them in a high-availability setup.
 
 IBM Cloud offers a hosted Kubernetes service that is called IBM Cloud Kubernetes Service (IKS). 
 IKS is a service that is offered as part of IBM's public cloud offerings. It provides a 
@@ -89,12 +86,7 @@ include::{common-includes}/gitclone.adoc[]
 
 == Creating a Kubernetes cluster on IBM Cloud
 
-Before you can deploy your microservices, you must create a {kube} cluster.
-To create a {kube} cluster, you need appropriate permission. Ensure that you have `Administrator` 
-access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. 
-Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and 
-ensure that `Administrator` is listed as a policy for all resources in the account or for 
-the Kubernetes service.
+Before you can deploy your microservices, you must create a {kube} cluster on IBM Cloud.
 
 // =================================================================================================
 // Installing command line tools for IBM Cloud
@@ -149,7 +141,14 @@ ibmcloud login --sso
 
 === Provisioning a cluster
 
-Use the following command to provision a cluster.
+To create a {kube} cluster, you need appropriate permission. Ensure that you have `Administrator` 
+access to IBM Cloud Kubernetes Service. Navigate to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. 
+Then navigate to `Manage > Access (IAM) > Users > [Your Username] > Access Policies` and 
+ensure that `Administrator` is listed as a policy for all resources in the account or for 
+the Kubernetes service.
+
+Once you have confirmed that you have appropriate permissions, use the following command 
+to provision a cluster.
 
 [role=command]
 ```
@@ -778,14 +777,14 @@ Some situations may require you to manage your own infrastructure, such as if yo
 to deploy on-premises. If this describes your needs, then private clouds may be a more 
 suitable solution for you.
 
-https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform. A private 
-cloud may be a more attractive option to those who must run their services on 
+A private cloud may be a more attractive option to those who must run their services on 
 infrastructure that is controlled by them. While the operations team will still need to 
 maintain this infrastructure, a private cloud still provides benefit to developers so 
 they don't need to think about infrastructure. {kube} acts as an abstraction of the 
 infrastructure so the developers can request what they need and it is the responsibility 
 of the infrastructure's maintainers to provide the necessary resources.
 
+https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform. 
 Deploying microservices to ICP is a similar process as deploying to IKS. The main differences 
 that you will notice are in the setup process and how you tag your Docker images.
 
