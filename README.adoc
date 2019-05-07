@@ -20,9 +20,9 @@
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
 :source-highlighter: prettify
 :page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP)
-:page-seo-description: A tutorial on how to deploy microservices to IKS and ICP using helm and IBM Cloud Container Registry.
+:page-seo-description: A tutorial on how to deploy microservices to IKS and ICP using Helm and IBM Cloud Container Registry.
 :guide-author: Open Liberty
-= Deploying microservices to IKS and ICP
+= Deploying microservices to IBM Cloud
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website^].
@@ -46,24 +46,27 @@ Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IB
 == What you'll learn
 
 You will learn how to deploy two microservices in Open Liberty containers to a {kube}
-cluster on IBM Cloud. You will use Helm to deploy these microservices using
-Open Liberty Helm charts. Helm is a package manager for {kube}. It uses templates to
-generate {kube} yaml files and then deploys and manages them as releases in your cluster.
+cluster on IBM Cloud. 
 
 Kubernetes is an open source container orchestrator that automates many tasks involved in 
-deploying, managing, and scaling containerized applications. Single node {kube} clusters 
-such as Minikube and Docker Desktop are great for testing your  microservices locally, 
-but ultimately you will want a system that can handle production workloads and be able to 
-deploy your microservices to the cloud as part of DevOps. Various clouds offer solutions 
-for running your workloads in a {kube} cluster. Using a cloud-based infrastructure allows 
-you to focus on developing your microservices rather than worrying about details that are 
-related to the servers you deploy them to. Using cloud allows you to easily scale your 
-microservices and serve them in a high-availability setup.
+deploying, managing, and scaling containerized applications. If you would like to learn
+more about Kubernetes, check out the https://openliberty.io/guides/kubernetes-intro.html[Deploying microservices to Kubernetes^]
+guide.
+
+Various clouds offer solutions for running your workloads in a {kube} cluster. Using a 
+cloud-based infrastructure allows you to focus on developing your microservices rather 
+than worrying about details that are related to the servers you deploy them to. Using 
+cloud allows you to easily scale your microservices and serve them in a high-availability 
+setup.
 
 IBM Cloud offers a hosted Kubernetes service that is called IBM Cloud Kubernetes Service (IKS). 
 IKS is a service that is offered as part of IBM's public cloud offerings. It provides a 
-hosted {kube} cluster that you can deploy your microservices to. You will use it 
+hosted {kube} cluster that you can deploy your microservices to. You will use IKS 
 with IBM Cloud Container Registry.
+
+You will use Helm to deploy these microservices using Open Liberty Helm charts. Helm is 
+a package manager for {kube}. It uses templates to generate {kube} yaml files and then 
+deploys and manages them as releases in your cluster.
 
 The two microservices you will deploy are called `system` and `inventory`. The `system` microservice
 returns the JVM system properties of the running container and it returns the pod's name in the HTTP header
