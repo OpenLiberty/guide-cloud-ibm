@@ -787,7 +787,7 @@ they don't need to think about infrastructure. {kube} acts as an abstraction of 
 infrastructure so the developers can request what they need and it is the responsibility 
 of the infrastructure's maintainers to provide the necessary resources.
 
-https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform. 
+https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a on-premises {kube} platform from IBM. 
 Deploying microservices to ICP is a similar process as deploying to IKS. The main differences 
 that you will notice are in the setup process and how you tag your Docker images.
 
