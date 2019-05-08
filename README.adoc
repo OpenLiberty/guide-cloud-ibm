@@ -56,7 +56,7 @@ guide.
 Various clouds offer solutions for running your workloads in a {kube} cluster. Using a 
 cloud-based infrastructure allows you to focus on developing your microservices rather 
 than worrying about details that are related to the servers you deploy them to. Using 
-cloud allows you to easily scale your microservices and serve them in a high-availability 
+a cloud allows you to easily scale your microservices and serve them in a high-availability 
 setup.
 
 IBM Cloud offers a hosted Kubernetes service that is called IBM Cloud Kubernetes Service (IKS). 
@@ -788,7 +788,7 @@ they don't need to think about infrastructure. {kube} acts as an abstraction of 
 infrastructure so the developers can request what they need and it is the responsibility 
 of the infrastructure's maintainers to provide the necessary resources.
 
-https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a {kube} platform. 
+https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a on-premises {kube} platform from IBM. 
 Deploying microservices to ICP is a similar process as deploying to IKS. The main differences 
 that you will notice are in the setup process and how you tag your Docker images.
 
