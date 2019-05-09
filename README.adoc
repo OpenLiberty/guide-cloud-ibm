@@ -802,7 +802,7 @@ instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage
 
 When you tag a container image, you must tag the image with the registry as a prefix to your 
 image name. This prefix is how Docker knows which registry to push your images to. For 
-example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your 
+example, assume your ICP instance's container registry is `mycluster.icp:8500`. To tag your 
 image, you must prefix the image name with the registry and namespace. Let's say you want 
 to push your image to a repository in the default namespace, then you would tag your `system`
 microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` 
