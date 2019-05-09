@@ -239,7 +239,7 @@ NAME           STATUS    ROLES     AGE       VERSION
 
 In this section, you will learn how to deploy two microservices in Open Liberty containers to a {kube}
 cluster on IBM Cloud. You will build and containerize the `system` and `inventory` microservices,
-push them to a Docker registry and then deploy them to your {kube} cluster. 
+push them to a container registry and then deploy them to your {kube} cluster. 
 
 // =================================================================================================
 // Building and containerizing the microservices
@@ -247,7 +247,7 @@ push them to a Docker registry and then deploy them to your {kube} cluster.
 
 === Building and containerizing the microservices
 
-The first step of deploying to {kube} is to build your microservices and containerize them with Docker.
+The first step of deploying to {kube} is to build your microservices and containerize them.
 
 The starting Java project, which you can find in the `start` directory, is a multi-module Maven
 project. It's made up of the `system` and `inventory` microservices. Each microservice resides in its own directory,
@@ -302,12 +302,12 @@ If you don't see the `system:1.0-SNAPSHOT` and `inventory:1.0-SNAPSHOT` images, 
 build log for any potential errors.
 
 // =================================================================================================
-// Pushing the images to a docker registry
+// Pushing the images to a container registry
 // =================================================================================================
 
-=== Pushing the images to a Docker registry
+=== Pushing the images to a container registry
 
-Pushing the images to a registry allow the cluster to create pods using your Docker images. 
+Pushing the images to a registry allow the cluster to create pods using your container images. 
 Since it's a private repository, only users with access to your IBM Cloud account will have 
 access to these images.
 
@@ -322,7 +322,7 @@ relevant that you'll remember for the duration of the guide.
 ibmcloud cr namespace-add [your-namespace]
 ```
 
-Use the plugin again to login to the Docker registry.
+Use the plugin again to login to the container registry.
 
 [role=command]
 ```
@@ -330,7 +330,7 @@ ibmcloud cr login
 ```
 
 // Tagging images
-Next, you need to tag your Docker images with the relevant data about your registry. 
+Next, you need to tag your container images with the relevant data about your registry. 
 Remember to substitute `[your-namespace]` for the namespace you previously created.
 
 [source, role="no_copy"]
@@ -593,7 +593,7 @@ Use the following command to run the integration tests against your cluster. Sub
 mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
 
-The `dockerfile.skip` parameter is set to `true` in order to skip building a new Docker image.
+The `dockerfile.skip` parameter is set to `true` in order to skip building a new container image.
 
 If the tests pass, you'll see an output similar to the following for each service respectively:
 
@@ -630,7 +630,7 @@ will bump the version of the `system` microservice to `2.0-SNAPSHOT` and redeplo
 the new version of the microservice. You can re-deploy a microservice using Helm to upgrade 
 the release.
 
-The tag for the Docker image is dependent on the version specified in the pom.xml file. 
+The tag for the container image is dependent on the version specified in the pom.xml file. 
 Use the following Maven command to bump the version of the microservice to `2.0-SNAPSHOT`.
 
 [role=command]
@@ -638,7 +638,7 @@ Use the following Maven command to bump the version of the microservice to `2.0-
 mvn versions:set -DnewVersion=2.0-SNAPSHOT
 ```
 
-Use Maven to repackage your microservice and build the new version of the Docker container.
+Use Maven to repackage your microservice and build the new version of the container image.
 [role=command]
 ```
 mvn package
@@ -647,7 +647,7 @@ mvn package
 Since you built a new image, it will have to be pushed to the repository again.
 
 // Tagging images
-Tag your Docker image with the relevant data about your registry.
+Tag your container image with the relevant data about your registry.
 
 [source, role="no_copy"]
 ```
@@ -718,7 +718,7 @@ Observe that in this case the `system` microservice is running in the pod called
 kubectl describe pod [pod-name]
 ```
 
-View the events at the bottom of the command's output. Observe that the pod is using the new Docker image `system:2.0-SNAPSHOT`.
+View the events at the bottom of the command's output. Observe that the pod is using the new container image `system:2.0-SNAPSHOT`.
 
 [source, role="no_copy"]
 ----
@@ -753,7 +753,7 @@ Uninstall Tiller from your cluster by running the following Helm command.
 helm reset
 ```
 
-Logout of your Docker registry.
+Logout of your container registry.
 
 [role=command]
 ```
@@ -790,7 +790,7 @@ of the infrastructure's maintainers to provide the necessary resources.
 
 https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is a on-premises {kube} platform from IBM. 
 Deploying microservices to ICP is a similar process as deploying to IKS. The main differences 
-that you will notice are in the setup process and how you tag your Docker images.
+that you will notice are in the setup process and how you tag your container images.
 
 To obtain an ICP instance, see the https://www.ibm.com/cloud/private[IBM Cloud Private^] 
 website. To set up your local environment, from the ICP Dashboard navigate to the 
@@ -800,13 +800,13 @@ cluster role binding and service account to your cluster. This is because ICP ha
 Tiller setup for you out of the box. To connect your local command line tools to the ICP 
 instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
 
-When you tag a Docker image, you must tag the image with the registry as a prefix to your 
+When you tag a container image, you must tag the image with the registry as a prefix to your 
 image name. This prefix is how Docker knows which registry to push your images to. For 
 example, assume your ICP instance's Docker registry is `mycluster.icp:8500`. To tag your 
 image, you must prefix the image name with the registry and namespace. Let's say you want 
 to push your image to a repository in the default namespace, then you would tag your `system`
 microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` 
-as the Docker registry to push to and it specifies `default` as the namespace your image's 
+as the container registry to push to and it specifies `default` as the namespace your image's 
 repository will reside in.
 
 You can learn more about deploying microservices to ICP by following an 
