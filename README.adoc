@@ -523,7 +523,7 @@ guide-cluster
 
 Then, substitute the context into the following command to get the public IP address of your cluster.
 
-[role=command]
+[source, role="no_copy"]
 ```
 ibmcloud ks workers [current-context]
 ```
@@ -657,7 +657,7 @@ docker tag system:2.0-SNAPSHOT us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 // Pushing images
 Push your image to the registry.
 
-[role=command]
+[source, role="no_copy"]
 ```
 docker push us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ```
