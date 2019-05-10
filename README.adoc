@@ -71,9 +71,11 @@ how communication can be established between pods inside a cluster.
 
 You will use Helm to deploy these microservices to IBM Cloud using Open Liberty Helm charts. 
 Helm is a package manager for {kube}. It uses templates to generate {kube} yaml files and then 
-deploys and manages them as releases in your cluster. You will use IKS with IBM Cloud Container Registry.
-IBM Cloud Container Registry is a private registry used to store and distribute your
-container images.
+deploys and manages them as releases in your cluster. These Helm releases are generated using
+images specified when running the `helm install` command. You will use IBM Cloud
+Container Registry as a private place to store the images that Helm will use when deploying 
+its releases.
+
 
 // =================================================================================================
 // Getting Started
