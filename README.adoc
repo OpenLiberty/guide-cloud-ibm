@@ -588,7 +588,7 @@ in the ready state before proceeding further. The default properties that are de
 Use the following command to run the integration tests against your cluster. Substitute 
 `[ip-address]`, `[system-node-port]` and `[inventory-node-port]` with the appropriate values.
 
-[source, role="no_copy"]
+[role=command]
 ```
 mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
@@ -649,7 +649,7 @@ Since you built a new image, it will have to be pushed to the repository again.
 // Tagging images
 Tag your container image with the relevant data about your registry.
 
-[source, role="no_copy"]
+[role=command]
 ```
 docker tag system:2.0-SNAPSHOT us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ```
@@ -657,7 +657,7 @@ docker tag system:2.0-SNAPSHOT us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 // Pushing images
 Push your image to the registry.
 
-[source, role="no_copy"]
+[role=command]
 ```
 docker push us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ```
@@ -667,7 +667,7 @@ Use Helm to re-deploy the `system` microservice.
 ****
 [system]#*{linux} | {mac}*#
 
-[source, role="no_copy"]
+[role=command]
 ```
 helm upgrade \
     --set image.repository=us.icr.io/[your-namespace]/system \
@@ -682,7 +682,7 @@ helm upgrade \
 
 [system]#*{win}*#
 
-[source, role="no_copy"]
+[role=command]
 ```
 helm upgrade ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
@@ -713,7 +713,7 @@ system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          2m15s
 
 Observe that in this case the `system` microservice is running in the pod called `system-app-ibm-open-libe-84976bccfb-r22lj`. Substitute the name of your pod into the following command to see more details about the pod.
 
-[source, role="no_copy"]
+[role=command]
 ```
 kubectl describe pod [pod-name]
 ```
