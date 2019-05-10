@@ -317,7 +317,7 @@ Use the container registry plugin to create a namespace for your container image
 The namespace must be unique within IBM Cloud for the region you selected, so choose something 
 relevant that you'll remember for the duration of the guide.
 
-[source, role="no_copy"]
+[role=command]
 ```
 ibmcloud cr namespace-add [your-namespace]
 ```
@@ -333,7 +333,7 @@ ibmcloud cr login
 Next, you need to tag your container images with the relevant data about your registry. 
 Remember to substitute `[your-namespace]` for the namespace you previously created.
 
-[source, role="no_copy"]
+[role=command]
 ```
 docker tag system:1.0-SNAPSHOT us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
 docker tag inventory:1.0-SNAPSHOT us.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
@@ -343,7 +343,7 @@ docker tag inventory:1.0-SNAPSHOT us.icr.io/[your-namespace]/inventory:1.0-SNAPS
 Finally, push your images to the registry. Remember to substitute `[your-namespace]` for the 
 namespace you previously created.
 
-[source, role="no_copy"]
+[role=command]
 ```
 docker push us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
 docker push us.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
@@ -412,7 +412,7 @@ Use Helm to deploy the `system` microservice. Remember to substitute `[your-name
 ****
 [system]#*{linux} | {mac}*#
 
-[source, role="no_copy"]
+[role=command]
 ```
 helm install --name system-app \
     --set image.repository=us.icr.io/[your-namespace]/system \
@@ -427,7 +427,7 @@ helm install --name system-app \
 
 [system]#*{win}*#
 
-[source, role="no_copy"]
+[role=command]
 ```
 helm install --name system-app ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
@@ -447,7 +447,7 @@ Use Helm to deploy the `inventory` microservice. Remember to substitute `[your-n
 ****
 [system]#*{linux} | {mac}*#
 
-[source, role="no_copy"]
+[role=command]
 ```
 helm install --name inventory-app \
     --set image.repository=us.icr.io/[your-namespace]/inventory \
@@ -462,7 +462,7 @@ helm install --name inventory-app \
 
 [system]#*{win}*#
 
-[source, role="no_copy"]
+[role=command]
 ```
 helm install --name inventory-app ^
     --set image.repository=us.icr.io/[your-namespace]/inventory ^
@@ -523,7 +523,7 @@ guide-cluster
 
 Then, substitute the context into the following command to get the public IP address of your cluster.
 
-[source, role="no_copy"]
+[role=command]
 ```
 ibmcloud ks workers [current-context]
 ```
