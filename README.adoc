@@ -61,7 +61,9 @@ setup.
 
 IBM Cloud offers a hosted Kubernetes service that is called IBM Cloud Kubernetes Service (IKS). 
 IKS is a service that is offered as part of IBM's public cloud offerings. It provides a 
-hosted {kube} cluster that you can deploy your microservices to. 
+hosted {kube} cluster that you can deploy your microservices to. You will use it in 
+conjunction with IBM Cloud Container Registry. IBM Cloud Container Registry is a private 
+registry used to store and distribute your container images. 
 
 The two microservices you will deploy are called `system` and `inventory`. The `system` microservice
 returns the JVM system properties of the running container and it returns the pod's name in the HTTP header
@@ -71,11 +73,7 @@ how communication can be established between pods inside a cluster.
 
 You will use Helm to deploy these microservices to IBM Cloud using Open Liberty Helm charts. 
 Helm is a package manager for {kube}. It uses templates to generate {kube} yaml files and then 
-deploys and manages them as releases in your cluster. These Helm releases are generated using
-images specified when running the `helm install` command. You will use IBM Cloud
-Container Registry as a private place to store the images that Helm will use when deploying 
-its releases.
-
+deploys and manages them as releases in your cluster. 
 
 // =================================================================================================
 // Getting Started
