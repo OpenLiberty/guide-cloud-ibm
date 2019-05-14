@@ -121,22 +121,14 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 ```
 ****
 
-After the script is finished running, log in to IBM Cloud by using the `ibmcloud` command line. 
+After the script is finished running, log in to IBM Cloud by using the `ibmcloud` command line.
 When you are prompted to select a region, choose `us-south`. Creating a free cluster is 
-limited to specific regions, choosing `us-south` allows you to create a free cluster.
-
+limited to specific regions, choosing `us-south` allows you to create a free cluster. Note 
+that if you are using a federated user ID, you will have to use the `--sso` flag to get a 
+one time code for single sign-on.
 [role=command]
 ```
 ibmcloud login
-```
-
-If you're logging in with organization credentials, you will need to pass in the `--sso` flag
-to get a one time code for single sign-on. Follow the instructions that are given on the prompt and in
-your web browser to complete the login process.
-
-[role=command]
-```
-ibmcloud login --sso
 ```
 
 // =================================================================================================
