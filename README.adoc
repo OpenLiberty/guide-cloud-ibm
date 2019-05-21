@@ -123,7 +123,7 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 After the script is finished running, log in to IBM Cloud by using the `ibmcloud` command line.
 When you are prompted to select a region, choose us-south. This allows you to create a 
 free cluster, which is limited to specific regions. Note that if you are using a federated 
-user ID, you will have to use the `--sso` flag to get a one time code for single sign-on.
+user ID, you will have to use the `--sso` flag to get a one-time code for single sign-on.
 
 [role=command]
 ```
@@ -314,7 +314,7 @@ relevant that you'll remember for the duration of the guide.
 ibmcloud cr namespace-add [your-namespace]
 ```
 
-Use the plug-in again to login to the container registry.
+Use the plug-in again to log in to the container registry.
 
 [role=command]
 ```
@@ -323,7 +323,7 @@ ibmcloud cr login
 
 // Tagging images
 Next, tag your container images with the relevant data about your registry. 
-Remember to replace `[your-namespace]` for the namespace you created earlier in the guide.
+Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
 
 [role=command]
 ```
@@ -399,7 +399,7 @@ helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/rep
 ```
 
 // Deploy to IKS
-Use Helm to deploy the `system` microservice. Remember to replace `[your-namespace]` for the namespace you created earlier in the guide.
+Use Helm to deploy the `system` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
 
 ****
 [system]#*{linux} | {mac}*#
@@ -434,7 +434,7 @@ helm install --name system-app ^
 
 ****
 
-Use Helm to deploy the `inventory` microservice. Remember to replace `[your-namespace]` for the namespace you created earlier in the guide.
+Use Helm to deploy the `inventory` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
 
 ****
 [system]#*{linux} | {mac}*#
