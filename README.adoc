@@ -303,8 +303,7 @@ Since it's a private repository, only users with access to your IBM Cloud accoun
 access to these images.
 
 The registry you will use is called IBM Cloud Container Registry. The container registry
-plugin was installed automatically while running the `idt-installer` earlier in this guide
-(see https://openliberty.io/{page-permalink}#installing-command-line-tools-for-ibm-cloud[Installing command line tools for IBM Cloud]).
+plugin was installed automatically while running the `idt-installer` earlier in this guide.
 Use the container registry plugin to create a namespace for your container images.
 The namespace must be unique within IBM Cloud for the region you selected, so choose something 
 relevant that you'll remember for the duration of the guide.
@@ -617,10 +616,10 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 == Deploying new version of system microservice
 
-Optionally, you might want to learn how to redeploy a microservice. In this section, you 
-will bump the version of the `system` microservice to `2.0-SNAPSHOT` and redeploy
-the new version of the microservice. You can redeploy a microservice using Helm to upgrade 
-the release.
+Optionally, you might want to make changes to your microservice and learn how to redeploy 
+the updated version of your microservice. In this section, you will bump the version of 
+the `system` microservice to `2.0-SNAPSHOT` and redeploy the new version of the microservice. 
+You can redeploy a microservice using Helm to upgrade the release.
 
 The tag for the container image is dependent on the version specified in the pom.xml file. 
 Use the following Maven command to bump the version of the microservice to `2.0-SNAPSHOT`.
@@ -749,7 +748,7 @@ Log out of your container registry.
 
 [role=command]
 ```
-docker logout us-south.icr.io
+docker logout us.icr.io
 ```
 
 Remove your IKS cluster.
@@ -789,7 +788,9 @@ website. To set up your local environment, go to the ICP Dashboard. Navigate to 
 `Command Line Tools > Cloud Private CLI` page and follow the instructions 
 to set up each CLI tool. Unlike IKS, you do not need to run `helm init` or deploy the 
 cluster role binding and service account to your cluster. This is because ICP has Helm's 
-Tiller set up out of the box. To connect your local command line tools to the ICP 
+Tiller set up out of the box.
+
+ To connect your local command line tools to the ICP 
 instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
 
 When you tag a container image, you must tag the image with the registry as a prefix to your 
@@ -800,6 +801,14 @@ to push your image to a repository in the default namespace, then you would tag 
 microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` 
 as the container registry to push to and `default` as the namespace your image's 
 repository will reside in.
+
+When deploying the microservices to ICP using helm, it is important to add the `--tls` flag
+to all Helm commands. This flag is required because Helm's Tiller in ICP has TLS enabled 
+to always verify client certificates.  In addition, if you specify an image pull secret,
+the ` --set image.pullSecret=default-us-icr-io` flag will need to be updated in the 
+`helm install` and `helm upgrade` commands. However, if you do not need to specify an 
+image pull secret, the ` --set image.pullSecret=default-us-icr-io` flag can be removed.
+
 
 You can learn more about deploying microservices to ICP by following an 
 https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
