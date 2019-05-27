@@ -106,6 +106,7 @@ the IBM Cloud CLI for your platform, run one of the following commands:
 curl -fsSL https://clis.cloud.ibm.com/install/osx | sh
 ```
 [system]#*{linux}*#
+[role=command]
 ```
 curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
 ```
