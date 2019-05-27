@@ -74,6 +74,53 @@ You will use Helm to deploy these microservices to IBM Cloud using Open Liberty 
 Helm is a package manager for {kube}. It uses templates to generate {kube} yaml files and then 
 deploys and manages them as releases in your cluster. 
 
+
+// =================================================================================================
+// Prerequisites
+// =================================================================================================
+
+== Prerequisites
+
+Before you begin, the following tools need to be installed:
+
+- *Docker:* You need a containerization software for building containers. {kube} 
+supports various container types, but you will use Docker in this guide. For installation 
+instructions, refer to the official https://docs.docker.com/install/[Docker^] documentation.
+
+- *kubectl:* You need the {kube} command-line tool `kubectl` to interact with your 
+{kube} cluster. See the official https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl[Install and Set Up kubectl^]
+documentation for information about downloading and setting up `kubectl` on your platform.
+
+- *Helm:* You will use the Helm Command Line Interface (CLI) to install Helm's Tiller to your
+{kube} cluster and to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases/tag/v2.13.1[Helm^]
+and see the official https://helm.sh/docs/using_helm/#installing-helm[Installing Helm^] 
+documentation for information about setting up `helm` on your platform.
+
+- *IBM Cloud CLI:* You will use the IBM Cloud CLI to interact with IBM Cloud. To install
+the IBM Cloud CLI for your platform, run one of the following commands: 
+
+****
+[system]#*{mac}*#
+[role=command]
+```
+curl -fsSL https://clis.cloud.ibm.com/install/osx | sh
+```
+[system]#*{linux}*#
+[role=command]
+```
+curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+```
+[system]#*{win}*#
+
+Open command prompt as an administrator and run the following command.
+
+[role=command]
+```
+powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebClient).DownloadString('https://clis.cloud.ibm.com/install/powershell')"
+```
+****
+
+
 // =================================================================================================
 // Getting Started
 // =================================================================================================
@@ -92,35 +139,12 @@ include::{common-includes}/gitclone.adoc[]
 Before you can deploy your microservices, you must create a {kube} cluster on IBM Cloud.
 
 // =================================================================================================
-// Installing command line tools for IBM Cloud
+// Configuring IBM Cloud CLI
 // =================================================================================================
 
-=== Installing command line tools for IBM Cloud
+=== Configuring IBM Cloud CLI
 
-Use the following command to download and install everything that you need to interact with IBM Cloud.
-Running this script installs https://console.bluemix.net/docs/cli/index.html#overview[several tools^]
-that are useful for interacting with IBM Cloud, including the `ibmcloud`, `kubectl`, `helm`, 
-and `curl` tools, which are needed to complete this guide.
-
-****
-[system]#*{linux} | {mac}*#
-
-[role=command]
-```
-curl -sL https://ibm.biz/idt-installer | bash
-```
-
-[system]#*{win}*#
-
-Open command prompt as an administrator and run the following command.
-
-[role=command]
-```
-powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebClient).DownloadString('http://ibm.biz/idt-win-installer')"
-```
-****
-
-After the script is finished running, log in to IBM Cloud by using the `ibmcloud` command line.
+Log in to IBM Cloud by using the `ibmcloud` command line.
 When you are prompted to select a region, choose us-south. This allows you to create a 
 free cluster, which is limited to specific regions. Note that if you are using a federated 
 user ID, you will have to use the `--sso` flag to get a one-time code for single sign-on.
@@ -302,8 +326,14 @@ Pushing the images to a registry enables the cluster to create pods by using you
 Since it's a private repository, only users with access to your IBM Cloud account will have 
 access to these images.
 
-The registry you will use is called IBM Cloud Container Registry. The container registry
-plugin was installed automatically while running the `idt-installer` earlier in this guide.
+The registry you will use is called IBM Cloud Container Registry. To install the container 
+registry plugin, run the following command:
+
+[role=command]
+```
+ibmcloud plugin install container-registry
+```
+
 Use the container registry plugin to create a namespace for your container images.
 The namespace must be unique within IBM Cloud for the region you selected, so choose something 
 relevant that you'll remember for the duration of the guide.
