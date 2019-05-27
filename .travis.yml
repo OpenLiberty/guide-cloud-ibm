@@ -17,7 +17,10 @@ before_script:
 - sudo minikube start --vm-driver=none --bootstrapper=localkube
 - minikube update-context 
 - sudo apt-get install -y --upgrade util-linux socat
+- mkdir nsenter
+- wget https://www.kernel.org/pub/linux/utils/util-linux/v2.30/util-linux-2.30.2.tar.gz -qO - | tar -xz -C nsenter/
 - wget https://storage.googleapis.com/kubernetes-helm/helm-v2.13.0-linux-amd64.tar.gz -q -O helm.tar.gz
+- cd nsenter/util-linux-2.30.2 && ./autogen.sh && ./configure && make nsenter
 - tar -zxf helm.tar.gz
 - chmod +x ./linux-amd64/helm
 - sudo ln -s $(pwd)/linux-amd64/helm /usr/local/bin/helm
