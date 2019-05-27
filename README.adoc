@@ -481,7 +481,7 @@ an overview for each of the parameters specified using `--set`.
 | *Parameter* | *Description*
 | `image.repository` | The name of your Docker image including registry/repository prefix
 | `image.tag` | The tag for your Docker image
-| `image.pullSecret` | The image pull secret
+| `image.pullSecret` | The image pull secret, since the container registry is private
 | `service.name` | The name of the service
 | `service.port` | The port exposed by the service
 | `service.targetPort` | The port exposed by the pod
@@ -788,9 +788,7 @@ website. To set up your local environment, go to the ICP Dashboard. Navigate to 
 `Command Line Tools > Cloud Private CLI` page and follow the instructions 
 to set up each CLI tool. Unlike IKS, you do not need to run `helm init` or deploy the 
 cluster role binding and service account to your cluster. This is because ICP has Helm's 
-Tiller set up out of the box.
-
- To connect your local command line tools to the ICP 
+Tiller set up out of the box. To connect your local command line tools to the ICP 
 instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
 
 When you tag a container image, you must tag the image with the registry as a prefix to your 
@@ -804,11 +802,11 @@ repository will reside in.
 
 When deploying the microservices to ICP using helm, it is important to add the `--tls` flag
 to all Helm commands. This flag is required because Helm's Tiller in ICP has TLS enabled 
-to always verify client certificates.  In addition, if you specify an image pull secret,
-the ` --set image.pullSecret=default-us-icr-io` flag will need to be updated in the 
-`helm install` and `helm upgrade` commands. However, if you do not need to specify an 
-image pull secret, the ` --set image.pullSecret=default-us-icr-io` flag can be removed.
-
+to always verify client certificates.  In addition, if you are trying to access the image from
+the namespace that hosts it, you do not need an `imagePullSecret` and the  `--set image.pullSecret=default-us-icr-io` 
+flag can be removed from the `helm install` and `helm upgrade` commands. If you do require
+an `imagePullSecret`, update the `--set image.pullSecret=default-us-icr-io` flag with your
+`imagePullSecret`. 
 
 You can learn more about deploying microservices to ICP by following an 
 https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
