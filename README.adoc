@@ -12,7 +12,7 @@
 :projectid: cloud-ibm
 :page-layout: guide
 :page-duration: 1 hour
-:page-releasedate: 2019-05-24
+:page-releasedate: 2019-05-29
 :page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP).
 :page-tags: ['Kubernetes', 'Docker', 'Cloud']
 :page-permalink: /guides/{projectid}
@@ -92,13 +92,13 @@ instructions, refer to the official https://docs.docker.com/install/[Docker^] do
 documentation for information about downloading and setting up `kubectl` on your platform.
 
 - *Helm:* You will use the Helm Command Line Interface (CLI) to install Helm's Tiller to your
-{kube} cluster and to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases/tag/v2.13.1[Helm^]
-and see the official https://helm.sh/docs/using_helm/#installing-helm[Installing Helm^] 
+{kube} cluster and to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases/tag/v2.13.1[Helm v2.13.1^]
+and see the official https://helm.sh/docs/using_helm/#from-the-binary-releases[Installing Helm^] 
 documentation for information about setting up `helm` on your platform.
 
 - *IBM Cloud CLI:* You will use the IBM Cloud CLI to interact with IBM Cloud. To install
 the IBM Cloud CLI for your platform, run one of the following commands: 
-
++
 ****
 [system]#*{mac}*#
 [role=command]
@@ -120,6 +120,22 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 ```
 ****
 
+- *IBM Cloud Container Registry plug-in*
+To install the container registry plug-in, run the following command:
+
+[role=command]
+```
+ibmcloud plugin install container-registry
+```
+
+
+- *IBM Cloud Kubernetes Service plug-in*
+To install the {kube} registry plug-in, run the following command:
+
+[role=command]
+```
+ibmcloud plugin install container-registry
+```
 
 // =================================================================================================
 // Getting Started
@@ -326,17 +342,10 @@ Pushing the images to a registry enables the cluster to create pods by using you
 Since it's a private repository, only users with access to your IBM Cloud account will have 
 access to these images.
 
-The registry you will use is called IBM Cloud Container Registry. To install the container 
-registry plugin, run the following command:
-
-[role=command]
-```
-ibmcloud plugin install container-registry
-```
-
-Use the container registry plugin to create a namespace for your container images.
-The namespace must be unique within IBM Cloud for the region you selected, so choose something 
-relevant that you'll remember for the duration of the guide.
+The registry you will use is called IBM Cloud Container Registry. Use the container 
+registry plug-in to create a namespace for your container images. The namespace must be 
+unique within IBM Cloud for the region you selected, so choose something relevant that 
+you'll remember for the duration of the guide.
 
 [role=command]
 ```
