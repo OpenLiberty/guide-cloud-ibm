@@ -122,7 +122,7 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 
 - *IBM Cloud Container Registry plug-in*
 To install the container registry plug-in, run the following command:
-
++
 [role=command]
 ```
 ibmcloud plugin install container-registry
@@ -131,10 +131,10 @@ ibmcloud plugin install container-registry
 
 - *IBM Cloud Kubernetes Service plug-in*
 To install the {kube} registry plug-in, run the following command:
-
++
 [role=command]
 ```
-ibmcloud plugin install container-registry
+ibmcloud plugin install kubernetes-service
 ```
 
 // =================================================================================================
@@ -616,11 +616,11 @@ in the ready state before proceeding further. The default properties that are de
 |===
 
 Use the following command to run the integration tests against your cluster. Substitute 
-`[ip-address]`, `[system-node-port]` and `[inventory-node-port]` with the appropriate values.
+`[hostname]`, `[system-node-port]` and `[inventory-node-port]` with the appropriate values.
 
 [role=command]
 ```
-mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
+mvn verify -Ddockerfile.skip=true -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
 
 The `dockerfile.skip` parameter is set to `true` in order to skip building a new container image.
@@ -759,7 +759,7 @@ Events:
   Normal   Pulling    47s                kubelet, 172.173.65.24  pulling image "registry.ng.bluemix.net/[your-namespace/system:2.0-SNAPSHOT"
   Normal   Pulled     40s                kubelet, 172.173.65.24  Successfully pulled image "registry.ng.bluemix.net/[your-namespace]/system:2.0-SNAPSHOT"
   Normal   Created    40s                kubelet, 172.173.65.24  Created container
-  Normal   Started    39s                kubelet, 172.173.65.24  Started containerr
+  Normal   Started    39s                kubelet, 172.173.65.24  Started container
 ----
 
 // =================================================================================================
@@ -839,13 +839,12 @@ microservice's image `mycluster.icp:8500/default/system`. This tag specifies `my
 as the container registry to push to and `default` as the namespace your image's 
 repository will reside in.
 
-When deploying the microservices to ICP using helm, it is important to add the `--tls` flag
-to all Helm commands. This flag is required because Helm's Tiller in ICP has TLS enabled 
-to always verify client certificates.  In addition, if you are trying to access the image from
-the namespace that hosts it, you do not need an `imagePullSecret` and the  `--set image.pullSecret=default-us-icr-io` 
-flag can be removed from the `helm install` and `helm upgrade` commands. If you do require
-an `imagePullSecret`, update the `--set image.pullSecret=default-us-icr-io` flag with your
-`imagePullSecret`. 
+When you deploy the microservices to ICP by using Helm, it is important to add the `--tls` 
+flag to all Helm commands. This flag is required because Helm's Tiller in ICP has TLS enabled 
+to always verify client certificates. In addition, if you are trying to access the image 
+from the namespace that hosts it, you do not need an `imagePullSecret` and the `--set image.pullSecret=default-us-icr-io` 
+flag can be removed from the `helm install` and `helm upgrade` commands. If you require an `imagePullSecret`, 
+update the `--set image.pullSecret=default-us-icr-io` flag with your `imagePullSecret`.
 
 You can learn more about deploying microservices to ICP by following an 
 https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
