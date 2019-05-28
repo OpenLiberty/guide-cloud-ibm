@@ -841,13 +841,12 @@ repository will reside in.
 
 When you deploy the microservices to ICP by using Helm, it is important to add the `--tls` 
 flag to all Helm commands. This flag is required because Helm's Tiller in ICP has TLS enabled 
-to always verify client certificates. In addition, if you are trying to access the image from
-the namespace that hosts it, you do not need an `imagePullSecret` and the  `--set image.pullSecret=default-us-icr-io` 
-flag can be removed from the `helm install` and `helm upgrade` commands. If you do require
-an `imagePullSecret`, update the `--set image.pullSecret=default-us-icr-io` flag with your
-`imagePullSecret`. 
-
+to always verify client certificates. In addition, if you are trying to access the image 
+from the namespace that hosts it, you do not need an `imagePullSecret` and the `--set image.pullSecret=default-us-icr-io` 
+flag can be removed from the `helm install` and `helm upgrade` commands. If you require an `imagePullSecret`, 
+update the `--set image.pullSecret=default-us-icr-io` flag with your `imagePullSecret`.
 You can learn more about deploying microservices to ICP by following an 
+
 https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
 
 // =================================================================================================
