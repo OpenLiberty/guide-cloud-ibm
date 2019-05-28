@@ -620,7 +620,7 @@ Use the following command to run the integration tests against your cluster. Sub
 
 [role=command]
 ```
-mvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
+mvn verify -Ddockerfile.skip=true -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
 
 The `dockerfile.skip` parameter is set to `true` in order to skip building a new container image.
