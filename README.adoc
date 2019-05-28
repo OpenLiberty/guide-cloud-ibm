@@ -120,6 +120,22 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 ```
 ****
 
+- *IBM Cloud Container Registry plug-in*
+To install the container registry plug-in, run the following command:
+
+[role=command]
+```
+ibmcloud plugin install container-registry
+```
+
+
+- *IBM Cloud Kubernetes Service plug-in*
+To install the {kube} registry plug-in, run the following command:
+
+[role=command]
+```
+ibmcloud plugin install container-registry
+```
 
 // =================================================================================================
 // Getting Started
@@ -326,17 +342,10 @@ Pushing the images to a registry enables the cluster to create pods by using you
 Since it's a private repository, only users with access to your IBM Cloud account will have 
 access to these images.
 
-The registry you will use is called IBM Cloud Container Registry. To install the container 
-registry plugin, run the following command:
-
-[role=command]
-```
-ibmcloud plugin install container-registry
-```
-
-Use the container registry plugin to create a namespace for your container images.
-The namespace must be unique within IBM Cloud for the region you selected, so choose something 
-relevant that you'll remember for the duration of the guide.
+The registry you will use is called IBM Cloud Container Registry. Use the container 
+registry plug-in to create a namespace for your container images. The namespace must be 
+unique within IBM Cloud for the region you selected, so choose something relevant that 
+you'll remember for the duration of the guide.
 
 [role=command]
 ```
