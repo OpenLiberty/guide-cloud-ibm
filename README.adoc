@@ -759,7 +759,7 @@ Events:
   Normal   Pulling    47s                kubelet, 172.173.65.24  pulling image "registry.ng.bluemix.net/[your-namespace/system:2.0-SNAPSHOT"
   Normal   Pulled     40s                kubelet, 172.173.65.24  Successfully pulled image "registry.ng.bluemix.net/[your-namespace]/system:2.0-SNAPSHOT"
   Normal   Created    40s                kubelet, 172.173.65.24  Created container
-  Normal   Started    39s                kubelet, 172.173.65.24  Started containerr
+  Normal   Started    39s                kubelet, 172.173.65.24  Started container
 ----
 
 // =================================================================================================
