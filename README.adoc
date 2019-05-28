@@ -134,7 +134,7 @@ To install the {kube} registry plug-in, run the following command:
 +
 [role=command]
 ```
-ibmcloud plugin install container-registry
+ibmcloud plugin install kubernetes-service
 ```
 
 // =================================================================================================
