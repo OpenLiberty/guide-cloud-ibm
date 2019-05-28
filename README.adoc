@@ -616,7 +616,7 @@ in the ready state before proceeding further. The default properties that are de
 |===
 
 Use the following command to run the integration tests against your cluster. Substitute 
-`[ip-address]`, `[system-node-port]` and `[inventory-node-port]` with the appropriate values.
+`[hostname]`, `[system-node-port]` and `[inventory-node-port]` with the appropriate values.
 
 [role=command]
 ```
