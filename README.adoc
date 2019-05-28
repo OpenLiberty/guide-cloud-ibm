@@ -12,7 +12,7 @@
 :projectid: cloud-ibm
 :page-layout: guide
 :page-duration: 1 hour
-:page-releasedate: 2019-05-24
+:page-releasedate: 2019-05-29
 :page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP).
 :page-tags: ['Kubernetes', 'Docker', 'Cloud']
 :page-permalink: /guides/{projectid}
