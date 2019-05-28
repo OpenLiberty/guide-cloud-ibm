@@ -520,7 +520,7 @@ an overview for each of the parameters specified using `--set`.
 | *Parameter* | *Description*
 | `image.repository` | The name of your Docker image including registry/repository prefix
 | `image.tag` | The tag for your Docker image
-| `image.pullSecret` | The image pull secret
+| `image.pullSecret` | The image pull secret, since the container registry is private
 | `service.name` | The name of the service
 | `service.port` | The port exposed by the service
 | `service.targetPort` | The port exposed by the pod
@@ -655,10 +655,10 @@ Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 == Deploying new version of system microservice
 
-Optionally, you might want to learn how to redeploy a microservice. In this section, you 
-will bump the version of the `system` microservice to `2.0-SNAPSHOT` and redeploy
-the new version of the microservice. You can redeploy a microservice using Helm to upgrade 
-the release.
+Optionally, you might want to make changes to your microservice and learn how to redeploy 
+the updated version of your microservice. In this section, you will bump the version of 
+the `system` microservice to `2.0-SNAPSHOT` and redeploy the new version of the microservice. 
+You can redeploy a microservice using Helm to upgrade the release.
 
 The tag for the container image is dependent on the version specified in the pom.xml file. 
 Use the following Maven command to bump the version of the microservice to `2.0-SNAPSHOT`.
@@ -787,7 +787,7 @@ Log out of your container registry.
 
 [role=command]
 ```
-docker logout us-south.icr.io
+docker logout us.icr.io
 ```
 
 Remove your IKS cluster.
@@ -838,6 +838,14 @@ to push your image to a repository in the default namespace, then you would tag 
 microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` 
 as the container registry to push to and `default` as the namespace your image's 
 repository will reside in.
+
+When deploying the microservices to ICP using helm, it is important to add the `--tls` flag
+to all Helm commands. This flag is required because Helm's Tiller in ICP has TLS enabled 
+to always verify client certificates.  In addition, if you are trying to access the image from
+the namespace that hosts it, you do not need an `imagePullSecret` and the  `--set image.pullSecret=default-us-icr-io` 
+flag can be removed from the `helm install` and `helm upgrade` commands. If you do require
+an `imagePullSecret`, update the `--set image.pullSecret=default-us-icr-io` flag with your
+`imagePullSecret`. 
 
 You can learn more about deploying microservices to ICP by following an 
 https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
