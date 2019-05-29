@@ -120,7 +120,7 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 ```
 ****
 
-- *IBM Cloud Container Registry plug-in*
+- *IBM Cloud Container Registry plug-in:*
 To install the container registry plug-in, run the following command:
 +
 [role=command]
@@ -129,7 +129,7 @@ ibmcloud plugin install container-registry
 ```
 
 
-- *IBM Cloud Kubernetes Service plug-in*
+- *IBM Cloud Kubernetes Service plug-in:* 
 To install the {kube} registry plug-in, run the following command:
 +
 [role=command]
