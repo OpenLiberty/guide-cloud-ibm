@@ -208,7 +208,7 @@ ibmcloud ks clusters
 
 Wait until your cluster is in the `normal` state before proceeding. It will start off in the `deploying` state.
 
-[source, role="no_copy"]
+[role="no_copy"]
 ----
 Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
 guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   deploying   4 minutes ago   1         Dallas     1.10.11_1536   default 
@@ -216,18 +216,18 @@ guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   deploying   4 minutes ago   1
 
 Next, it will transition to the `pending` state.
 
-[source, role="no_copy"]
+[role="no_copy"]
 ----
 Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
-guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   pending     19 minutes ago   1         Dallas     1.10.11_1536   default 
+guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   pending     19 minutes ago   1        Dallas     1.10.11_1536   default 
 ----
 
 Finally, it will transition to the `normal` state. It may take a while for IKS to prepare your cluster.
 
-[source, role="no_copy"]
+[role="no_copy"]
 ----
 Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
-guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1           Dallas     1.10.11_1536   default 
+guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1         Dallas     1.10.11_1536   default 
 ----
 
 
@@ -559,9 +559,9 @@ ibmcloud ks workers [current-context]
 ```
 
 Take note of the `Public IP` in the command's output. This will be the hostname you 
-substitue into commands later in this guide.
+substitute into commands later in this guide.
 
-[source, role="no_copy"]
+[role="no_copy"]
 ----
 OK
 ID                            Public IP       Private IP     Machine Type    State    Status   Zone    Version   
