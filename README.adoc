@@ -342,9 +342,11 @@ picks up the Dockerfile that is located in the same directory as its POM file an
 [.tab_content]
 [.windows_section]
 --
+```
 On the Docker Desktop General Setting page, ensure that the option `Expose daemon on 
 tcp://localhost:2375 without TLS` is enabled. This configuration is required by the `dockerfile-maven` 
 part of the build.
+```
 --
 
 
