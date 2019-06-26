@@ -566,6 +566,7 @@ Use Helm to deploy the `inventory` microservice. Remember to replace `[your-name
 [.tab_content]
 [.windows_section]
 --
+[role=command]
 ```
 helm install --name inventory-app ^
     --set image.repository=us.icr.io/[your-namespace]/inventory ^
