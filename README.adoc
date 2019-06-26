@@ -813,6 +813,7 @@ Use Helm to redeploy the `system` microservice.
 [.tab_content]
 [.windows_section]
 --
+[role=command]
 ```
 helm upgrade ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
