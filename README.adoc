@@ -100,18 +100,14 @@ documentation for information about setting up `helm` on your platform.
 the IBM Cloud CLI for your platform, run one of the following commands: 
 //+
 
-[.tab_link]
-[.windows_link]
+[.tab_link.windows_link]
 `*WINDOWS*`
-[.tab_link]
-[.mac_link]
+[.tab_link.mac_link]
 `*MAC*`
-[.tab_link]
-[.linux_link]
+[.tab_link.linux_link]
 `*LINUX*`
 
-[.tab_content]
-[.windows_section]
+[.tab_content.windows_section]
 --
 Open command prompt as an administrator and run the following command.
 
@@ -121,8 +117,7 @@ powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebCli
 ```
 --
 
-[.tab_content]
-[.mac_section]
+[.tab_content.mac_section]
 --
 [role=command]
 ```
@@ -130,8 +125,7 @@ curl -fsSL https://clis.cloud.ibm.com/install/osx | sh
 ```
 --
 
-[.tab_content]
-[.linux_section]
+[.tab_content.linux_section]
 --
 [role=command]
 ```
@@ -252,18 +246,14 @@ guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1
 
 Once your cluster is ready, connect `kubectl` to the cluster.
 
-[.tab_link]
-[.windows_link]
+[.tab_link.windows_link]
 `*WINDOWS*`
-[.tab_link]
-[.mac_link]
+[.tab_link.mac_link]
 `*MAC*`
-[.tab_link]
-[.linux_link]
+[.tab_link.linux_link]
 `*LINUX*`
 
-[.tab_content]
-[.windows_section]
+[.tab_content.windows_section]
 --
 [role=command]
 ```
@@ -273,19 +263,7 @@ del tmp-set-cluster.cmd
 ```
 --
 
-
-[.tab_content]
-[.mac_section]
---
-[role=command]
-```
-eval $(ibmcloud ks cluster-config --export guide-cluster)
-```
---
-
-
-[.tab_content]
-[.linux_section]
+[.tab_content.mac_section.linux_section]
 --
 [role=command]
 ```
@@ -335,12 +313,10 @@ use the `.war` file to build a Docker image. We've set up the projects such that
 as a part of a single Maven build. It's created by using the `dockerfile-maven` plug-in. The plug-in automatically
 picks up the Dockerfile that is located in the same directory as its POM file and builds a Docker image from it.
 
-[.tab_link]
-[.windows_link]
+[.tab_link.windows_link]
 `*WINDOWS*`
 
-[.tab_content]
-[.windows_section]
+[.tab_content.windows_section]
 --
 ```
 On the Docker Desktop General Setting page, ensure that the option `Expose daemon on 
@@ -348,7 +324,6 @@ tcp://localhost:2375 without TLS` is enabled. This configuration is required by 
 part of the build.
 ```
 --
-
 
 Navigate to the `start` directory and run the following command:
 
@@ -429,7 +404,6 @@ docker push us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
 docker push us.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
 ```
 
-
 // =================================================================================================
 // Deploying the microservices
 // =================================================================================================
@@ -489,18 +463,14 @@ helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/rep
 // Deploy to IKS
 Use Helm to deploy the `system` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
 
-[.tab_link]
-[.windows_link]
+[.tab_link.windows_link]
 `*WINDOWS*`
-[.tab_link]
-[.mac_link]
+[.tab_link.mac_link]
 `*MAC*`
-[.tab_link]
-[.linux_link]
+[.tab_link.linux_link]
 `*LINUX*`
 
-[.tab_content]
-[.windows_section]
+[.tab_content.windows_section]
 --
 [role=command]
 ```
@@ -516,9 +486,8 @@ helm install --name system-app ^
 ```
 --
 
+[.tab_content.mac_section.linux_section]
 
-[.tab_content]
-[.mac_section]
 --
 [role=command]
 ```
@@ -532,41 +501,18 @@ helm install --name system-app \
     --set ssl.enabled=false \
     ibm-charts/ibm-open-liberty
 ```
---
-
-
-[.tab_content]
-[.linux_section]
---
-[role=command]
-```
-helm install --name system-app \
-    --set image.repository=us.icr.io/[your-namespace]/system \
-    --set image.tag=1.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
-    --set service.name=system-service \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty
-```
-
 --
 
 Use Helm to deploy the `inventory` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
 
-[.tab_link]
-[.windows_link]
+[.tab_link.windows_link]
 `*WINDOWS*`
-[.tab_link]
-[.mac_link]
+[.tab_link.mac_link]
 `*MAC*`
-[.tab_link]
-[.linux_link]
+[.tab_link.linux_link]
 `*LINUX*`
 
-[.tab_content]
-[.windows_section]
+[.tab_content.windows_section]
 --
 [role=command]
 ```
@@ -582,25 +528,7 @@ helm install --name inventory-app ^
 ```
 --
 
-[.tab_content]
-[.mac_section]
---
-[role=command]
-```
-helm install --name inventory-app \
-    --set image.repository=us.icr.io/[your-namespace]/inventory \
-    --set image.tag=1.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
-    --set service.name=inventory-service \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty
-```
---
-
-[.tab_content]
-[.linux_section]
+[.tab_content.mac_section.linux_section]
 --
 [role=command]
 ```
@@ -802,18 +730,14 @@ docker push us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 
 Use Helm to redeploy the `system` microservice.
 
-[.tab_link]
-[.windows_link]
+[.tab_link.windows_link]
 `*WINDOWS*`
-[.tab_link]
-[.mac_link]
+[.tab_link.mac_link]
 `*MAC*`
-[.tab_link]
-[.linux_link]
+[.tab_link.linux_link]
 `*LINUX*`
 
-[.tab_content]
-[.windows_section]
+[.tab_content.windows_section]
 --
 [role=command]
 ```
@@ -829,27 +753,7 @@ helm upgrade ^
 ```
 --
 
-
-[.tab_content]
-[.mac_section]
---
-[role=command]
-```
-helm upgrade \
-    --set image.repository=us.icr.io/[your-namespace]/system \
-    --set image.tag=2.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
-    --set service.name=system-service \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    system-app ibm-charts/ibm-open-liberty
-```
---
-
-
-[.tab_content]
-[.linux_section]
+[.tab_content.mac_section.linux_section]
 --
 [role=command]
 ```
