@@ -666,21 +666,13 @@ the updated version of your microservice. In this section, you will bump the ver
 the `system` microservice to `2.0-SNAPSHOT` and redeploy the new version of the microservice. 
 You can redeploy a microservice using Helm to upgrade the release.
 
-The tag for the container image is dependent on the version specified in the pom.xml file. 
-Use the following Maven command to bump the version of the microservice to `2.0-SNAPSHOT`.
-
-[role=command]
-```
-mvn versions:set -DnewVersion=2.0-SNAPSHOT
-```
-
 Use Maven to repackage your microservice:
 [role=command]
 ```
 mvn package
 ```
 
-Next, build the new version of the container image:
+Next, build the new version of the container image as `2.0-SNAPSHOT`:
 [role=command]
 ```
 docker build -t system:2.0-SNAPSHOT system/.
