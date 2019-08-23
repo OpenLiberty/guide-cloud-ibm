@@ -53,10 +53,9 @@ deploying, managing, and scaling containerized applications. If you would like t
 more about Kubernetes, check out the https://openliberty.io/guides/kubernetes-intro.html[Deploying microservices to Kubernetes^]
 guide.
 
-There are different cloud-based solutions for running your workloads in a {kube} cluster. 
-A cloud-based infrastructure enables you to focus on developing your microservices without 
-worrying about details related to the servers you deploy them to. Using a cloud helps 
-you to easily scale and serve your microservices in a high-availability setup.
+There are different cloud-based solutions for running your Kubernetes workloads.
+A cloud-based infrastructure enables you to focus on developing your microservices without worrying about low-level infrastructure details for deployment. Using a cloud helps
+you to easily scale and manage your microservices in a high-availability setup.
 
 IBM Cloud Kubernetes Service (IKS) is part of IBM’s public cloud offerings. It provides 
 a hosted Kubernetes cluster where you can deploy your microservices. You will use it with 
@@ -284,7 +283,7 @@ The starting Java project, which you can find in the `start` directory, is a mul
 project. It's made up of the `system` and `inventory` microservices. Each microservice resides in its own directory,
 `start/system` and `start/inventory`. Each of these directories also contains a Dockerfile, which is necessary
 for building Docker images. If you're unfamiliar with Dockerfiles, check out the
-https://openliberty.io/guides/docker.html[Using Docker containers to develop microservices^] guide.
+https://openliberty.io/guides/containerize.html[Containerizing Microservices^] guide.
 
 If you're familiar with Maven and Docker, you might be tempted to run a Maven build first and then
 use the `.war` file to build a Docker image. We've set up the projects such that this process is automated
@@ -300,16 +299,22 @@ part of the build.
 
 ****
 
-Navigate to the `start` directory and run the following command:
+To build these microservices, navigate to the `start` directory and run the following command:
 
 [role=command]
 ```
 mvn package
 ```
 
-The `package` goal automatically starts the `dockerfile-maven:build` goal. It runs during the
-`package` phase. This goal builds a Docker image from the Dockerfile that is located in the same directory
-as the POM file.
+Next, run the `docker build` commands to build container images for your application:
+[role='command']
+```
+docker build -t system:1.0-SNAPSHOT system/.
+docker build -t inventory:1.0-SNAPSHOT inventory/.
+```
+
+The `-t` flag in the `docker build` command allows the Docker image to be labeled (tagged) in the `name[:tag]` format. 
+The tag for an image describes the specific image version. If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
 
 During the build, you'll see various Docker messages describing what images are being downloaded and
 built. When the build finishes, run the following command to list all local Docker images:
@@ -660,18 +665,16 @@ the updated version of your microservice. In this section, you will bump the ver
 the `system` microservice to `2.0-SNAPSHOT` and redeploy the new version of the microservice. 
 You can redeploy a microservice using Helm to upgrade the release.
 
-The tag for the container image is dependent on the version specified in the pom.xml file. 
-Use the following Maven command to bump the version of the microservice to `2.0-SNAPSHOT`.
-
-[role=command]
-```
-mvn versions:set -DnewVersion=2.0-SNAPSHOT
-```
-
-Use Maven to repackage your microservice and build the new version of the container image.
+Use Maven to repackage your microservice:
 [role=command]
 ```
 mvn package
+```
+
+Next, build the new version of the container image as `2.0-SNAPSHOT`:
+[role=command]
+```
+docker build -t system:2.0-SNAPSHOT system/.
 ```
 
 Since you built a new image, it will have to be pushed to the repository again.
