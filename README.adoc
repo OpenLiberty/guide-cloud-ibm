@@ -13,21 +13,21 @@
 :page-layout: guide
 :page-duration: 1 hour
 :page-releasedate: 2019-05-29
-:page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP).
+:page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS).
 :page-tags: ['Kubernetes', 'Docker', 'Cloud']
 :page-permalink: /guides/{projectid}
 :page-related-guides: ['kubernetes-intro', 'kubernetes-microprofile-config', 'kubernetes-microprofile-health', 'istio-intro']
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
 :source-highlighter: prettify
-:page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP)
-:page-seo-description: A tutorial on how to deploy microservices to IKS and ICP using Helm and IBM Cloud Container Registry.
+:page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+:page-seo-description: A tutorial on how to deploy microservices to IKS using Helm and IBM Cloud Container Registry.
 :guide-author: Open Liberty
 = Deploying microservices to IBM Cloud
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website^].
 
-Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP).
+Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS).
 
 :minikube-ip: 192.168.99.100
 :kube: Kubernetes
@@ -806,51 +806,6 @@ Log out of the `ibmcloud` command line tool.
 ```
 ibmcloud logout
 ```
-
-
-== Deploying to IBM Cloud Private
-
-Some situations may require you to manage your own infrastructure, such as if you want 
-to deploy on-premises. If this describes your needs, then private clouds may be a more 
-suitable solution for you.
-
-A private cloud is a good option for developers who want to run their microservices on 
-an infrastructure that they control. While the operations team will still need to maintain 
-this infrastructure, a private cloud saves developers from having to worry about infrastructure.
-{kube} acts as an abstraction of the infrastructure so the developers can request what 
-they need and it is the responsibility of the infrastructure's maintainers to provide the 
-necessary resources.
-
-https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is an on-premises {kube} platform from IBM. 
-Deploying microservices to ICP is similar to deploying to IKS. The main differences 
-are in the setup process, and in how you tag your container images.
-
-To obtain an ICP instance, see the https://www.ibm.com/cloud/private[IBM Cloud Private^] 
-website. To set up your local environment, go to the ICP Dashboard. Navigate to the 
-`Command Line Tools > Cloud Private CLI` page and follow the instructions 
-to set up each CLI tool. Unlike IKS, you do not need to run `helm init` or deploy the 
-cluster role binding and service account to your cluster. This is because ICP has Helm's 
-Tiller set up out of the box. To connect your local command line tools to the ICP 
-instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
-
-When you tag a container image, you must tag the image with the registry as a prefix to your 
-image name. This prefix is how Docker knows which registry to push your images to. For 
-example, assume your ICP instance's container registry is `mycluster.icp:8500`. To tag your 
-image, you must prefix the image name with the registry and namespace. Let's say you want 
-to push your image to a repository in the default namespace, then you would tag your `system`
-microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` 
-as the container registry to push to and `default` as the namespace your image's 
-repository will reside in.
-
-When you deploy the microservices to ICP by using Helm, it is important to add the `--tls` 
-flag to all Helm commands. This flag is required because Helm's Tiller in ICP has TLS enabled 
-to always verify client certificates. In addition, if you are trying to access the image 
-from the namespace that hosts it, you do not need an `imagePullSecret` and the `--set image.pullSecret=default-us-icr-io` 
-flag can be removed from the `helm install` and `helm upgrade` commands. If you require an `imagePullSecret`, 
-update the `--set image.pullSecret=default-us-icr-io` flag with your `imagePullSecret`.
-
-You can learn more about deploying microservices to ICP by following an 
-https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
 
 // =================================================================================================
 // finish
