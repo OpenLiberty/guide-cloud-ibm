@@ -13,21 +13,21 @@
 :page-layout: guide
 :page-duration: 1 hour
 :page-releasedate: 2019-05-29
-:page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP).
+:page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS).
 :page-tags: ['Kubernetes', 'Docker', 'Cloud']
 :page-permalink: /guides/{projectid}
 :page-related-guides: ['kubernetes-intro', 'kubernetes-microprofile-config', 'kubernetes-microprofile-health', 'istio-intro']
-:common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
+:common-includes: ../guides-common/
 :source-highlighter: prettify
-:page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP)
-:page-seo-description: A tutorial on how to deploy microservices to IKS and ICP using Helm and IBM Cloud Container Registry.
+:page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+:page-seo-description: A tutorial on how to deploy microservices to IKS using Helm and IBM Cloud Container Registry.
 :guide-author: Open Liberty
 = Deploying microservices to IBM Cloud
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website^].
 
-Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS) and IBM Cloud Private (ICP).
+Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS).
 
 :minikube-ip: 192.168.99.100
 :kube: Kubernetes
@@ -53,10 +53,9 @@ deploying, managing, and scaling containerized applications. If you would like t
 more about Kubernetes, check out the https://openliberty.io/guides/kubernetes-intro.html[Deploying microservices to Kubernetes^]
 guide.
 
-There are different cloud-based solutions for running your workloads in a {kube} cluster. 
-A cloud-based infrastructure enables you to focus on developing your microservices without 
-worrying about details related to the servers you deploy them to. Using a cloud helps 
-you to easily scale and serve your microservices in a high-availability setup.
+There are different cloud-based solutions for running your Kubernetes workloads.
+A cloud-based infrastructure enables you to focus on developing your microservices without worrying about low-level infrastructure details for deployment. Using a cloud helps
+you to easily scale and manage your microservices in a high-availability setup.
 
 IBM Cloud Kubernetes Service (IKS) is part of IBM’s public cloud offerings. It provides 
 a hosted Kubernetes cluster where you can deploy your microservices. You will use it with 
@@ -79,9 +78,9 @@ deploys and manages them as releases in your cluster.
 // Prerequisites
 // =================================================================================================
 
-== Prerequisites
+== Additional prerequisites
 
-Before you begin, the following tools need to be installed:
+Before you begin, the following additional tools need to be installed:
 
 - *Docker:* You need a containerization software for building containers. {kube} 
 supports various container types, but you will use Docker in this guide. For installation 
@@ -307,7 +306,7 @@ The starting Java project, which you can find in the `start` directory, is a mul
 project. It's made up of the `system` and `inventory` microservices. Each microservice resides in its own directory,
 `start/system` and `start/inventory`. Each of these directories also contains a Dockerfile, which is necessary
 for building Docker images. If you're unfamiliar with Dockerfiles, check out the
-https://openliberty.io/guides/docker.html[Using Docker containers to develop microservices^] guide.
+https://openliberty.io/guides/containerize.html[Containerizing Microservices^] guide.
 
 If you're familiar with Maven and Docker, you might be tempted to run a Maven build first and then
 use the `.war` file to build a Docker image. We've set up the projects such that this process is automated
@@ -326,16 +325,22 @@ part of the build.
 ```
 --
 
-Navigate to the `start` directory and run the following command:
+To build these microservices, navigate to the `start` directory and run the following command:
 
 [role=command]
 ```
 mvn package
 ```
 
-The `package` goal automatically starts the `dockerfile-maven:build` goal. It runs during the
-`package` phase. This goal builds a Docker image from the Dockerfile that is located in the same directory
-as the POM file.
+Next, run the `docker build` commands to build container images for your application:
+[role='command']
+```
+docker build -t system:1.0-SNAPSHOT system/.
+docker build -t inventory:1.0-SNAPSHOT inventory/.
+```
+
+The `-t` flag in the `docker build` command allows the Docker image to be labeled (tagged) in the `name[:tag]` format. 
+The tag for an image describes the specific image version. If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
 
 During the build, you'll see various Docker messages describing what images are being downloaded and
 built. When the build finishes, run the following command to list all local Docker images:
@@ -697,18 +702,16 @@ the updated version of your microservice. In this section, you will bump the ver
 the `system` microservice to `2.0-SNAPSHOT` and redeploy the new version of the microservice. 
 You can redeploy a microservice using Helm to upgrade the release.
 
-The tag for the container image is dependent on the version specified in the pom.xml file. 
-Use the following Maven command to bump the version of the microservice to `2.0-SNAPSHOT`.
-
-[role=command]
-```
-mvn versions:set -DnewVersion=2.0-SNAPSHOT
-```
-
-Use Maven to repackage your microservice and build the new version of the container image.
+Use Maven to repackage your microservice:
 [role=command]
 ```
 mvn package
+```
+
+Next, build the new version of the container image as `2.0-SNAPSHOT`:
+[role=command]
+```
+docker build -t system:2.0-SNAPSHOT system/.
 ```
 
 Since you built a new image, it will have to be pushed to the repository again.
@@ -846,51 +849,6 @@ Log out of the `ibmcloud` command line tool.
 ```
 ibmcloud logout
 ```
-
-
-== Deploying to IBM Cloud Private
-
-Some situations may require you to manage your own infrastructure, such as if you want 
-to deploy on-premises. If this describes your needs, then private clouds may be a more 
-suitable solution for you.
-
-A private cloud is a good option for developers who want to run their microservices on 
-an infrastructure that they control. While the operations team will still need to maintain 
-this infrastructure, a private cloud saves developers from having to worry about infrastructure.
-{kube} acts as an abstraction of the infrastructure so the developers can request what 
-they need and it is the responsibility of the infrastructure's maintainers to provide the 
-necessary resources.
-
-https://www.ibm.com/cloud/private[IBM Cloud Private^] (ICP) is an on-premises {kube} platform from IBM. 
-Deploying microservices to ICP is similar to deploying to IKS. The main differences 
-are in the setup process, and in how you tag your container images.
-
-To obtain an ICP instance, see the https://www.ibm.com/cloud/private[IBM Cloud Private^] 
-website. To set up your local environment, go to the ICP Dashboard. Navigate to the 
-`Command Line Tools > Cloud Private CLI` page and follow the instructions 
-to set up each CLI tool. Unlike IKS, you do not need to run `helm init` or deploy the 
-cluster role binding and service account to your cluster. This is because ICP has Helm's 
-Tiller set up out of the box. To connect your local command line tools to the ICP 
-instance, use https://www.ibm.com/support/knowledgecenter/en/SSBS6K_3.1.0/manage_cluster/cli_commands.html#login[cloudctl login^].
-
-When you tag a container image, you must tag the image with the registry as a prefix to your 
-image name. This prefix is how Docker knows which registry to push your images to. For 
-example, assume your ICP instance's container registry is `mycluster.icp:8500`. To tag your 
-image, you must prefix the image name with the registry and namespace. Let's say you want 
-to push your image to a repository in the default namespace, then you would tag your `system`
-microservice's image `mycluster.icp:8500/default/system`. This tag specifies `mycluster.icp:8500` 
-as the container registry to push to and `default` as the namespace your image's 
-repository will reside in.
-
-When you deploy the microservices to ICP by using Helm, it is important to add the `--tls` 
-flag to all Helm commands. This flag is required because Helm's Tiller in ICP has TLS enabled 
-to always verify client certificates. In addition, if you are trying to access the image 
-from the namespace that hosts it, you do not need an `imagePullSecret` and the `--set image.pullSecret=default-us-icr-io` 
-flag can be removed from the `helm install` and `helm upgrade` commands. If you require an `imagePullSecret`, 
-update the `--set image.pullSecret=default-us-icr-io` flag with your `imagePullSecret`.
-
-You can learn more about deploying microservices to ICP by following an 
-https://www.ibm.com/cloud/garage/demo/try-private-cloud-install-an-app[interactive guided demo^].
 
 // =================================================================================================
 // finish

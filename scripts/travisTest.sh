@@ -9,6 +9,9 @@
 printf "\nmvn -q package\n"
 mvn -q package
 
+docker build -t system:1.0-SNAPSHOT system/.
+docker build -t inventory:1.0-SNAPSHOT inventory/.
+
 kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
 
 printf "\nhelm init\n"
