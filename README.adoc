@@ -17,7 +17,7 @@
 :page-tags: ['Kubernetes', 'Docker', 'Cloud']
 :page-permalink: /guides/{projectid}
 :page-related-guides: ['kubernetes-intro', 'kubernetes-microprofile-config', 'kubernetes-microprofile-health', 'istio-intro']
-:common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
+:common-includes: ../guides-common/
 :source-highlighter: prettify
 :page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS)
 :page-seo-description: A tutorial on how to deploy microservices to IKS using Helm and IBM Cloud Container Registry.
@@ -78,9 +78,9 @@ deploys and manages them as releases in your cluster.
 // Prerequisites
 // =================================================================================================
 
-== Prerequisites
+== Additional prerequisites
 
-Before you begin, the following tools need to be installed:
+Before you begin, the following additional tools need to be installed:
 
 - *Docker:* You need a containerization software for building containers. {kube} 
 supports various container types, but you will use Docker in this guide. For installation 
