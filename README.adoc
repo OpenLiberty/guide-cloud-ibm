@@ -96,28 +96,37 @@ and see the official https://helm.sh/docs/using_helm/#from-the-binary-releases[I
 documentation for information about setting up `helm` on your platform.
 
 - *IBM Cloud CLI:* You will use the IBM Cloud CLI to interact with IBM Cloud. To install
-the IBM Cloud CLI for your platform, run one of the following commands: 
-+
-****
-[system]#*{mac}*#
-[role=command]
-```
-curl -fsSL https://clis.cloud.ibm.com/install/osx | sh
-```
-[system]#*{linux}*#
-[role=command]
-```
-curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-```
-[system]#*{win}*#
+the IBM Cloud CLI for your platform, run one of the following commands:
 
++
+
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 Open command prompt as an administrator and run the following command.
 
 [role=command]
 ```
 powershell -command "Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebClient).DownloadString('https://clis.cloud.ibm.com/install/powershell')"
 ```
-****
+--
+
+[.tab_content.mac_section]
+--
+[role=command]
+```
+curl -fsSL https://clis.cloud.ibm.com/install/osx | sh
+```
+--
+
+[.tab_content.linux_section]
+--
+[role=command]
+```
+curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+```
+--
 
 - *IBM Cloud Container Registry plug-in:*
 To install the container registry plug-in, run the following command:
@@ -231,22 +240,26 @@ guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1
 
 
 Once your cluster is ready, connect `kubectl` to the cluster.
-****
-[system]#*{linux} | {mac}*#
 
-[role=command]
-```
-eval $(ibmcloud ks cluster-config --export guide-cluster)
-```
-[system]#*{win}*#
+include::{common-includes}/os-tabs.adoc[]
 
+[.tab_content.windows_section]
+--
 [role=command]
 ```
 ibmcloud ks cluster-config --export guide-cluster > tmp-set-cluster.cmd
 call tmp-set-cluster.cmd
 del tmp-set-cluster.cmd
 ```
-****
+--
+
+[.tab_content.mac_section.linux_section]
+--
+[role=command]
+```
+eval $(ibmcloud ks cluster-config --export guide-cluster)
+```
+--
 
 Verify that you're connected to the cluster by checking the cluster's nodes.
 
@@ -370,7 +383,6 @@ docker push us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
 docker push us.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
 ```
 
-
 // =================================================================================================
 // Deploying the microservices
 // =================================================================================================
@@ -430,24 +442,10 @@ helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/rep
 // Deploy to IKS
 Use Helm to deploy the `system` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
 
-****
-[system]#*{linux} | {mac}*#
+include::{common-includes}/os-tabs.adoc[]
 
-[role=command]
-```
-helm install --name system-app \
-    --set image.repository=us.icr.io/[your-namespace]/system \
-    --set image.tag=1.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
-    --set service.name=system-service \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty
-```
-
-[system]#*{win}*#
-
+[.tab_content.windows_section]
+--
 [role=command]
 ```
 helm install --name system-app ^
@@ -460,29 +458,31 @@ helm install --name system-app ^
     --set ssl.enabled=false ^
     ibm-charts/ibm-open-liberty
 ```
+--
 
-****
+[.tab_content.mac_section.linux_section]
 
-Use Helm to deploy the `inventory` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
-
-****
-[system]#*{linux} | {mac}*#
-
+--
 [role=command]
 ```
-helm install --name inventory-app \
-    --set image.repository=us.icr.io/[your-namespace]/inventory \
+helm install --name system-app \
+    --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=1.0-SNAPSHOT \
     --set image.pullSecret=default-us-icr-io \
-    --set service.name=inventory-service \
+    --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
     --set ssl.enabled=false \
     ibm-charts/ibm-open-liberty
 ```
+--
 
-[system]#*{win}*#
+Use Helm to deploy the `inventory` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
 
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
 [role=command]
 ```
 helm install --name inventory-app ^
@@ -495,9 +495,23 @@ helm install --name inventory-app ^
     --set ssl.enabled=false ^
     ibm-charts/ibm-open-liberty
 ```
+--
 
-****
-
+[.tab_content.mac_section.linux_section]
+--
+[role=command]
+```
+helm install --name inventory-app \
+    --set image.repository=us.icr.io/[your-namespace]/inventory \
+    --set image.tag=1.0-SNAPSHOT \
+    --set image.pullSecret=default-us-icr-io \
+    --set service.name=inventory-service \
+    --set service.port=9080 \
+    --set service.targetPort=9080 \
+    --set ssl.enabled=false \
+    ibm-charts/ibm-open-liberty
+```
+--
 
 After you run `helm install`, an output is displayed providing instructions on how 
 to access your deployed microservices. Ignore these instructions for now, you will learn 
@@ -683,24 +697,10 @@ docker push us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 
 Use Helm to redeploy the `system` microservice.
 
-****
-[system]#*{linux} | {mac}*#
+include::{common-includes}/os-tabs.adoc[]
 
-[role=command]
-```
-helm upgrade \
-    --set image.repository=us.icr.io/[your-namespace]/system \
-    --set image.tag=2.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
-    --set service.name=system-service \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    system-app ibm-charts/ibm-open-liberty
-```
-
-[system]#*{win}*#
-
+[.tab_content.windows_section]
+--
 [role=command]
 ```
 helm upgrade ^
@@ -713,8 +713,23 @@ helm upgrade ^
     --set ssl.enabled=false ^
     system-app ibm-charts/ibm-open-liberty
 ```
+--
 
-****
+[.tab_content.mac_section.linux_section]
+--
+[role=command]
+```
+helm upgrade \
+    --set image.repository=us.icr.io/[your-namespace]/system \
+    --set image.tag=2.0-SNAPSHOT \
+    --set image.pullSecret=default-us-icr-io \
+    --set service.name=system-service \
+    --set service.port=9080 \
+    --set service.targetPort=9080 \
+    --set ssl.enabled=false \
+    system-app ibm-charts/ibm-open-liberty
+```
+--
 
 Use the following command to find the name of the pod that is running the `system` microservice.
 
