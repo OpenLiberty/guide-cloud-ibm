@@ -22,7 +22,7 @@
 :page-seo-title: Deploying Java microservices to IBM Cloud Kubernetes Service (IKS)
 :page-seo-description: A getting started tutorial with examples on how to deploy Java microservices to IBM Cloud Kubernetes Service (IKS) using IBM Cloud Container Registry and Helm.
 :guide-author: Open Liberty
-= Deploying microservices to IBM Cloud
+= Deploying microservices to IBM Cloud Kubernetes Service (IKS)
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website^].
