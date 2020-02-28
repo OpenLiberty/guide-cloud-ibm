@@ -14,6 +14,26 @@
     <artifactId>inventory</artifactId>
     <packaging>war</packaging>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- Plugins -->
+        <version.maven-war-plugin>3.2.3</version.maven-war-plugin>
+        <version.liberty-maven-plugin>3.2</version.liberty-maven-plugin>
+        <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
+        <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
+        <!-- OpenLiberty runtime -->
+        <liberty.var.default.http.port>9080</liberty.var.default.http.port>
+        <liberty.var.default.https.port>9443</liberty.var.default.https.port>
+        <!-- Default test properties -->
+        <test.cluster.ip>localhost</test.cluster.ip>
+        <test.system.kube.service>system-service</test.system.kube.service>
+        <test.system.node.port>31000</test.system.node.port>
+        <test.inventory.node.port>32000</test.inventory.node.port>
+    </properties>
+
     <dependencies>
        <dependency>
             <groupId>org.eclipse.microprofile</groupId>
@@ -22,10 +42,35 @@
             <type>pom</type>
             <scope>provided</scope>
        </dependency>
+        <!-- Java utility classes -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+        </dependency>
+        <!-- For tests-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>3.3.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-extension-providers</artifactId>
+            <version>3.3.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -53,6 +98,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${version.maven-failsafe-plugin}</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <cluster.ip>${test.cluster.ip}</cluster.ip>
+                        <inventory.node.port>${test.inventory.node.port}</inventory.node.port>
+                        <system.node.port>${test.system.node.port}</system.node.port>
+                        <system.kube.service>${test.system.kube.service}</system.kube.service>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>

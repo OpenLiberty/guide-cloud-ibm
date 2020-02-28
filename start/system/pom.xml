@@ -25,13 +25,11 @@
         <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
         <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
         <!-- OpenLiberty runtime -->
-        <http.port>9080</http.port>
-        <https.port>9443</https.port>
+        <liberty.var.default.http.port>9080</liberty.var.default.http.port>
+        <liberty.var.default.https.port>9443</liberty.var.default.https.port>
         <!-- Default test properties -->
-        <cluster.ip>localhost</cluster.ip>
-        <system.kube.service>system-service</system.kube.service>
-        <system.node.port>31000</system.node.port>
-        <inventory.node.port>32000</inventory.node.port>
+        <test.cluster.ip>localhost</test.cluster.ip>
+        <test.system.node.port>31000</test.system.node.port>
     </properties>
 
     <dependencies>
@@ -43,38 +41,37 @@
            <type>pom</type>
            <scope>provided</scope>
        </dependency>
-       <!-- Test dependencies -->
+        <!-- Java utility classes -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+        </dependency>
+        <!-- For tests-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.6.0</version>
             <scope>test</scope>
         </dependency>
-        <!-- <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-extension-providers</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-client</artifactId>
-        </dependency>
-        Support for JDK 9 and above
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
+            <version>3.3.5</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-extension-providers</artifactId>
+            <version>3.3.5</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.4</version>
+            <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-        </dependency> -->
     </dependencies>
 
     <build>
@@ -100,6 +97,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${version.maven-failsafe-plugin}</version>
+                <configuration>
+
+                </configuration>
             </plugin>
         </plugins>
     </build>
