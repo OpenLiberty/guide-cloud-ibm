@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 
 public class InventoryEndpointTest {
 
@@ -38,13 +39,13 @@ public class InventoryEndpointTest {
     private Client client;
     private Response response;
 
-    @BeforeClass
+    @BeforeAll
     public static void oneTimeSetup() {
-        String clusterIp = System.getProperty("cluster.ip");
-        String invNodePort = System.getProperty("inventory.node.port");
-        String sysNodePort = System.getProperty("system.node.port");
+        String clusterIp = System.getProperty("test.cluster.ip");
+        String invNodePort = System.getProperty("test.inventory.node.port");
+        String sysNodePort = System.getProperty("test.system.node.port");
         
-        sysKubeService = System.getProperty("system.kube.service");
+        sysKubeService = System.getProperty("test.system.kube.service");
         invUrl = "http://" + clusterIp + ":" + invNodePort + "/inventory/systems/";
         sysUrl = "http://" + clusterIp + ":" + sysNodePort + "/system/properties/";
     }
