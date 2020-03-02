@@ -42,9 +42,9 @@ public class InventoryEndpointIT {
 
     @BeforeAll
     public static void oneTimeSetup() {
-        String clusterIp = System.getProperty("cluster.ip");
-        String invNodePort = System.getProperty("inventory.node.port");
-        String sysNodePort = System.getProperty("system.node.port");
+        final String clusterIp = System.getProperty("cluster.ip");
+        final String invNodePort = System.getProperty("inventory.node.port");
+        final String sysNodePort = System.getProperty("system.node.port");
         
         sysKubeService = System.getProperty("system.kube.service");
         invUrl = "http://" + clusterIp + ":" + invNodePort + "/inventory/systems/";
@@ -55,7 +55,7 @@ public class InventoryEndpointIT {
     public void setup() {
         client = ClientBuilder.newBuilder()
                     .hostnameVerifier(new HostnameVerifier() {
-                        public boolean verify(String hostname, SSLSession session) {
+                        public boolean verify(final String hostname, final SSLSession session) {
                             return true;
                         }
                     })
@@ -83,13 +83,13 @@ public class InventoryEndpointIT {
 
     // tag::testEmptyInventory[]
     public void testEmptyInventory() {
-        Response response = this.getResponse(invUrl);
+        final Response response = this.getResponse(invUrl);
         this.assertResponse(invUrl, response);
 
-        JsonObject obj = response.readEntity(JsonObject.class);
+        final JsonObject obj = response.readEntity(JsonObject.class);
 
-        int expected = 0;
-        int actual = obj.getInt("total");
+        final int expected = 0;
+        final int actual = obj.getInt("total");
         assertEquals(expected, actual,
             "The inventory should be empty on application start but it wasn't");
 
@@ -101,17 +101,17 @@ public class InventoryEndpointIT {
     public void testHostRegistration() {
         this.visitSystemService();
 
-        Response response = this.getResponse(invUrl);
+        final Response response = this.getResponse(invUrl);
         this.assertResponse(invUrl, response);
 
-        JsonObject obj = response.readEntity(JsonObject.class);
+        final JsonObject obj = response.readEntity(JsonObject.class);
 
-        int expected = 1;
-        int actual = obj.getInt("total");
+        final int expected = 1;
+        final int actual = obj.getInt("total");
         assertEquals(expected, actual,
             "The inventory should have one entry for " + sysKubeService);
 
-        boolean serviceExists = obj.getJsonArray("systems").getJsonObject(0)
+        final boolean serviceExists = obj.getJsonArray("systems").getJsonObject(0)
                                     .get("hostname").toString()
                                     .contains(sysKubeService);
         assertTrue(serviceExists,
@@ -123,26 +123,26 @@ public class InventoryEndpointIT {
 
     // tag::testSystemPropertiesMatch[]
     public void testSystemPropertiesMatch() {
-        Response invResponse = this.getResponse(invUrl);
-        Response sysResponse = this.getResponse(sysUrl);
+        final Response invResponse = this.getResponse(invUrl);
+        final Response sysResponse = this.getResponse(sysUrl);
 
         this.assertResponse(invUrl, invResponse);
         this.assertResponse(sysUrl, sysResponse);
 
-        JsonObject jsonFromInventory = (JsonObject) invResponse.readEntity(JsonObject.class)
+        final JsonObject jsonFromInventory = (JsonObject) invResponse.readEntity(JsonObject.class)
                                                             .getJsonArray("systems")
                                                             .getJsonObject(0)
                                                             .get("properties");
 
-        JsonObject jsonFromSystem = sysResponse.readEntity(JsonObject.class);
+        final JsonObject jsonFromSystem = sysResponse.readEntity(JsonObject.class);
 
-        String osNameFromInventory = jsonFromInventory.getString("os.name");
-        String osNameFromSystem = jsonFromSystem.getString("os.name");
+        final String osNameFromInventory = jsonFromInventory.getString("os.name");
+        final String osNameFromSystem = jsonFromSystem.getString("os.name");
         this.assertProperty("os.name", sysKubeService, osNameFromSystem,
                             osNameFromInventory);
 
-        String userNameFromInventory = jsonFromInventory.getString("user.name");
-        String userNameFromSystem = jsonFromSystem.getString("user.name");
+        final String userNameFromInventory = jsonFromInventory.getString("user.name");
+        final String userNameFromSystem = jsonFromSystem.getString("user.name");
         this.assertProperty("user.name", sysKubeService, userNameFromSystem,
                             userNameFromInventory);
 
@@ -153,16 +153,16 @@ public class InventoryEndpointIT {
 
     // tag::testUnknownHost[]
     public void testUnknownHost() {
-        Response response = this.getResponse(invUrl);
+        final Response response = this.getResponse(invUrl);
         this.assertResponse(invUrl, response);
 
-        Response badResponse = client.target(invUrl + "badhostname")
+        final Response badResponse = client.target(invUrl + "badhostname")
             .request(MediaType.APPLICATION_JSON)
             .get();
 
-        String obj = badResponse.readEntity(String.class);
+        final String obj = badResponse.readEntity(String.class);
 
-        boolean isError = obj.contains("ERROR");
+        final boolean isError = obj.contains("ERROR");
         assertTrue(isError,
             "badhostname is not a valid host but it didn't raise an error");
 
@@ -184,7 +184,7 @@ public class InventoryEndpointIT {
      * @return Response object with the response from the specified URL.
      */
     // end::javadoc[]
-    private Response getResponse(String url) {
+    private Response getResponse(final String url) {
         return client.target(url).request().get();
     }
 
@@ -200,7 +200,7 @@ public class InventoryEndpointIT {
      *          - response received from the target URL.
      */
     // end::javadoc[]
-    private void assertResponse(String url, Response response) {
+    private void assertResponse(final String url, final Response response) {
         assertEquals(200, response.getStatus(),
             "Incorrect response code from " + url);
     }
@@ -220,8 +220,8 @@ public class InventoryEndpointIT {
      *          - actual name.
      */
     // end::javadoc[]
-    private void assertProperty(String propertyName, String hostname,
-        String expected, String actual) {
+    private void assertProperty(final String propertyName, final String hostname,
+        final String expected, final String actual) {
         assertEquals(expected, actual, "JVM system property [" + propertyName + "] "
         + "in the system service does not match the one stored in "
         + "the inventory service for " + hostname);
@@ -233,11 +233,11 @@ public class InventoryEndpointIT {
      */
     // end::javadoc[]
     private void visitSystemService() {
-        Response response = this.getResponse(sysUrl);
+        final Response response = this.getResponse(sysUrl);
         this.assertResponse(sysUrl, response);
         response.close();
 
-        Response targetResponse = client
+        final Response targetResponse = client
             .target(invUrl + sysKubeService)
             .request()
             .get();

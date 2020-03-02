@@ -24,13 +24,16 @@
         <version.maven-failsafe-plugin>2.22.2</version.maven-failsafe-plugin>
         <version.maven-war-plugin>3.2.3</version.maven-war-plugin>
         <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
-        <!-- Default values -->
-        <default.http.port>9080</default.http.port>
-        <default.https.port>9443</default.https.port>
-        <default.cluster.ip>localhost</default.cluster.ip>
+        <!-- Test values -->
+        <test.http.port>9080</test.http.port>
+        <test.https.port>9443</test.https.port>
+        <test.cluster.ip>localhost</test.cluster.ip>
+        <test.system.node.port>31000</test.system.node.port>
+        <test.inventory.node.port>32000</test.inventory.node.port>
+        <test.system.kube.service>system-service</test.system.kube.service>
         <!-- Open Liberty variables  -->
-        <liberty.var.default.http.port>${default.http.port}</liberty.var.default.http.port>
-        <liberty.var.default.https.port>${default.https.port}</liberty.var.default.https.port>
+        <liberty.var.default.http.port>9080</liberty.var.default.http.port>
+        <liberty.var.default.https.port>9443</liberty.var.default.https.port>
     </properties>
 
     <dependencies>
@@ -38,87 +41,67 @@
         <dependency>
             <groupId>org.eclipse.microprofile</groupId>
             <artifactId>microprofile</artifactId>
-            <version>3.2</version>
+            <version>3.3</version>
             <type>pom</type>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.5.2</version>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-extension-providers</artifactId>
+            <version>3.2.6</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-client</artifactId>
+            <version>3.2.6</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
+            <scope>compile</scope>
         </dependency>
         <!-- Support for JDK 9 and above -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
+            <version>2.3.0.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
+            <version>2.3.2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>update-deployment</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${version.exec-maven-plugin}</version>
-                        <executions>
-                            <execution>
-                                <id>update-kubernetes-deployment</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <configuration>
-                                    <workingDirectory>.</workingDirectory>
-                                    <!-- kubectl${kubectl.extension -->
-                                    <executable>kubectl</executable>
-                                    <arguments>
-                                        <argument>set</argument>
-                                        <argument>image</argument>
-                                        <argument>deployment/ol-${project.artifactId}-ibm-open-liberty</argument>
-                                        <argument>ibm-open-liberty=${project.artifactId}:${project.version}</argument>
-                                        <argument>--record</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <build>
         <finalName>${project.artifactId}</finalName>
@@ -126,6 +109,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>${version.maven-war-plugin}</version>
             </plugin>
             <plugin>
                 <groupId>io.openliberty.tools</groupId>
@@ -137,7 +121,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${version.maven-surefire-plugin}</version>
-
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -145,10 +128,10 @@
                 <version>${version.maven-failsafe-plugin}</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <test.http.port></test.http.port>
-                        <test.inventory.node.port></test.inventory.node.port>
-                        <test.system.node.port></test.system.node.port>
-                        <test.system.kube.service></test.system.kube.service>
+                        <http.port>${test.http.port}</http.port>
+                        <inventory.node.port>${test.inventory.node.port}</inventory.node.port>
+                        <system.node.port>${test.system.node.port}</system.node.port>
+                        <system.kube.service>${test.system.kube.service}</system.kube.service>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

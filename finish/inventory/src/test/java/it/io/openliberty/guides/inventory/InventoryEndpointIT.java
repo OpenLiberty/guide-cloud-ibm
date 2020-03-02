@@ -12,9 +12,6 @@
 // end::copyright[]
 package it.io.openliberty.guides.inventory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 import javax.ws.rs.client.Client;
@@ -24,13 +21,15 @@ import javax.json.JsonObject;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class InventoryEndpointTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class InventoryEndpointIT {
 
     private static String invUrl;
     private static String sysUrl;
@@ -50,7 +49,7 @@ public class InventoryEndpointTest {
         sysUrl = "http://" + clusterIp + ":" + sysNodePort + "/system/properties/";
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         response = null;
         client = ClientBuilder.newBuilder()
@@ -65,7 +64,7 @@ public class InventoryEndpointTest {
         client.target(invUrl + "reset").request().post(null);
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         client.close();
     }
@@ -90,8 +89,7 @@ public class InventoryEndpointTest {
 
         int expected = 0;
         int actual = obj.getInt("total");
-        assertEquals("The inventory should be empty on application start but it wasn't",
-                    expected, actual);
+        assertEquals(expected, actual, "The inventory should be empty on application start but it wasn't");
 
         response.close();
     }
@@ -108,14 +106,12 @@ public class InventoryEndpointTest {
 
         int expected = 1;
         int actual = obj.getInt("total");
-        assertEquals("The inventory should have one entry for " + sysKubeService, expected,
-                    actual);
+        assertEquals(expected, actual, "The inventory should have one entry for " + sysKubeService);
 
         boolean serviceExists = obj.getJsonArray("systems").getJsonObject(0)
                                     .get("hostname").toString()
                                     .contains(sysKubeService);
-        assertTrue("A host was registered, but it was not " + sysKubeService,
-                serviceExists);
+        assertTrue(serviceExists, "A host was registered, but it was not " + sysKubeService);
 
         response.close();
     }
@@ -163,8 +159,7 @@ public class InventoryEndpointTest {
         String obj = badResponse.readEntity(String.class);
 
         boolean isError = obj.contains("ERROR");
-        assertTrue("badhostname is not a valid host but it didn't raise an error",
-                isError);
+        assertTrue(isError, "badhostname is not a valid host but it didn't raise an error");
 
         response.close();
         badResponse.close();
@@ -201,8 +196,7 @@ public class InventoryEndpointTest {
      */
     // end::javadoc[]
     private void assertResponse(String url, Response response) {
-        assertEquals("Incorrect response code from " + url, 200,
-                    response.getStatus());
+        assertEquals(200, response.getStatus(), "Incorrect response code from " + url);
     }
 
     // tag::javadoc[]
@@ -222,9 +216,10 @@ public class InventoryEndpointTest {
     // end::javadoc[]
     private void assertProperty(String propertyName, String hostname,
         String expected, String actual) {
-        assertEquals("JVM system property [" + propertyName + "] "
-            + "in the system service does not match the one stored in "
-            + "the inventory service for " + hostname, expected, actual);
+        assertEquals(expected, actual,
+                "JVM system property [" + propertyName + "] "
+                        + "in the system service does not match the one stored in "
+                        + "the inventory service for " + hostname);
     }
 
     // tag::javadoc[]
