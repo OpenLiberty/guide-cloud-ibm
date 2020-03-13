@@ -98,7 +98,10 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${version.maven-failsafe-plugin}</version>
                 <configuration>
-
+                    <systemPropertyVariables>
+                        <cluster.ip>${test.cluster.ip}</cluster.ip>
+                        <system.node.port>${test.system.node.port}</system.node.port>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>

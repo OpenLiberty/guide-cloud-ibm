@@ -30,8 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import javax.json.JsonObject;
 import javax.ws.rs.core.MediaType;
 
-
-
 public class InventoryEndpointIT {
 
     private static String invUrl;
