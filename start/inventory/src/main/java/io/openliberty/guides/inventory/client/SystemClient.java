@@ -12,7 +12,10 @@
 // end::copyright[]
 package io.openliberty.guides.inventory.client;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation.Builder;
@@ -27,13 +30,13 @@ import java.net.URI;
 public class SystemClient {
 
   // Constants for building URI to the system service.
-  private final int DEFAULT_PORT = Integer.valueOf(System.getProperty("default.http.port"));
-  private final String SYSTEM_PROPERTIES = "/system/properties";
-  private final String PROTOCOL = "http";
+//  @Inject
+//  @ConfigProperty(name = "default.http.port")
+//  String SYS_HTTP_PORT;
 
   // Wrapper function that gets properties
   public Properties getProperties(String hostname) {
-    String url = buildUrl(PROTOCOL, hostname, DEFAULT_PORT, SYSTEM_PROPERTIES);
+    String url = "http://" + hostname + ":" + 9080 + "/system/properties";
     Builder clientBuilder = buildClientBuilder(url);
     return getPropertiesHelper(clientBuilder);
   }

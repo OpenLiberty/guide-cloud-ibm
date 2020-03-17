@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import io.openliberty.guides.inventory.model.InventoryList;
 import io.openliberty.guides.inventory.client.SystemClient;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @RequestScoped
 @Path("/systems")
@@ -32,25 +33,31 @@ public class InventoryResource {
   @Inject
   InventoryManager manager;
 
+//  @Inject
+//  SystemClient systemClient;
+
+  // Constants for building URI to the system service.
   @Inject
-  SystemClient systemClient;
+  @ConfigProperty(name = "default.http.port")
+  String SYS_HTTP_PORT;
 
   @GET
   @Path("/{hostname}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getPropertiesForHost(@PathParam("hostname") String hostname) {
+    return Response.ok("TESTING " + SYS_HTTP_PORT).build();
     // Get properties for host
-    Properties props = systemClient.getProperties(hostname);
-    if (props == null) {
-      return Response.status(Response.Status.NOT_FOUND)
-                     .entity("ERROR: Unknown hostname or the system service may not be " 
-                             + "running on " + hostname)
-                     .build();
-    }
-
-    // Add to inventory
-    manager.add(hostname, props);
-    return Response.ok(props).build();
+//    Properties props = systemClient.getProperties(hostname);
+//    if (props == null) {
+//      return Response.status(Response.Status.NOT_FOUND)
+//                     .entity("ERROR: Unknown hostname or the system service may not be "
+//                             + "running on " + hostname)
+//                     .build();
+//    }
+//
+//    // Add to inventory
+//    manager.add(hostname, props);
+//    return Response.ok(props).build();
   }
 
   @GET

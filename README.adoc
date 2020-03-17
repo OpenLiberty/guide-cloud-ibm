@@ -202,7 +202,7 @@ This command provisions a free cluster that expires in a month if you do not del
 
 [source, role="no_copy"]
 ----
-The 'machine-type' flag was not specified. So a free cluster will be created.
+The 'flavor' flag was not specified. So a free cluster will be created.
 Creating cluster...
 OK
 ----
@@ -393,46 +393,9 @@ https://helm.sh/[Helm^] is a package manager for {kube}. It allows you to create
 called a chart. You can install a chart on your cluster as a release and then manage the 
 release using Helm.
 
-// Setup Tiller for IKS
-Set up role-based access control (RBAC) to give Helm's Tiller server admin access to your 
-cluster. Deploy the service account and cluster role binding that is required for the Tiller.
-
-[role=command]
-```
-kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
-```
-
-[source, role="no_copy"]
-----
-serviceaccount/tiller created
-clusterrolebinding.rbac.authorization.k8s.io/tiller created
-----
-
-Next, install Tiller to your cluster. Specify that the Tiller should run under the service account that was created in the previous step.
-
-[role=command]
-```
-helm init --service-account tiller
-```
-
-After the command completes, you will see output similar to the following.
-
-[source, role="no_copy"]
-----
-$HELM_HOME has been configured at /Users/OpenLiberty/.helm.
-
-Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
-
-Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
-To prevent this, run `helm init` with the --tiller-tls-verify flag.
-For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
-Happy Helming!
-----
-
-All pods run under a service account. By default, your pod runs under the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
-
 // Add repo
-Add the `ibm-charts` repository to your local list of Helm repositories. Adding the repository allows you to use the `ibm-open-liberty` chart.
+Add the `ibm-charts` repository to your local list of Helm repositories.
+Adding the repository allows you to use the `ibm-open-liberty` chart.
 
 [role=command]
 ```
@@ -448,7 +411,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role=command]
 ```
-helm install --name system-app ^
+helm install system-app ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
     --set image.tag=1.0-SNAPSHOT ^
     --set image.pullSecret=default-us-icr-io ^
@@ -465,7 +428,7 @@ helm install --name system-app ^
 --
 [role=command]
 ```
-helm install --name system-app \
+helm install system-app \
     --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=1.0-SNAPSHOT \
     --set image.pullSecret=default-us-icr-io \
@@ -485,7 +448,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role=command]
 ```
-helm install --name inventory-app ^
+helm install inventory-app ^
     --set image.repository=us.icr.io/[your-namespace]/inventory ^
     --set image.tag=1.0-SNAPSHOT ^
     --set image.pullSecret=default-us-icr-io ^
@@ -501,7 +464,7 @@ helm install --name inventory-app ^
 --
 [role=command]
 ```
-helm install --name inventory-app \
+helm install inventory-app \
     --set image.repository=us.icr.io/[your-namespace]/inventory \
     --set image.tag=1.0-SNAPSHOT \
     --set image.pullSecret=default-us-icr-io \
@@ -517,9 +480,9 @@ After you run `helm install`, an output is displayed providing instructions on h
 to access your deployed microservices. Ignore these instructions for now, you will learn 
 how to access your microservices in the next section.
 
-The `--name` flag specifies the release name, which must be unique. This is the name that 
-Helm uses to identify this specific deployment of your chart. The following table gives 
-an overview for each of the parameters specified using `--set`.
+The string literal after `helm install` specifies the release name, which must be unique.
+This is the name that Helm uses to identify this specific deployment of your chart.
+The following table gives an overview for each of the parameters specified using `--set`.
 
 |===
 | *Parameter* | *Description*
@@ -553,10 +516,11 @@ Take note of the context shown in the command's output.
 
 [source, role="no_copy"]
 ----
-guide-cluster
+[current-context-name]/[current-context-ID]
 ----
 
-Then, substitute the context into the following command to get the public IP address of your cluster.
+Then, substitute `[current-context]` with `[current-context-name]` or `[current-context-id]` in the following command
+to get the public IP address of your cluster.
 
 [role=command]
 ```
