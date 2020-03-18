@@ -1,6 +1,6 @@
 // tag::copyright[]
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,11 +32,11 @@ public class SystemClient {
     // Constants for building URI to the system service.
     @Inject
     @ConfigProperty(name = "default.http.port")
-    String SYS_HTTP_PORT;
+    String DEFAULT_HTTP_PORT;
 
     // Wrapper function that gets properties
     public Properties getProperties(String hostname) {
-        String url = "http://" + hostname + ":" + SYS_HTTP_PORT + "/system/properties";
+        String url = "http://" + hostname + ":" + DEFAULT_HTTP_PORT + "/system/properties";
         Builder clientBuilder = buildClientBuilder(url);
         return getPropertiesHelper(clientBuilder);
     }
