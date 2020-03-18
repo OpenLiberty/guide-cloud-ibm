@@ -18,17 +18,15 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
 
-import javax.json.JsonObject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import javax.ws.rs.client.WebTarget;
 import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SystemEndpointIT {
 
@@ -43,30 +41,28 @@ public class SystemEndpointIT {
         String nodePort = System.getProperty("system.node.port");
         clusterUrl = "http://" + clusterIp + ":" + nodePort + "/system/properties/";
     }
-    
+
     @BeforeEach
     public void setup() {
         response = null;
-        client = ClientBuilder.newBuilder()
-                    .hostnameVerifier(new HostnameVerifier() {
-                        public boolean verify(String hostname, SSLSession session) {
-                            return true;
-                        }
-                    })
-                    .build();
+        client = ClientBuilder.newBuilder().hostnameVerifier(new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        }).build();
     }
 
     @AfterEach
     public void teardown() {
         client.close();
     }
-    
+
     @Test
     public void testPodNameNotNull() {
         response = this.getResponse(clusterUrl);
         this.assertResponse(clusterUrl, response);
         String greeting = response.getHeaderString("X-Pod-Name");
-        
+
         assertNotNull(greeting,
                 "Container name should not be null but it was. The service is probably not running inside a container");
     }
@@ -87,7 +83,7 @@ public class SystemEndpointIT {
      * <p>
      * Returns response information from the specified URL.
      * </p>
-     * 
+     *
      * @param url
      *          - target URL.
      * @return Response object with the response from the specified URL.
@@ -100,7 +96,7 @@ public class SystemEndpointIT {
      * <p>
      * Asserts that the given URL has the correct response code of 200.
      * </p>
-     * 
+     *
      * @param url
      *          - target URL.
      * @param response
