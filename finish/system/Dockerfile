@@ -2,7 +2,7 @@ FROM open-liberty
 ARG VERSION=1.0
 ARG REVISION=SNAPSHOT
 LABEL \
-  org.opencontainers.image.authors="Open Liberty" \
+  org.opencontainers.image.authors="Your Name" \
   org.opencontainers.image.vendor="Open Liberty" \
   org.opencontainers.image.url="local" \
   org.opencontainers.image.source="https://github.com/OpenLiberty/guide-cloud-ibm" \
