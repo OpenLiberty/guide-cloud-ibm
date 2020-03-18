@@ -90,8 +90,7 @@ instructions, refer to the official https://docs.docker.com/install/[Docker^] do
 {kube} cluster. See the official https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl[Install and Set Up kubectl^]
 documentation for information about downloading and setting up `kubectl` on your platform.
 
-- *Helm:* You will use the Helm Command Line Interface (CLI) to install Helm's Tiller to your
-{kube} cluster and to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases/tag/v2.13.1[Helm v2.13.1^]
+- *Helm:* You will use the Helm Command Line Interface (CLI) to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases[Helm^]
 and see the official https://helm.sh/docs/using_helm/#from-the-binary-releases[Installing Helm^] 
 documentation for information about setting up `helm` on your platform.
 
