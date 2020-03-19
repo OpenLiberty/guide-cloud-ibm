@@ -12,18 +12,22 @@
 // end::copyright[]
 package io.openliberty.guides.inventory;
 
+import io.openliberty.guides.inventory.model.InventoryList;
+import io.openliberty.guides.inventory.client.SystemClient;
+
 import java.util.Properties;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.POST;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import io.openliberty.guides.inventory.model.InventoryList;
-import io.openliberty.guides.inventory.client.SystemClient;
 
 @RequestScoped
 @Path("/systems")
