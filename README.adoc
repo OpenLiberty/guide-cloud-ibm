@@ -509,7 +509,7 @@ to get the public IP address of your cluster.
 
 [role=command]
 ```
-ibmcloud ks workers [current-context]
+ibmcloud ks workers --cluster [current-context]
 ```
 
 Take note of the `Public IP` in the command's output. This will be the hostname you 
