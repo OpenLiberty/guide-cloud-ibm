@@ -69,16 +69,6 @@ public class InventoryEndpointIT {
     }
 
     // tag::tests[]
-    // tag::testSuite[]
-    @Test
-    public void testSuite() {
-        this.testEmptyInventory();
-        this.testHostRegistration();
-        this.testSystemPropertiesMatch();
-        this.testUnknownHost();
-    }
-    // end::testSuite[]
-
     // tag::testEmptyInventory[]
     public void testEmptyInventory() {
         Response response = this.getResponse(invUrl);
