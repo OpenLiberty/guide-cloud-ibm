@@ -494,7 +494,7 @@ First, find the public IP address of your cluster.
 
 [role=command]
 ```
-ibmcloud ks workers --cluster [current-context]
+ibmcloud ks workers --cluster guide-cluster
 ```
 
 Take note of the `Public IP` in the command's output. This will be the hostname you 
