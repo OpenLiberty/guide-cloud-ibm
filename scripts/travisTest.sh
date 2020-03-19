@@ -62,7 +62,8 @@ printf "\ncurl http://$GUIDE_IP:$GUIDE_INVENTORY_PORT/inventory/systems/system-s
 curl http://$GUIDE_IP:$GUIDE_INVENTORY_PORT/inventory/systems/system-service
 
 printf "\nmvn failsafe:integration-test -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]\n"
-mvn mvn failsafe:integration-test -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dinventory.node.port=$GUIDE_INVENTORY_PORT
+mvn failsafe:integration-test -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dinventory.node.port=$GUIDE_INVENTORY_PORT
+mvn failsafe:verify
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)\n"
 kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)
