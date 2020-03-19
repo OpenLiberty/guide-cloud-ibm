@@ -194,7 +194,7 @@ to provision a cluster.
 
 [role=command]
 ```
-ibmcloud ks cluster-create --name guide-cluster
+ibmcloud ks cluster create classic --name guide-cluster
 ```
 
 This command provisions a free cluster that expires in a month if you do not delete it.
@@ -204,6 +204,7 @@ This command provisions a free cluster that expires in a month if you do not del
 The 'flavor' flag was not specified. So a free cluster will be created.
 Creating cluster...
 OK
+Cluster created with ID [cluster-id]
 ----
 
 Check the current status of your cluster.
@@ -240,25 +241,10 @@ guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1
 
 Once your cluster is ready, connect `kubectl` to the cluster.
 
-include::{common-includes}/os-tabs.adoc[]
-
-[.tab_content.windows_section]
---
 [role=command]
 ```
-ibmcloud ks cluster-config --export guide-cluster > tmp-set-cluster.cmd
-call tmp-set-cluster.cmd
-del tmp-set-cluster.cmd
+ibmcloud ks cluster config --cluster guide-cluster
 ```
---
-
-[.tab_content.mac_section.linux_section]
---
-[role=command]
-```
-eval $(ibmcloud ks cluster-config --export guide-cluster)
-```
---
 
 Verify that you're connected to the cluster by checking the cluster's nodes.
 
