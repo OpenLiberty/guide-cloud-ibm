@@ -66,17 +66,19 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${version.maven-war-plugin}</version>
             </plugin>
+            <!-- Enable liberty-maven plugin -->
             <plugin>
                 <groupId>io.openliberty.tools</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
                 <version>${version.liberty-maven-plugin}</version>
             </plugin>
-            <!-- for tests -->
+            <!-- Plugin to run unit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${version.maven-surefire-plugin}</version>
             </plugin>
+            <!-- Plugin to run functional tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
