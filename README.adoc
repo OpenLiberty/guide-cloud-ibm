@@ -490,22 +490,7 @@ of our cluster. Note that there are other ways to expose your services such as u
 `LoadBalancer` service type or using an `Ingress`. In production, you would most likely 
 use an `Ingress`.
 
-First, find the current context of your cluster.
-
-[role=command]
-```
-kubectl config current-context
-```
-
-Take note of the context shown in the command's output.
-
-[source, role="no_copy"]
-----
-[current-context-name]/[current-context-ID]
-----
-
-Then, substitute `[current-context]` with `[current-context-name]` or `[current-context-id]` in the following command
-to get the public IP address of your cluster.
+First, find the public IP address of your cluster.
 
 [role=command]
 ```
