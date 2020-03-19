@@ -724,15 +724,8 @@ When you no longer need your deployed microservices, you can delete them with th
 
 [role=command]
 ```
-helm delete --purge system-app
-helm delete --purge inventory-app
-```
-
-Uninstall Tiller from your cluster by running the following Helm command.
-
-[role=command]
-```
-helm reset
+helm uninstall system-app
+helm uninstall inventory-app
 ```
 
 Log out of your container registry.
@@ -740,13 +733,14 @@ Log out of your container registry.
 [role=command]
 ```
 docker logout us.icr.io
+docker logout registry.ng.bluemix.net
 ```
 
 Remove your IKS cluster.
 
 [role=command]
 ```
-ibmcloud ks cluster-rm guide-cluster
+ibmcloud ks cluster rm guide-cluster
 ```
 
 Log out of the `ibmcloud` command line tool.
