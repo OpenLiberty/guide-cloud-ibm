@@ -574,7 +574,7 @@ Use the following command to run the integration tests against your cluster. Sub
 
 [role=command]
 ```
-mvn verify -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
+mvn failsafe:integration-test -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
 
 If the tests pass, you'll see an output similar to the following for each service respectively:
