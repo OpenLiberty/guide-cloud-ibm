@@ -12,28 +12,32 @@
 // end::copyright[]
 package it.io.openliberty.guides.inventory;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Response;
-
-import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
-import org.junit.jupiter.api.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.json.JsonObject;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
+
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+
+@TestMethodOrder(OrderAnnotation.class)
 public class InventoryEndpointIT {
 
     private static String invUrl;
     private static String sysUrl;
     private static String sysKubeService;
 
-    private Client client;
+    private static Client client;
 
     @BeforeAll
     public static void oneTimeSetup() {
@@ -44,24 +48,21 @@ public class InventoryEndpointIT {
         sysKubeService = System.getProperty("system.kube.service");
         invUrl = "http://" + clusterIp + ":" + invNodePort + "/inventory/systems/";
         sysUrl = "http://" + clusterIp + ":" + sysNodePort + "/system/properties/";
-    }
 
-    @BeforeEach
-    public void setup() {
         client = ClientBuilder.newBuilder()
-                .hostnameVerifier(new HostnameVerifier() {
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
-                    }
-                })
-                .build();
+        .hostnameVerifier(new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        })
+        .build();
 
         client.register(JsrJsonpProvider.class);
         client.target(invUrl + "reset").request().post(null);
     }
 
-    @AfterEach
-    public void teardown() {
+    @AfterAll
+    public static void teardown() {
         client.close();
     }
 
@@ -237,5 +238,4 @@ public class InventoryEndpointIT {
 
         targetResponse.close();
     }
-
 }

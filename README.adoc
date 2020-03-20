@@ -725,7 +725,7 @@ Remove your IKS cluster.
 
 [role=command]
 ```
-ibmcloud ks cluster rm guide-cluster
+ibmcloud ks cluster rm --cluster guide-cluster
 ```
 
 Log out of the `ibmcloud` command line tool.
