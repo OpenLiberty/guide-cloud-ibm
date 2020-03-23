@@ -194,7 +194,7 @@ to provision a cluster.
 
 [role=command]
 ```
-ibmcloud ks cluster-create --name guide-cluster
+ibmcloud ks cluster create classic --name guide-cluster
 ```
 
 This command provisions a free cluster that expires in a month if you do not delete it.
@@ -204,6 +204,7 @@ This command provisions a free cluster that expires in a month if you do not del
 The 'flavor' flag was not specified. So a free cluster will be created.
 Creating cluster...
 OK
+Cluster created with ID [cluster-id]
 ----
 
 Check the current status of your cluster.
@@ -240,25 +241,10 @@ guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1
 
 Once your cluster is ready, connect `kubectl` to the cluster.
 
-include::{common-includes}/os-tabs.adoc[]
-
-[.tab_content.windows_section]
---
 [role=command]
 ```
-ibmcloud ks cluster-config --export guide-cluster > tmp-set-cluster.cmd
-call tmp-set-cluster.cmd
-del tmp-set-cluster.cmd
+ibmcloud ks cluster config --cluster guide-cluster
 ```
---
-
-[.tab_content.mac_section.linux_section]
---
-[role=command]
-```
-eval $(ibmcloud ks cluster-config --export guide-cluster)
-```
---
 
 Verify that you're connected to the cluster by checking the cluster's nodes.
 
@@ -504,26 +490,11 @@ of our cluster. Note that there are other ways to expose your services such as u
 `LoadBalancer` service type or using an `Ingress`. In production, you would most likely 
 use an `Ingress`.
 
-First, find the current context of your cluster.
+First, find the public IP address of your cluster.
 
 [role=command]
 ```
-kubectl config current-context
-```
-
-Take note of the context shown in the command's output.
-
-[source, role="no_copy"]
-----
-[current-context-name]/[current-context-ID]
-----
-
-Then, substitute `[current-context]` with `[current-context-name]` or `[current-context-id]` in the following command
-to get the public IP address of your cluster.
-
-[role=command]
-```
-ibmcloud ks workers [current-context]
+ibmcloud ks workers --cluster guide-cluster
 ```
 
 Take note of the `Public IP` in the command's output. This will be the hostname you 
@@ -588,7 +559,7 @@ Use the following command to run the integration tests against your cluster. Sub
 
 [role=command]
 ```
-mvn verify -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
+mvn failsafe:integration-test -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
 
 If the tests pass, you'll see an output similar to the following for each service respectively:
@@ -612,11 +583,11 @@ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
  T E S T S
 -------------------------------------------------------
 Running it.io.openliberty.guides.inventory.InventoryEndpointIT
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.222 sec - in it.io.openliberty.guides.inventory.InventoryEndpointIT
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.222 sec - in it.io.openliberty.guides.inventory.InventoryEndpointIT
 
 Results:
 
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
 ----
 
 == Deploying new version of system microservice
@@ -718,13 +689,14 @@ View the events at the bottom of the command's output. Observe that the pod is u
 [source, role="no_copy"]
 ----
 Events:
-  Type     Reason     Age                From                   Message
-  ----     ------     ----               ----                   -------
-  Normal   Scheduled  47s                default-scheduler      Successfully assigned default/system-app-ibm-open-libe-84976bccfb-r22lj 172.173.65.24
-  Normal   Pulling    47s                kubelet, 172.173.65.24  pulling image "registry.ng.bluemix.net/[your-namespace/system:2.0-SNAPSHOT"
-  Normal   Pulled     40s                kubelet, 172.173.65.24  Successfully pulled image "registry.ng.bluemix.net/[your-namespace]/system:2.0-SNAPSHOT"
-  Normal   Created    40s                kubelet, 172.173.65.24  Created container
-  Normal   Started    39s                kubelet, 172.173.65.24  Started container
+  Type     Reason     Age    From                     Message
+  ----     ------     ----   ----                     -------
+  Normal   Scheduled  10m    default-scheduler        Successfully assigned default/system-app-ibm-open-libe-7f44456d97-mvjb8 to 10.144.188.209
+  Normal   Pulling    10m    kubelet, 10.144.188.209  Pulling image "us.icr.io/[your-namespace]/system:1.0-SNAPSHOT"
+  Normal   Pulled     10m    kubelet, 10.144.188.209  Successfully pulled image "us.icr.io/[your-namespace]/system:1.0-SNAPSHOT"
+  Normal   Created    10m    kubelet, 10.144.188.209  Created container ibm-open-liberty
+  Normal   Started    10m    kubelet, 10.144.188.209  Started container ibm-open-liberty
+  Warning  Unhealthy  9m58s  kubelet, 10.144.188.209  Readiness probe failed: Get http://172.30.200.205:9080/: dial tcp 172.30.200.205:9080: connect: connection refused
 ----
 
 // =================================================================================================
@@ -737,15 +709,8 @@ When you no longer need your deployed microservices, you can delete them with th
 
 [role=command]
 ```
-helm delete --purge system-app
-helm delete --purge inventory-app
-```
-
-Uninstall Tiller from your cluster by running the following Helm command.
-
-[role=command]
-```
-helm reset
+helm uninstall system-app
+helm uninstall inventory-app
 ```
 
 Log out of your container registry.
@@ -753,13 +718,14 @@ Log out of your container registry.
 [role=command]
 ```
 docker logout us.icr.io
+docker logout registry.ng.bluemix.net
 ```
 
 Remove your IKS cluster.
 
 [role=command]
 ```
-ibmcloud ks cluster-rm guide-cluster
+ibmcloud ks cluster rm --cluster guide-cluster
 ```
 
 Log out of the `ibmcloud` command line tool.

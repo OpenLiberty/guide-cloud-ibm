@@ -12,12 +12,12 @@
 // end::copyright[]
 package io.openliberty.guides.system;
 
-// CDI
 import javax.enterprise.context.RequestScoped;
+
 import javax.ws.rs.GET;
-// JAX-RS
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 

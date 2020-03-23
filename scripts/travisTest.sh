@@ -12,11 +12,6 @@ mvn -q package
 docker build -t system:1.0-SNAPSHOT system/.
 docker build -t inventory:1.0-SNAPSHOT inventory/.
 
-kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
-
-printf "\nhelm init\n"
-helm init --service-account tiller
-
 printf "\nsleep 20\n"
 sleep 20
 
@@ -24,7 +19,7 @@ printf "\nhelm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
 
 printf "\nhelm install ... system-app\n"
-helm install --name system-app \
+helm install system-app \
     --set image.repository=system \
     --set image.tag=1.0-SNAPSHOT \
     --set service.name=system-service \
@@ -37,7 +32,7 @@ printf "\n sleep 60\n"
 sleep 60
 
 printf "\nhelm install ... inventory-app\n"
-helm install --name inventory-app \
+helm install inventory-app \
     --set image.repository=inventory \
     --set image.tag=1.0-SNAPSHOT \
     --set service.name=inventory-service \
@@ -66,8 +61,9 @@ curl http://$GUIDE_IP:$GUIDE_SYSTEM_PORT/system/properties
 printf "\ncurl http://$GUIDE_IP:$GUIDE_INVENTORY_PORT/inventory/systems/system-service\n"
 curl http://$GUIDE_IP:$GUIDE_INVENTORY_PORT/inventory/systems/system-service
 
-printf "\nmvn verify -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]\n"
-mvn verify -Ddockerfile.skip=true -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dinventory.node.port=$GUIDE_INVENTORY_PORT 
+printf "\nmvn failsafe:integration-test -Ddockerfile.skip=true -Dcluster.ip=[ip-address] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]\n"
+mvn failsafe:integration-test -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dinventory.node.port=$GUIDE_INVENTORY_PORT
+mvn failsafe:verify
 
 printf "\nkubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)\n"
 kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)

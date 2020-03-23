@@ -12,19 +12,22 @@
 // end::copyright[]
 package io.openliberty.guides.inventory.client;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import java.util.Properties;
+import java.net.URI;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation.Builder;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.Properties;
-import java.net.URI;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @RequestScoped
 public class SystemClient {
