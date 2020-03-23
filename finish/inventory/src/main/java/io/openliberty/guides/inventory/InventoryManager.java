@@ -12,15 +12,15 @@
 // end::copyright[]
 package io.openliberty.guides.inventory;
 
+import io.openliberty.guides.inventory.model.InventoryList;
+import io.openliberty.guides.inventory.model.SystemData;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import io.openliberty.guides.inventory.client.SystemClient;
-import io.openliberty.guides.inventory.model.InventoryList;
-import io.openliberty.guides.inventory.model.SystemData;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 // tag::ApplicationScoped[]
 @ApplicationScoped
