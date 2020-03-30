@@ -218,24 +218,24 @@ Wait until your cluster is in the `normal` state before proceeding. It will star
 
 [role="no_copy"]
 ----
-Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
-guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   deploying   4 minutes ago   1         Dallas     1.10.11_1536   default 
+Name            ID                     State       Created          Workers   Location   Version       Resource Group Name   Provider   
+guide-cluster   bpp5ge4f0ck66fue46vg   deploying   4 minutes ago    1         par01      1.16.8_1526   Default               classic 
 ----
 
 Next, it will transition to the `pending` state.
 
 [role="no_copy"]
 ----
-Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
-guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   pending     19 minutes ago   1        Dallas     1.10.11_1536   default 
+Name            ID                     State    Created          Workers   Location   Version       Resource Group Name   Provider   
+guide-cluster   bpp5ge4f0ck66fue46vg   pending  16 minutes ago   1         par01      1.16.8_1526   Default               classic 
 ----
 
 Finally, it will transition to the `normal` state. It may take a while for IKS to prepare your cluster.
 
 [role="no_copy"]
 ----
-Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
-guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1         Dallas     1.10.11_1536   default 
+Name            ID                     State    Created      Workers   Location   Version       Resource Group Name   Provider   
+guide-cluster   bpp5ge4f0ck66fue46vg   normal   1 hour ago   1         par01      1.16.8_1526   Default               classic
 ----
 
 
@@ -256,7 +256,7 @@ kubectl get nodes
 [source, role="no_copy"]
 ----
 NAME           STATUS    ROLES     AGE       VERSION
-10.70.200.73   Ready     <none>    1h        v1.10.11+IKS
+10.70.200.73   Ready     <none>    1h        v1.16.8+IKS
 ----
 
 // =================================================================================================
@@ -267,7 +267,7 @@ NAME           STATUS    ROLES     AGE       VERSION
 
 In this section, you will learn how to deploy two microservices in Open Liberty containers to a {kube}
 cluster on IBM Cloud. You will build and containerize the `system` and `inventory` microservices,
-push them to a container registry and, then deploy them to your {kube} cluster. 
+push them to a container registry, and then deploy them to your {kube} cluster. 
 
 // =================================================================================================
 // Building and containerizing the microservices
@@ -480,6 +480,20 @@ The following table gives an overview for each of the parameters specified using
 | `ssl.enabled` | Specify if SSL is enabled
 |===
 
+Use the following command to find the status of the pods running the `system` and `inventory` microservices. Wait until the status of both microservices is `Running`.
+
+[role=command]
+```
+kubectl get pods
+```
+
+[source, role="no_copy"]
+----
+NAME                                        READY     STATUS    RESTARTS   AGE
+inventory-app-ibm-open-l-5c586b9cfc-h5zmg   1/1       Running   0          23s
+system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          23s
+----
+
 === Finding the microservice's IP address and ports
 
 The service used to expose our deployments has a type of `NodePort`. This means you can 
@@ -503,8 +517,8 @@ substitute into commands later in this guide.
 [role="no_copy"]
 ----
 OK
-ID                            Public IP       Private IP     Machine Type    State    Status   Zone    Version   
-kube-hou02-pad15e5f9-w1       172.173.65.24   10.77.198.71   free            normal   Ready    hou02   1.10.11_1538*
+ID                                                       Public IP         Private IP       Flavor   State    Status   Zone    Version   
+kube-bpp5ge4f0ck66fue46vg-guidecluste-default-00000048   159.122.179.207   10.144.188.209   free     normal   Ready    mil01   1.16.8_1526 
 ----
 
 Get the node port of the `system` microservice.
