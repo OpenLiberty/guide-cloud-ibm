@@ -687,8 +687,8 @@ kubectl get pods
 [source, role="no_copy"]
 ----
 NAME                                        READY     STATUS    RESTARTS   AGE
-inventory-app-ibm-open-l-5c586b9cfc-h5zmg   1/1       Running   0          23s
-system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          2m15sm
+inventory-app-ibm-open-l-5c586b9cfc-h5zmg   1/1       Running   0          5m
+system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          23s
 ----
 
 Observe that in this case the `system` microservice is running in the pod called `system-app-ibm-open-libe-84976bccfb-r22lj`. Substitute the name of your pod into the following command to see more details about the pod.
@@ -725,6 +725,13 @@ When you no longer need your deployed microservices, you can delete them with th
 ```
 helm uninstall system-app
 helm uninstall inventory-app
+```
+
+Remove the namespace you created in your container registry.
+
+[role=command]
+```
+ibmcloud cr namespace-rm [your-namespace]
 ```
 
 Log out of your container registry.
