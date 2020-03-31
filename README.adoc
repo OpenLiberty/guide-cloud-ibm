@@ -19,10 +19,10 @@
 :page-related-guides: ['kubernetes-intro', 'kubernetes-microprofile-config', 'kubernetes-microprofile-health', 'istio-intro']
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/master
 :source-highlighter: prettify
-:page-seo-title: Deploying microservices to IBM Cloud Kubernetes Service (IKS)
-:page-seo-description: A tutorial on how to deploy microservices to IKS using Helm and IBM Cloud Container Registry.
+:page-seo-title: Deploying Java microservices to IBM Cloud Kubernetes Service (IKS)
+:page-seo-description: A getting started tutorial with examples on how to deploy Java microservices to IBM Cloud Kubernetes Service (IKS) using IBM Cloud Container Registry and Helm.
 :guide-author: Open Liberty
-= Deploying microservices to IBM Cloud
+= Deploying microservices to IBM Cloud Kubernetes Service (IKS)
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website^].
