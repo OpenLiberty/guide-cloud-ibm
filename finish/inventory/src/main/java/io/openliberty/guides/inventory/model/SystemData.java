@@ -1,6 +1,6 @@
 // tag::copyright[]
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,23 +20,23 @@ public class SystemData {
     private final Properties properties;
 
     public SystemData(String hostname, Properties properties) {
-      this.hostname = hostname;
-      this.properties = properties;
+        this.hostname = hostname;
+        this.properties = properties;
     }
 
     public String getHostname() {
-      return hostname;
+        return hostname;
     }
 
     public Properties getProperties() {
-      return properties;
+        return properties;
     }
 
     @Override
     public boolean equals(Object host) {
-      if (host instanceof SystemData) {
-        return hostname.equals(((SystemData) host).getHostname());
-      }
-      return false;
+        if (host instanceof SystemData) {
+            return hostname.equals(((SystemData) host).getHostname());
+        }
+        return false;
     }
 }

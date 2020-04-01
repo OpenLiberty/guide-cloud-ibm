@@ -1,7 +1,7 @@
 // INSTRUCTION: Please remove all comments that start INSTRUCTION prior to commit. Most comments should be removed, although not the copyright.
 // INSTRUCTION: The copyright statement must appear at the top of the file
 //
-// Copyright (c) 2018, 2019 IBM Corporation and others.
+// Copyright (c) 2018, 2020 IBM Corporation and others.
 // Licensed under Creative Commons Attribution-NoDerivatives
 // 4.0 International (CC BY-ND 4.0)
 //   https://creativecommons.org/licenses/by-nd/4.0/
@@ -90,9 +90,8 @@ instructions, refer to the official https://docs.docker.com/install/[Docker^] do
 {kube} cluster. See the official https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl[Install and Set Up kubectl^]
 documentation for information about downloading and setting up `kubectl` on your platform.
 
-- *Helm:* You will use the Helm Command Line Interface (CLI) to install Helm's Tiller to your
-{kube} cluster and to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases/tag/v2.13.1[Helm v2.13.1^]
-and see the official https://helm.sh/docs/using_helm/#from-the-binary-releases[Installing Helm^] 
+- *Helm:* You will use the Helm Command Line Interface (CLI) to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases[Helm^]
+and see the official https://helm.sh/docs/intro/install/[Installing Helm^] 
 documentation for information about setting up `helm` on your platform.
 
 - *IBM Cloud CLI:* You will use the IBM Cloud CLI to interact with IBM Cloud. To install
@@ -195,16 +194,17 @@ to provision a cluster.
 
 [role=command]
 ```
-ibmcloud ks cluster-create --name guide-cluster
+ibmcloud ks cluster create classic --name guide-cluster
 ```
 
 This command provisions a free cluster that expires in a month if you do not delete it.
 
 [source, role="no_copy"]
 ----
-The 'machine-type' flag was not specified. So a free cluster will be created.
+The 'flavor' flag was not specified. So a free cluster will be created.
 Creating cluster...
 OK
+Cluster created with ID [cluster-id]
 ----
 
 Check the current status of your cluster.
@@ -218,48 +218,33 @@ Wait until your cluster is in the `normal` state before proceeding. It will star
 
 [role="no_copy"]
 ----
-Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
-guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   deploying   4 minutes ago   1         Dallas     1.10.11_1536   default 
+Name            ID                     State       Created          Workers   Location   Version       Resource Group Name   Provider   
+guide-cluster   bpp5ge4f0ck66fue46vg   deploying   4 minutes ago    1         par01      1.16.8_1526   Default               classic 
 ----
 
 Next, it will transition to the `pending` state.
 
 [role="no_copy"]
 ----
-Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
-guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   pending     19 minutes ago   1        Dallas     1.10.11_1536   default 
+Name            ID                     State    Created          Workers   Location   Version       Resource Group Name   Provider   
+guide-cluster   bpp5ge4f0ck66fue46vg   pending  16 minutes ago   1         par01      1.16.8_1526   Default               classic 
 ----
 
 Finally, it will transition to the `normal` state. It may take a while for IKS to prepare your cluster.
 
 [role="no_copy"]
 ----
-Name            ID                                 State       Created         Workers   Location   Version        Resource Group Name   
-guide-cluster   d1229f539ee902ca91g6d187c2dxy5s3   normal      4 hours ago     1         Dallas     1.10.11_1536   default 
+Name            ID                     State    Created      Workers   Location   Version       Resource Group Name   Provider   
+guide-cluster   bpp5ge4f0ck66fue46vg   normal   1 hour ago   1         par01      1.16.8_1526   Default               classic
 ----
 
 
 Once your cluster is ready, connect `kubectl` to the cluster.
 
-include::{common-includes}/os-tabs.adoc[]
-
-[.tab_content.windows_section]
---
 [role=command]
 ```
-ibmcloud ks cluster-config --export guide-cluster > tmp-set-cluster.cmd
-call tmp-set-cluster.cmd
-del tmp-set-cluster.cmd
+ibmcloud ks cluster config --cluster guide-cluster
 ```
---
-
-[.tab_content.mac_section.linux_section]
---
-[role=command]
-```
-eval $(ibmcloud ks cluster-config --export guide-cluster)
-```
---
 
 Verify that you're connected to the cluster by checking the cluster's nodes.
 
@@ -271,7 +256,7 @@ kubectl get nodes
 [source, role="no_copy"]
 ----
 NAME           STATUS    ROLES     AGE       VERSION
-10.70.200.73   Ready     <none>    1h        v1.10.11+IKS
+10.70.200.73   Ready     <none>    1h        v1.16.8+IKS
 ----
 
 // =================================================================================================
@@ -282,7 +267,7 @@ NAME           STATUS    ROLES     AGE       VERSION
 
 In this section, you will learn how to deploy two microservices in Open Liberty containers to a {kube}
 cluster on IBM Cloud. You will build and containerize the `system` and `inventory` microservices,
-push them to a container registry and, then deploy them to your {kube} cluster. 
+push them to a container registry, and then deploy them to your {kube} cluster. 
 
 // =================================================================================================
 // Building and containerizing the microservices
@@ -393,46 +378,9 @@ https://helm.sh/[Helm^] is a package manager for {kube}. It allows you to create
 called a chart. You can install a chart on your cluster as a release and then manage the 
 release using Helm.
 
-// Setup Tiller for IKS
-Set up role-based access control (RBAC) to give Helm's Tiller server admin access to your 
-cluster. Deploy the service account and cluster role binding that is required for the Tiller.
-
-[role=command]
-```
-kubectl apply -f https://raw.githubusercontent.com/IBM-Cloud/kube-samples/master/rbac/serviceaccount-tiller.yaml
-```
-
-[source, role="no_copy"]
-----
-serviceaccount/tiller created
-clusterrolebinding.rbac.authorization.k8s.io/tiller created
-----
-
-Next, install Tiller to your cluster. Specify that the Tiller should run under the service account that was created in the previous step.
-
-[role=command]
-```
-helm init --service-account tiller
-```
-
-After the command completes, you will see output similar to the following.
-
-[source, role="no_copy"]
-----
-$HELM_HOME has been configured at /Users/OpenLiberty/.helm.
-
-Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
-
-Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
-To prevent this, run `helm init` with the --tiller-tls-verify flag.
-For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
-Happy Helming!
-----
-
-All pods run under a service account. By default, your pod runs under the `default` service account for your namespace. Helm's Tiller server is running under the `tiller` service account. The `tiller` service account is bound to the cluster role `cluster-admin`. This role grants access to all resources in your cluster. Therefore, the Tiller server has access to all of your cluster's resources.
-
 // Add repo
-Add the `ibm-charts` repository to your local list of Helm repositories. Adding the repository allows you to use the `ibm-open-liberty` chart.
+Add the `ibm-charts` repository to your local list of Helm repositories.
+Adding the repository allows you to use the `ibm-open-liberty` chart.
 
 [role=command]
 ```
@@ -448,7 +396,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role=command]
 ```
-helm install --name system-app ^
+helm install system-app ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
     --set image.tag=1.0-SNAPSHOT ^
     --set image.pullSecret=default-us-icr-io ^
@@ -465,7 +413,7 @@ helm install --name system-app ^
 --
 [role=command]
 ```
-helm install --name system-app \
+helm install system-app \
     --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=1.0-SNAPSHOT \
     --set image.pullSecret=default-us-icr-io \
@@ -485,7 +433,7 @@ include::{common-includes}/os-tabs.adoc[]
 --
 [role=command]
 ```
-helm install --name inventory-app ^
+helm install inventory-app ^
     --set image.repository=us.icr.io/[your-namespace]/inventory ^
     --set image.tag=1.0-SNAPSHOT ^
     --set image.pullSecret=default-us-icr-io ^
@@ -501,7 +449,7 @@ helm install --name inventory-app ^
 --
 [role=command]
 ```
-helm install --name inventory-app \
+helm install inventory-app \
     --set image.repository=us.icr.io/[your-namespace]/inventory \
     --set image.tag=1.0-SNAPSHOT \
     --set image.pullSecret=default-us-icr-io \
@@ -517,9 +465,9 @@ After you run `helm install`, an output is displayed providing instructions on h
 to access your deployed microservices. Ignore these instructions for now, you will learn 
 how to access your microservices in the next section.
 
-The `--name` flag specifies the release name, which must be unique. This is the name that 
-Helm uses to identify this specific deployment of your chart. The following table gives 
-an overview for each of the parameters specified using `--set`.
+The string literal after `helm install` specifies the release name, which must be unique.
+This is the name that Helm uses to identify this specific deployment of your chart.
+The following table gives an overview for each of the parameters specified using `--set`.
 
 |===
 | *Parameter* | *Description*
@@ -532,6 +480,20 @@ an overview for each of the parameters specified using `--set`.
 | `ssl.enabled` | Specify if SSL is enabled
 |===
 
+Use the following command to find the status of the pods running the `system` and `inventory` microservices. Wait until the status of both microservices is `Running`.
+
+[role=command]
+```
+kubectl get pods
+```
+
+[source, role="no_copy"]
+----
+NAME                                        READY     STATUS    RESTARTS   AGE
+inventory-app-ibm-open-l-5c586b9cfc-h5zmg   1/1       Running   0          23s
+system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          23s
+----
+
 === Finding the microservice's IP address and ports
 
 The service used to expose our deployments has a type of `NodePort`. This means you can 
@@ -542,25 +504,11 @@ of our cluster. Note that there are other ways to expose your services such as u
 `LoadBalancer` service type or using an `Ingress`. In production, you would most likely 
 use an `Ingress`.
 
-First, find the current context of your cluster.
+First, find the public IP address of your cluster.
 
 [role=command]
 ```
-kubectl config current-context
-```
-
-Take note of the context shown in the command's output.
-
-[source, role="no_copy"]
-----
-guide-cluster
-----
-
-Then, substitute the context into the following command to get the public IP address of your cluster.
-
-[role=command]
-```
-ibmcloud ks workers [current-context]
+ibmcloud ks workers --cluster guide-cluster
 ```
 
 Take note of the `Public IP` in the command's output. This will be the hostname you 
@@ -569,8 +517,8 @@ substitute into commands later in this guide.
 [role="no_copy"]
 ----
 OK
-ID                            Public IP       Private IP     Machine Type    State    Status   Zone    Version   
-kube-hou02-pad15e5f9-w1       172.173.65.24   10.77.198.71   free            normal   Ready    hou02   1.10.11_1538*
+ID                                                       Public IP         Private IP       Flavor   State    Status   Zone    Version   
+kube-bpp5ge4f0ck66fue46vg-guidecluste-default-00000048   159.122.179.207   10.144.188.209   free     normal   Ready    mil01   1.16.8_1526 
 ----
 
 Get the node port of the `system` microservice.
@@ -625,10 +573,8 @@ Use the following command to run the integration tests against your cluster. Sub
 
 [role=command]
 ```
-mvn verify -Ddockerfile.skip=true -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
+mvn failsafe:integration-test -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
-
-The `dockerfile.skip` parameter is set to `true` in order to skip building a new container image.
 
 If the tests pass, you'll see an output similar to the following for each service respectively:
 
@@ -637,8 +583,8 @@ If the tests pass, you'll see an output similar to the following for each servic
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
-Running it.io.openliberty.guides.system.SystemEndpointTest
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.673 sec - in it.io.openliberty.guides.system.SystemEndpointTest
+Running it.io.openliberty.guides.system.SystemEndpointIT
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.673 sec - in it.io.openliberty.guides.system.SystemEndpointIT
 
 Results:
 
@@ -650,12 +596,12 @@ Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
 -------------------------------------------------------
  T E S T S
 -------------------------------------------------------
-Running it.io.openliberty.guides.inventory.InventoryEndpointTest
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.222 sec - in it.io.openliberty.guides.inventory.InventoryEndpointTest
+Running it.io.openliberty.guides.inventory.InventoryEndpointIT
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.222 sec - in it.io.openliberty.guides.inventory.InventoryEndpointIT
 
 Results:
 
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
 ----
 
 == Deploying new version of system microservice
@@ -741,8 +687,8 @@ kubectl get pods
 [source, role="no_copy"]
 ----
 NAME                                        READY     STATUS    RESTARTS   AGE
-inventory-app-ibm-open-l-5c586b9cfc-h5zmg   1/1       Running   0          23s
-system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          2m15sm
+inventory-app-ibm-open-l-5c586b9cfc-h5zmg   1/1       Running   0          5m
+system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          23s
 ----
 
 Observe that in this case the `system` microservice is running in the pod called `system-app-ibm-open-libe-84976bccfb-r22lj`. Substitute the name of your pod into the following command to see more details about the pod.
@@ -757,13 +703,14 @@ View the events at the bottom of the command's output. Observe that the pod is u
 [source, role="no_copy"]
 ----
 Events:
-  Type     Reason     Age                From                   Message
-  ----     ------     ----               ----                   -------
-  Normal   Scheduled  47s                default-scheduler      Successfully assigned default/system-app-ibm-open-libe-84976bccfb-r22lj 172.173.65.24
-  Normal   Pulling    47s                kubelet, 172.173.65.24  pulling image "registry.ng.bluemix.net/[your-namespace/system:2.0-SNAPSHOT"
-  Normal   Pulled     40s                kubelet, 172.173.65.24  Successfully pulled image "registry.ng.bluemix.net/[your-namespace]/system:2.0-SNAPSHOT"
-  Normal   Created    40s                kubelet, 172.173.65.24  Created container
-  Normal   Started    39s                kubelet, 172.173.65.24  Started container
+  Type     Reason     Age    From                     Message
+  ----     ------     ----   ----                     -------
+  Normal   Scheduled  10m    default-scheduler        Successfully assigned default/system-app-ibm-open-libe-7f44456d97-mvjb8 to 10.144.188.209
+  Normal   Pulling    10m    kubelet, 10.144.188.209  Pulling image "us.icr.io/[your-namespace]/system:1.0-SNAPSHOT"
+  Normal   Pulled     10m    kubelet, 10.144.188.209  Successfully pulled image "us.icr.io/[your-namespace]/system:1.0-SNAPSHOT"
+  Normal   Created    10m    kubelet, 10.144.188.209  Created container ibm-open-liberty
+  Normal   Started    10m    kubelet, 10.144.188.209  Started container ibm-open-liberty
+  Warning  Unhealthy  9m58s  kubelet, 10.144.188.209  Readiness probe failed: Get http://172.30.200.205:9080/: dial tcp 172.30.200.205:9080: connect: connection refused
 ----
 
 // =================================================================================================
@@ -776,15 +723,15 @@ When you no longer need your deployed microservices, you can delete them with th
 
 [role=command]
 ```
-helm delete --purge system-app
-helm delete --purge inventory-app
+helm uninstall system-app
+helm uninstall inventory-app
 ```
 
-Uninstall Tiller from your cluster by running the following Helm command.
+Remove the namespace you created in your container registry.
 
 [role=command]
 ```
-helm reset
+ibmcloud cr namespace-rm [your-namespace]
 ```
 
 Log out of your container registry.
@@ -792,13 +739,14 @@ Log out of your container registry.
 [role=command]
 ```
 docker logout us.icr.io
+docker logout registry.ng.bluemix.net
 ```
 
 Remove your IKS cluster.
 
 [role=command]
 ```
-ibmcloud ks cluster-rm guide-cluster
+ibmcloud ks cluster rm --cluster guide-cluster
 ```
 
 Log out of the `ibmcloud` command line tool.

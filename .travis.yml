@@ -18,7 +18,7 @@ before_script:
 - sudo minikube start --vm-driver=none --bootstrapper=kubeadm --kubernetes-version=v1.12.0 
 - minikube update-context 
 - sudo apt-get install -y --upgrade util-linux socat
-- wget https://storage.googleapis.com/kubernetes-helm/helm-v2.13.0-linux-amd64.tar.gz -q -O helm.tar.gz
+- wget https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz -q -O helm.tar.gz
 - tar -zxf helm.tar.gz
 - chmod +x ./linux-amd64/helm
 - sudo ln -s $(pwd)/linux-amd64/helm /usr/local/bin/helm
