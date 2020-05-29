@@ -50,12 +50,12 @@ public class InventoryEndpointIT {
         sysUrl = "http://" + clusterIp + ":" + sysNodePort + "/system/properties/";
 
         client = ClientBuilder.newBuilder()
-        .hostnameVerifier(new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        })
-        .build();
+                .hostnameVerifier(new HostnameVerifier() {
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                })
+                .build();
 
         client.register(JsrJsonpProvider.class);
         client.target(invUrl + "reset").request().post(null);
