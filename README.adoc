@@ -90,7 +90,7 @@ instructions, refer to the official https://docs.docker.com/install/[Docker^] do
 {kube} cluster. See the official https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl[Install and Set Up kubectl^]
 documentation for information about downloading and setting up `kubectl` on your platform.
 
-- *Helm:* You will use the Helm Command Line Interface (CLI) to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases[Helm^]
+- *Helm:* You will use the Helm command-line Interface (CLI) to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases[Helm^]
 and see the official https://helm.sh/docs/intro/install/[Installing Helm^] 
 documentation for information about setting up `helm` on your platform.
 
@@ -167,7 +167,7 @@ Before you can deploy your microservices, you must create a {kube} cluster on IB
 
 === Configuring IBM Cloud CLI
 
-Log in to IBM Cloud by using the `ibmcloud` command line.
+Log in to IBM Cloud by using the `ibmcloud` command-line session.
 When you are prompted to select a region, choose us-south. This allows you to create a 
 free cluster, which is limited to specific regions. Note that if you are using a federated 
 user ID, you will have to use the `--sso` flag to get a one-time code for single sign-on.
@@ -749,7 +749,7 @@ Remove your IKS cluster.
 ibmcloud ks cluster rm --cluster guide-cluster
 ```
 
-Log out of the `ibmcloud` command line tool.
+Log out of the `ibmcloud` command-line session tool.
 
 [role=command]
 ```
