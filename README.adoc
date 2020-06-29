@@ -708,8 +708,8 @@ Events:
   Type     Reason     Age    From                     Message
   ----     ------     ----   ----                     -------
   Normal   Scheduled  10m    default-scheduler        Successfully assigned default/system-app-ibm-open-libe-7f44456d97-mvjb8 to 10.144.188.209
-  Normal   Pulling    10m    kubelet, 10.144.188.209  Pulling image "us.icr.io/[your-namespace]/system:1.0-SNAPSHOT"
-  Normal   Pulled     10m    kubelet, 10.144.188.209  Successfully pulled image "us.icr.io/[your-namespace]/system:1.0-SNAPSHOT"
+  Normal   Pulling    10m    kubelet, 10.144.188.209  Pulling image "us.icr.io/[your-namespace]/system:2.0-SNAPSHOT"
+  Normal   Pulled     10m    kubelet, 10.144.188.209  Successfully pulled image "us.icr.io/[your-namespace]/system:2.0-SNAPSHOT"
   Normal   Created    10m    kubelet, 10.144.188.209  Created container ibm-open-liberty
   Normal   Started    10m    kubelet, 10.144.188.209  Started container ibm-open-liberty
   Warning  Unhealthy  9m58s  kubelet, 10.144.188.209  Readiness probe failed: Get http://172.30.200.205:9080/: dial tcp 172.30.200.205:9080: connect: connection refused
