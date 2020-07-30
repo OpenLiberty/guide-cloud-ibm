@@ -50,8 +50,8 @@ GUIDE_INVENTORY_PORT=`kubectl get service inventory-service -o jsonpath="{.spec.
 curl http://$GUIDE_IP:$GUIDE_SYSTEM_PORT/system/properties
 curl http://$GUIDE_IP:$GUIDE_INVENTORY_PORT/inventory/systems/system-service
 
-mvn -q failsafe:integration-test -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dinventory.node.port=$GUIDE_INVENTORY_PORT
-mvn -q failsafe:verify
+mvn failsafe:integration-test -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dinventory.node.port=$GUIDE_INVENTORY_PORT
+mvn failsafe:verify
 
 kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)
 kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep inventory)
