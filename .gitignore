@@ -22,4 +22,5 @@ README.html
 *.txt
 README.long.adoc
 .vscode/
+.idea/
 setup.*
