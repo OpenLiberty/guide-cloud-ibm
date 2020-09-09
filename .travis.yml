@@ -24,6 +24,10 @@ script:
 - chmod +x ./linux-amd64/helm
 - sudo ln -s $(pwd)/linux-amd64/helm /usr/local/bin/helm
 - ../scripts/travisTest.sh
+after_script:
+- docker images
+- if [[ "$TRAVIS_TEST_RESULT" == "0" ]]; then RESULT="passed"; else RESULT="failed"; fi
+- echo -e "\033[1;34m result:\033[0m\033[1;36m $RESULT \033[0m \n"
 notifications:
   slack:
     template:
