@@ -1,11 +1,4 @@
 #!/bin/bash
-
-##############################################################################
-##
-##  Travis CI test script
-##
-##############################################################################
-
 set -euxo pipefail
 
 mvn -q package
@@ -43,7 +36,7 @@ sleep 60
 
 kubectl get pods
 
-GUIDE_IP=`minikube ip`
+GUIDE_IP=$(minikube ip)
 GUIDE_SYSTEM_PORT=`kubectl get service system-service -o jsonpath="{.spec.ports[0].nodePort}"`
 GUIDE_INVENTORY_PORT=`kubectl get service inventory-service -o jsonpath="{.spec.ports[0].nodePort}"`
 
