@@ -9,7 +9,7 @@ do
     esac
 done
 
-sed -i "\#<artifactId>liberty-maven-plugin</artifactId>,\#<configuration>#a<install><runtimeUrl>https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/nightly/"$DATE"/"$DRIVER"</runtimeUrl></install>" system/pom.xml inventory/pom.xml
+sed -i "\#<artifactId>liberty-maven-plugin</artifactId>#a<install><runtimeUrl>https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/nightly/"$DATE"/"$DRIVER"</runtimeUrl></install>" system/pom.xml inventory/pom.xml
 cat system/pom.xml
 cat inventory/pom.xml
 

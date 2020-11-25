@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euxo pipefail
 
+export CHANGE_MINIKUBE_NONE_USER=true
+
 mvn -q package
 
 docker pull openliberty/open-liberty:kernel-java8-openj9-ubi
