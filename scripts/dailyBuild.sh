@@ -30,4 +30,4 @@ sudo apt-get install -y conntrack
 
 sudo minikube start --vm-driver=none --bootstrapper=kubeadm
 
-../scripts/testApp.sh
+sudo ../scripts/testApp.sh
