@@ -51,3 +51,8 @@ kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"
 
 helm uninstall system-app
 helm uninstall inventory-app
+
+# Clear .m2 cache and kill any remaining processes running
+rm -rf ~/.m2
+lsof -t -i tcp:$GUIDE_SYSTEM_PORT | xargs kill -9
+lsof -t -i tcp:$GUIDE_INVENTORY_PORT | xargs kill -9

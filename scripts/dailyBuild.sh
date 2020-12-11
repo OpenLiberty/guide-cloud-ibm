@@ -21,9 +21,6 @@ cat system/Dockerfile inventory/Dockerfile
 
 sudo ../scripts/testApp.sh
 
-# Clear .m2 cache
-rm -rf ~/.m2
-
 sleep 30
 
 echo "Test latest OpenLiberty Docker image"
