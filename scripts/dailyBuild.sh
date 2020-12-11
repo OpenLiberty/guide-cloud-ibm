@@ -31,4 +31,4 @@ cat system/Dockerfile inventory/Dockerfile
 
 docker pull "openliberty/daily:latest"
 
-../scripts/testApp.sh
+sudo ../scripts/testApp.sh
