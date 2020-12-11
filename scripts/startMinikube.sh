@@ -10,5 +10,3 @@ sudo apt-get update -y
 sudo apt-get install -y conntrack
 
 sudo minikube start --vm-driver=none --bootstrapper=kubeadm
-
-pwd
