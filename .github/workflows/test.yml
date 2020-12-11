@@ -29,7 +29,9 @@ jobs:
     - run: unset _JAVA_OPTIONS
     - name: Run tests
       run: |
+        pwd
         sudo ../scripts/startMinikube.sh
+        pwd
         sudo ../scripts/testApp.sh
     - name: Post tests
       if: always()
