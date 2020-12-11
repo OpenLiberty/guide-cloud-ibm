@@ -9,7 +9,7 @@ do
     esac
 done
 
-../scripts/startMinikube.sh
+sudo ../scripts/startMinikube.sh
 
 echo "Testing daily OpenLiberty image"
 
