@@ -21,6 +21,8 @@ cat system/Dockerfile inventory/Dockerfile
 
 sudo ../scripts/testApp.sh
 
+sleep 30
+
 echo "Test latest OpenLiberty Docker image"
 
 sed -i "s;FROM "$DOCKER_USERNAME"/olguides:"$BUILD";FROM openliberty/daily:latest;g" system/Dockerfile inventory/Dockerfile
