@@ -9,6 +9,8 @@ do
     esac
 done
 
+../scripts/startMinikube.sh
+
 echo "Testing daily OpenLiberty image"
 
 sed -i "\#<artifactId>liberty-maven-plugin</artifactId>#a<configuration><install><runtimeUrl>https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/nightly/"$DATE"/"$DRIVER"</runtimeUrl></install></configuration>" system/pom.xml inventory/pom.xml
