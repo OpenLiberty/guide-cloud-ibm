@@ -21,7 +21,7 @@ cat system/Dockerfile inventory/Dockerfile
 
 sudo ../scripts/testApp.sh
 
-sleep 30
+sudo ../scripts/stopMinikube.sh
 
 echo "Test latest OpenLiberty Docker image"
 
@@ -32,3 +32,5 @@ cat system/Dockerfile inventory/Dockerfile
 docker pull "openliberty/daily:latest"
 
 sudo ../scripts/testApp.sh
+
+sudo ../scripts/stopMinikube.sh
