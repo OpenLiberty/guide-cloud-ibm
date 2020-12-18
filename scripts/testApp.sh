@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euxo pipefail
 
+. ../scripts/startMinikube.sh
+
 mvn -q clean package
 
 docker pull openliberty/open-liberty:kernel-java8-openj9-ubi
@@ -52,5 +54,7 @@ kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"
 helm uninstall system-app
 helm uninstall inventory-app
 
-# Clear .m2 cache and kill any remaining processes running
+. ../scripts/stopMinikube.sh
+
+# Clear .m2 cache
 rm -rf ~/.m2
