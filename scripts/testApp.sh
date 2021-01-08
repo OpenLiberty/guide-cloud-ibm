@@ -1,19 +1,14 @@
 #!/bin/bash
-
-##############################################################################
-##
-##  Travis CI test script
-##
-##############################################################################
-
 set -euxo pipefail
 
-mvn -q package
+. ../scripts/startMinikube.sh
+
+mvn -q clean package
 
 docker pull openliberty/open-liberty:kernel-java8-openj9-ubi
 
-docker build -t system:1.0-SNAPSHOT system/.
-docker build -t inventory:1.0-SNAPSHOT inventory/.
+docker build --no-cache -t system:1.0-SNAPSHOT system/.
+docker build --no-cache -t inventory:1.0-SNAPSHOT inventory/.
 
 sleep 20
 
@@ -43,7 +38,7 @@ sleep 60
 
 kubectl get pods
 
-GUIDE_IP=`minikube ip`
+GUIDE_IP=$(minikube ip)
 GUIDE_SYSTEM_PORT=`kubectl get service system-service -o jsonpath="{.spec.ports[0].nodePort}"`
 GUIDE_INVENTORY_PORT=`kubectl get service inventory-service -o jsonpath="{.spec.ports[0].nodePort}"`
 
@@ -55,3 +50,11 @@ mvn failsafe:verify
 
 kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)
 kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep inventory)
+
+helm uninstall system-app
+helm uninstall inventory-app
+
+. ../scripts/stopMinikube.sh
+
+# Clear .m2 cache
+rm -rf ~/.m2
