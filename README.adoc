@@ -1,6 +1,3 @@
-// INSTRUCTION: Please remove all comments that start INSTRUCTION prior to commit. Most comments should be removed, although not the copyright.
-// INSTRUCTION: The copyright statement must appear at the top of the file
-//
 // Copyright (c) 2018, 2021 IBM Corporation and others.
 // Licensed under Creative Commons Attribution-NoDerivatives
 // 4.0 International (CC BY-ND 4.0)
@@ -54,8 +51,8 @@ more about Kubernetes, check out the https://openliberty.io/guides/kubernetes-in
 guide.
 
 There are different cloud-based solutions for running your Kubernetes workloads.
-A cloud-based infrastructure enables you to focus on developing your microservices without worrying about low-level infrastructure details for deployment. Using a cloud helps
-you to easily scale and manage your microservices in a high-availability setup.
+A cloud-based infrastructure enables you to focus on developing your microservices without worrying about low-level infrastructure details for deployment.
+Using a cloud helps you to easily scale and manage your microservices in a high-availability setup.
 
 IBM Cloud Kubernetes Service (IKS) is part of IBM’s public cloud offerings. It provides 
 a hosted Kubernetes cluster where you can deploy your microservices. You will use it with 
@@ -300,7 +297,8 @@ docker build -t inventory:1.0-SNAPSHOT inventory/.
 ```
 
 The `-t` flag in the `docker build` command allows the Docker image to be labeled (tagged) in the `name[:tag]` format. 
-The tag for an image describes the specific image version. If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
+The tag for an image describes the specific image version.
+If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
 
 During the build, you'll see various Docker messages describing what images are being downloaded and
 built. When the build finishes, run the following command to list all local Docker images:
@@ -482,7 +480,8 @@ The following table gives an overview for each of the parameters specified using
 | `ssl.enabled` | Specify if SSL is enabled
 |===
 
-Use the following command to find the status of the pods running the `system` and `inventory` microservices. Wait until the status of both microservices is `Running`.
+Use the following command to find the status of the pods running the `system` and `inventory` microservices.
+Wait until the status of both microservices is `Running`.
 
 [role=command]
 ```
@@ -764,8 +763,8 @@ ibmcloud logout
 
 == Great work! You're done!
 
-You have just deployed two microservices to IBM Cloud. You have learned to use Helm to install your microservices
-on a {kube} cluster using the Open Liberty helm chart.
+You have just deployed two microservices to IBM Cloud.
+You have learned to use Helm to install your microservices on a {kube} cluster using the Open Liberty helm chart.
 
 // Multipane
 include::{common-includes}/attribution.adoc[subs="attributes"]
