@@ -399,7 +399,7 @@ include::{common-includes}/os-tabs.adoc[]
 helm install system-app ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
     --set image.tag=1.0-SNAPSHOT ^
-    --set image.pullSecret=default-us-icr-io ^
+    --set image.pullSecret=all-icr-io ^
     --set service.name=system-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -416,7 +416,7 @@ helm install system-app ^
 helm install system-app \
     --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=1.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
+    --set image.pullSecret=all-icr-io \
     --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -436,7 +436,7 @@ include::{common-includes}/os-tabs.adoc[]
 helm install inventory-app ^
     --set image.repository=us.icr.io/[your-namespace]/inventory ^
     --set image.tag=1.0-SNAPSHOT ^
-    --set image.pullSecret=default-us-icr-io ^
+    --set image.pullSecret=all-icr-io ^
     --set service.name=inventory-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -452,7 +452,7 @@ helm install inventory-app ^
 helm install inventory-app \
     --set image.repository=us.icr.io/[your-namespace]/inventory \
     --set image.tag=1.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
+    --set image.pullSecret=all-icr-io \
     --set service.name=inventory-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -653,7 +653,7 @@ include::{common-includes}/os-tabs.adoc[]
 helm upgrade ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
     --set image.tag=2.0-SNAPSHOT ^
-    --set image.pullSecret=default-us-icr-io ^
+    --set image.pullSecret=all-icr-io ^
     --set service.name=system-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -669,7 +669,7 @@ helm upgrade ^
 helm upgrade \
     --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=2.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
+    --set image.pullSecret=all-icr-io \
     --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
