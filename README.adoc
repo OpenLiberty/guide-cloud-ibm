@@ -730,7 +730,7 @@ Remove your images from your registry.
 [role=command]
 ```
 ibmcloud cr image-rm us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
-ibmcloud cr image-rm us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
+ibmcloud cr image-rm us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
 ibmcloud cr image-rm us.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
 ```
 
