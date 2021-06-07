@@ -1,7 +1,4 @@
-// INSTRUCTION: Please remove all comments that start INSTRUCTION prior to commit. Most comments should be removed, although not the copyright.
-// INSTRUCTION: The copyright statement must appear at the top of the file
-//
-// Copyright (c) 2018, 2020 IBM Corporation and others.
+// Copyright (c) 2018, 2021 IBM Corporation and others.
 // Licensed under Creative Commons Attribution-NoDerivatives
 // 4.0 International (CC BY-ND 4.0)
 //   https://creativecommons.org/licenses/by-nd/4.0/
@@ -82,19 +79,19 @@ deploys and manages them as releases in your cluster.
 
 Before you begin, the following additional tools need to be installed:
 
-- *Docker:* You need a containerization software for building containers. {kube} 
+* *Docker:* You need a containerization software for building containers. {kube} 
 supports various container types, but you will use Docker in this guide. For installation 
 instructions, refer to the official https://docs.docker.com/install/[Docker^] documentation.
 
-- *kubectl:* You need the {kube} command-line tool `kubectl` to interact with your 
+* *kubectl:* You need the {kube} command-line tool `kubectl` to interact with your 
 {kube} cluster. See the official https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl[Install and Set Up kubectl^]
 documentation for information about downloading and setting up `kubectl` on your platform.
 
-- *Helm:* You will use the Helm Command Line Interface (CLI) to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases[Helm^]
+* *Helm:* You will use the Helm Command Line Interface (CLI) to manage releases in your {kube} cluster. Download https://github.com/helm/helm/releases[Helm^]
 and see the official https://helm.sh/docs/intro/install/[Installing Helm^] 
 documentation for information about setting up `helm` on your platform.
 
-- *IBM Cloud CLI:* You will use the IBM Cloud CLI to interact with IBM Cloud. To install
+* *IBM Cloud CLI:* You will use the IBM Cloud CLI to interact with IBM Cloud. To install
 the IBM Cloud CLI for your platform, run one of the following commands:
 
 +
@@ -127,7 +124,7 @@ curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
 ```
 --
 
-- *IBM Cloud Container Registry plug-in:*
+* *IBM Cloud Container Registry plug-in:*
 To install the container registry plug-in, run the following command:
 +
 [role=command]
@@ -136,7 +133,7 @@ ibmcloud plugin install container-registry
 ```
 
 
-- *IBM Cloud Kubernetes Service plug-in:* 
+* *IBM Cloud Kubernetes Service plug-in:* 
 To install the {kube} registry plug-in, run the following command:
 +
 [role=command]
@@ -290,7 +287,7 @@ To build these microservices, navigate to the `start` directory and run the foll
 mvn package
 ```
 
-include::{common-includes}/ol-kernel-docker-pull.adoc[]
+include::{common-includes}/ol-full-docker-pull.adoc[]
 
 Next, run the `docker build` commands to build container images for your application:
 [role='command']
@@ -317,7 +314,7 @@ Verify that the `system:1.0-SNAPSHOT` and `inventory:1.0-SNAPSHOT` images are li
 REPOSITORY                                              TAG
 system                                                  1.0-SNAPSHOT
 inventory                                               1.0-SNAPSHOT
-openliberty/open-liberty                                kernel-java8-openj9-ubi        
+openliberty/open-liberty                                full-java11-openj9-ubi        
 ----
 
 If you don't see the `system:1.0-SNAPSHOT` and `inventory:1.0-SNAPSHOT` images, then check the Maven
@@ -401,7 +398,7 @@ include::{common-includes}/os-tabs.adoc[]
 helm install system-app ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
     --set image.tag=1.0-SNAPSHOT ^
-    --set image.pullSecret=default-us-icr-io ^
+    --set image.pullSecret=all-icr-io ^
     --set service.name=system-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -418,7 +415,7 @@ helm install system-app ^
 helm install system-app \
     --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=1.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
+    --set image.pullSecret=all-icr-io \
     --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -438,7 +435,7 @@ include::{common-includes}/os-tabs.adoc[]
 helm install inventory-app ^
     --set image.repository=us.icr.io/[your-namespace]/inventory ^
     --set image.tag=1.0-SNAPSHOT ^
-    --set image.pullSecret=default-us-icr-io ^
+    --set image.pullSecret=all-icr-io ^
     --set service.name=inventory-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -454,7 +451,7 @@ helm install inventory-app ^
 helm install inventory-app \
     --set image.repository=us.icr.io/[your-namespace]/inventory \
     --set image.tag=1.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
+    --set image.pullSecret=all-icr-io \
     --set service.name=inventory-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -544,8 +541,8 @@ Take note of the IP address and ports. They are required to make the HTTP reques
 To make a request to the `system` and `inventory` microservices,  `curl` or visit the 
 following URLs to access your microservices, substituting the appropriate hostname and node ports:
 
-- `{system-api}`
-- `{inventory-api}/system-service`
+* `{system-api}`
+* `{inventory-api}/system-service`
 
 The first URL returns system properties and the name of the pod in an HTTP header called `X-Pod-Name`.
 To view the header, you can use the `-I` option in the `curl` when making a request to `{system-api}`.
@@ -654,7 +651,7 @@ include::{common-includes}/os-tabs.adoc[]
 helm upgrade ^
     --set image.repository=us.icr.io/[your-namespace]/system ^
     --set image.tag=2.0-SNAPSHOT ^
-    --set image.pullSecret=default-us-icr-io ^
+    --set image.pullSecret=all-icr-io ^
     --set service.name=system-service ^
     --set service.port=9080 ^
     --set service.targetPort=9080 ^
@@ -670,7 +667,7 @@ helm upgrade ^
 helm upgrade \
     --set image.repository=us.icr.io/[your-namespace]/system \
     --set image.tag=2.0-SNAPSHOT \
-    --set image.pullSecret=default-us-icr-io \
+    --set image.pullSecret=all-icr-io \
     --set service.name=system-service \
     --set service.port=9080 \
     --set service.targetPort=9080 \
@@ -727,6 +724,14 @@ When you no longer need your deployed microservices, you can delete them with th
 ```
 helm uninstall system-app
 helm uninstall inventory-app
+```
+
+Remove your images from your container registry.
+[role=command]
+```
+ibmcloud cr image-rm us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
+ibmcloud cr image-rm us.icr.io/[your-namespace]/system:2.0-SNAPSHOT
+ibmcloud cr image-rm us.icr.io/[your-namespace]/inventory:1.0-SNAPSHOT
 ```
 
 Remove the namespace you created in your container registry.
