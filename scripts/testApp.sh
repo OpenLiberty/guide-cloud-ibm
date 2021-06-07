@@ -1,11 +1,11 @@
 #!/bin/bash
 set -euxo pipefail
 
-. ../scripts/startMinikube.sh
+../scripts/startMinikube.sh
 
 mvn -q clean package
 
-docker pull openliberty/open-liberty:kernel-java8-openj9-ubi
+docker pull openliberty/open-liberty:full-java11-openj9-ubi
 
 docker build --no-cache -t system:1.0-SNAPSHOT system/.
 docker build --no-cache -t inventory:1.0-SNAPSHOT inventory/.
@@ -39,22 +39,22 @@ sleep 60
 kubectl get pods
 
 GUIDE_IP=$(minikube ip)
-GUIDE_SYSTEM_PORT=`kubectl get service system-service -o jsonpath="{.spec.ports[0].nodePort}"`
-GUIDE_INVENTORY_PORT=`kubectl get service inventory-service -o jsonpath="{.spec.ports[0].nodePort}"`
+GUIDE_SYSTEM_PORT=$(kubectl get service system-service -o jsonpath="{.spec.ports[0].nodePort}")
+GUIDE_INVENTORY_PORT=$(kubectl get service inventory-service -o jsonpath="{.spec.ports[0].nodePort}")
 
-curl http://$GUIDE_IP:$GUIDE_SYSTEM_PORT/system/properties
-curl http://$GUIDE_IP:$GUIDE_INVENTORY_PORT/inventory/systems/system-service
+curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties
+curl http://"$GUIDE_IP":"$GUIDE_INVENTORY_PORT"/inventory/systems/system-service
 
-mvn failsafe:integration-test -Dcluster.ip=$GUIDE_IP -Dsystem.node.port=$GUIDE_SYSTEM_PORT -Dinventory.node.port=$GUIDE_INVENTORY_PORT
+mvn failsafe:integration-test -Dcluster.ip="$GUIDE_IP" -Dsystem.node.port="$GUIDE_SYSTEM_PORT" -Dinventory.node.port="$GUIDE_INVENTORY_PORT"
 mvn failsafe:verify
 
-kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)
-kubectl logs $(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep inventory)
+kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)"
+kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep inventory)"
 
 helm uninstall system-app
 helm uninstall inventory-app
 
-. ../scripts/stopMinikube.sh
+../scripts/stopMinikube.sh
 
 # Clear .m2 cache
 rm -rf ~/.m2
