@@ -726,7 +726,7 @@ helm uninstall system-app
 helm uninstall inventory-app
 ```
 
-Remove your images from your registry.
+Remove your images from your container registry.
 [role=command]
 ```
 ibmcloud cr image-rm us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
