@@ -148,7 +148,7 @@ ibmcloud plugin install kubernetes-service
 [role=command]
 include::{common-includes}/gitclone.adoc[]
 
-// no "try what you'll build" section in this guide since it would be too long due to all setup the user will have to do.
+// no "try what you'll build" section in this guide because it would be too long due to all setup the user will have to do.
 
 // =================================================================================================
 // Creating a Kubernetes cluster on IBM Cloud
@@ -472,7 +472,7 @@ The following table gives an overview for each of the parameters specified using
 | *Parameter* | *Description*
 | `image.repository` | The name of your Docker image including registry/repository prefix
 | `image.tag` | The tag for your Docker image
-| `image.pullSecret` | The image pull secret, since the container registry is private
+| `image.pullSecret` | The image pull secret, because the container registry is private
 | `service.name` | The name of the service
 | `service.port` | The port exposed by the service
 | `service.targetPort` | The port exposed by the pod
@@ -495,11 +495,11 @@ system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          23s
 
 === Finding the microservice's IP address and ports
 
-The service used to expose our deployments has a type of `NodePort`. This means you can 
+The service used to expose your deployments has a type of `NodePort`. This means you can 
 access these services from outside of your cluster via a specific port. In this case,
 since `nodePort` is not specified, the ports are randomized so you must obtain 
 the ports before making requests to the services. You must also obtain the public IP address 
-of our cluster. Note that there are other ways to expose your services such as using a 
+of your cluster. Note that there are other ways to expose your services such as using a 
 `LoadBalancer` service type or using an `Ingress`. In production, you would most likely 
 use an `Ingress`.
 
