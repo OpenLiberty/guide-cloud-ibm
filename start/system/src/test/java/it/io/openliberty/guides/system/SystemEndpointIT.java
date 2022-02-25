@@ -15,8 +15,8 @@ package it.io.openliberty.guides.system;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import jakarta.net.ssl.HostnameVerifier;
-import jakarta.net.ssl.SSLSession;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -66,7 +66,8 @@ public class SystemEndpointIT {
         String greeting = response.getHeaderString("X-Pod-Name");
 
         assertNotNull(greeting,
-                "Container name should not be null but it was. The service is probably not running inside a container");
+                "Container name should not be null but it was."
+                + "The service is probably not running inside a container");
     }
 
     @Test
@@ -76,7 +77,8 @@ public class SystemEndpointIT {
         WebTarget target = client.target(clusterUrl);
         Response response = target.request().get();
 
-        assertEquals(200, response.getStatus(), "Incorrect response code from " + clusterUrl);
+        assertEquals(200, response.getStatus(), "Incorrect response code from "
+                    + clusterUrl);
         response.close();
     }
 
