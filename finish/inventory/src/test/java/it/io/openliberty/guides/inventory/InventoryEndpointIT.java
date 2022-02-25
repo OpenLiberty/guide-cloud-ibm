@@ -119,7 +119,8 @@ public class InventoryEndpointIT {
         this.assertResponse(invUrl, invResponse);
         this.assertResponse(sysUrl, sysResponse);
 
-        JsonObject jsonFromInventory = (JsonObject) invResponse.readEntity(JsonObject.class)
+        JsonObject jsonFromInventory = (JsonObject)
+                                       invResponse.readEntity(JsonObject.class)
                 .getJsonArray("systems")
                 .getJsonObject(0)
                 .get("properties");

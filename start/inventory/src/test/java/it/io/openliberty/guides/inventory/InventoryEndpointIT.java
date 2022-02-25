@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.json.JsonObject;
 
-import jakarta.net.ssl.HostnameVerifier;
-import jakarta.net.ssl.SSLSession;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -119,7 +119,8 @@ public class InventoryEndpointIT {
         this.assertResponse(invUrl, invResponse);
         this.assertResponse(sysUrl, sysResponse);
 
-        JsonObject jsonFromInventory = (JsonObject) invResponse.readEntity(JsonObject.class)
+        JsonObject jsonFromInventory = (JsonObject) invResponse
+                .readEntity(JsonObject.class)
                 .getJsonArray("systems")
                 .getJsonObject(0)
                 .get("properties");
