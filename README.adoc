@@ -286,7 +286,7 @@ If you don't see the `system:1.0-SNAPSHOT` and `inventory:1.0-SNAPSHOT` images, 
 
 === Pushing the images to a container registry
 
-Pushing the images to a registry enables the cluster to create pods by using your container images. Since it's a private repository, only users with access to your IBM Cloud account will have access to these images.
+Pushing the images to a registry enables the cluster to create pods by using your container images. It's a private repository so only users with access to your IBM Cloud account will have access to these images.
 
 The registry you will use is called IBM Cloud Container Registry. Use the container registry plug-in to create a namespace for your container images. The namespace must be unique within IBM Cloud for the region you selected, so choose something relevant that you'll remember for the duration of the guide.
 
@@ -441,7 +441,7 @@ system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          23s
 
 === Finding the microservice's IP address and ports
 
-The service used to expose your deployments has a type of `NodePort`. This means you can access these services from outside of your cluster via a specific port. In this case, since `nodePort` is not specified, the ports are randomized so you must obtain the ports before making requests to the services. You must also obtain the public IP address of your cluster. Note that there are other ways to expose your services such as using a `LoadBalancer` service type or using an `Ingress`. In production, you would most likely use an `Ingress`.
+The service used to expose your deployments has a type of `NodePort`. This means you can access these services from outside of your cluster via a specific port. In this case, `nodePort` is not specified so the ports are randomized so you must obtain the ports before making requests to the services. You must also obtain the public IP address of your cluster. Note that there are other ways to expose your services such as using a `LoadBalancer` service type or using an `Ingress`. In production, you would most likely use an `Ingress`.
 
 First, find the public IP address of your cluster.
 
