@@ -141,7 +141,7 @@ Before you can deploy your microservices, you must create a {kube} cluster on IB
 
 === Configuring IBM Cloud CLI
 
-Log in to IBM Cloud by using the `ibmcloud` command line. When you are prompted to select a region, choose us-south. This allows you to create a free cluster, which is limited to specific regions. Note that if you are using a federated user ID, you will have to use the `--sso` flag to get a one-time code for single sign-on.
+Log in to IBM Cloud by using the `ibmcloud` command line. When you are prompted to select a region, for example, choose `us-south`. This allows you to create a free cluster, which is limited to specific regions. Note that if you are using a federated user ID, you will have to use the `--sso` flag to get a one-time code for single sign-on.
 
 [role=command]
 ```
@@ -295,15 +295,21 @@ The registry you will use is called IBM Cloud Container Registry. Use the contai
 ibmcloud cr namespace-add [your-namespace]
 ```
 
-Use the plug-in again to log in to the container registry.
+Use the plug-in again to log in to the container registry and find out your registry name, for example, `us.icr.io`.
 
 [role=command]
 ```
 ibmcloud cr login
 ```
 
+[source, role="no_copy"]
+----
+Logging 'docker' in to 'us.icr.io'...
+Logged in to 'us.icr.io'.
+----
+
 // Tagging images
-Next, tag your container images with the relevant data about your registry. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
+Next, tag your container images with the relevant data about your registry. Remember to replace `us.icr.io` to your registry and `[your-namespace]` with the namespace you created earlier in the guide.
 
 [role=command]
 ```
@@ -312,7 +318,7 @@ docker tag inventory:1.0-SNAPSHOT us.icr.io/[your-namespace]/inventory:1.0-SNAPS
 ```
 
 // Pushing images
-Finally, push your images to the registry. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
+Finally, push your images to the registry. Remember to replace `us.icr.io` to your registry and `[your-namespace]` with the namespace you created earlier in the guide.
 
 [role=command]
 ```
@@ -337,7 +343,7 @@ helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/rep
 ```
 
 // Deploy to IKS
-Use Helm to deploy the `system` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
+Use Helm to deploy the `system` microservice. Remember to replace `us.icr.io` to your registry and `[your-namespace]` with the namespace you created earlier in the guide.
 
 include::{common-includes}/os-tabs.adoc[]
 
@@ -374,7 +380,7 @@ helm install system-app \
 ```
 --
 
-Use Helm to deploy the `inventory` microservice. Remember to replace `[your-namespace]` with the namespace you created earlier in the guide.
+Use Helm to deploy the `inventory` microservice. Remember to replace `us.icr.io` to your registry and `[your-namespace]` with the namespace you created earlier in the guide.
 
 include::{common-includes}/os-tabs.adoc[]
 
@@ -657,7 +663,8 @@ helm uninstall system-app
 helm uninstall inventory-app
 ```
 
-Remove your images from your container registry.
+Remove your images from your container registry. Remember to replace `us.icr.io` to your registry and `[your-namespace]` with the namespace you created earlier in the guide.
+
 [role=command]
 ```
 ibmcloud cr image-rm us.icr.io/[your-namespace]/system:1.0-SNAPSHOT
