@@ -674,7 +674,7 @@ Remove the namespace you created in your container registry.
 ibmcloud cr namespace-rm [your-namespace]
 ```
 
-Log out of your container registry.
+Log out of your container registry. Remember to replace `us.icr.io` to your registry.
 
 [role=command]
 ```
