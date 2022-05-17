@@ -643,8 +643,8 @@ kubectl get event --field-selector involvedObject.name=[pod-name]
 ---- 
 LAST SEEN   TYPE     REASON      OBJECT                                         MESSAGE
 12m         Normal   Scheduled   pod/system-app-ibm-open-libe-85c85949c-lb49d   Successfully assigned default/system-app-ibm-open-libe-85c85949c-lb49d to 10.144.182.122
-12m         Normal   Pulling     pod/system-app-ibm-open-libe-85c85949c-lb49d   Pulling image "us.icr.io/gkwan-ns/system:2.0-SNAPSHOT"
-12m         Normal   Pulled      pod/system-app-ibm-open-libe-85c85949c-lb49d   Successfully pulled image "us.icr.io/gkwan-ns/system:2.0-SNAPSHOT" in 6.8103423s
+12m         Normal   Pulling     pod/system-app-ibm-open-libe-85c85949c-lb49d   Pulling image "us.icr.io/[your-namespace]/system:2.0-SNAPSHOT"
+12m         Normal   Pulled      pod/system-app-ibm-open-libe-85c85949c-lb49d   Successfully pulled image "us.icr.io/[your-namespace]/system:2.0-SNAPSHOT" in 6.8103423s
 12m         Normal   Created     pod/system-app-ibm-open-libe-85c85949c-lb49d   Created container ibm-open-liberty
 12m         Normal   Started     pod/system-app-ibm-open-libe-85c85949c-lb49d   Started container ibm-open-liberty
 ----
