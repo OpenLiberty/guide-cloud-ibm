@@ -620,31 +620,28 @@ kubectl get pods
 
 [source, role="no_copy"]
 ----
-NAME                                        READY     STATUS    RESTARTS   AGE
-inventory-app-ibm-open-l-5c586b9cfc-h5zmg   1/1       Running   0          5m
-system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          23s
+NAME                                       READY    STATUS    RESTARTS   AGE
+inventory-app-ibm-open-l-994778cf7-fdkb5   1/1      Running   0          5m
+system-app-ibm-open-libe-85c85949c-lb49d   1/1      Running   0          23s
 ----
 
-Observe that in this case the `system` microservice is running in the pod called `system-app-ibm-open-libe-84976bccfb-r22lj`. Substitute the name of your pod into the following command to see more details about the pod.
+Observe that in this case the `system` microservice is running in the pod called `system-app-ibm-open-libe-85c85949c-lb49d`. Substitute the name of your pod into the following command to see more details about the pod.
 
 [role=command]
 ```
 kubectl describe pod [pod-name]
 ```
 
-View the events at the bottom of the command's output. Observe that the pod is using the new container image `system:2.0-SNAPSHOT`.
+Substitute the `[pod-name]` to your pod name into the following command. Run the command to view your pod events. Observe that the pod is using the new container image `system:2.0-SNAPSHOT`.
 
 [source, role="no_copy"]
-----
-Events:
-  Type     Reason     Age    From                     Message
-  ----     ------     ----   ----                     -------
-  Normal   Scheduled  10m    default-scheduler        Successfully assigned default/system-app-ibm-open-libe-7f44456d97-mvjb8 to 10.144.188.209
-  Normal   Pulling    10m    kubelet, 10.144.188.209  Pulling image "us.icr.io/[your-namespace]/system:1.0-SNAPSHOT"
-  Normal   Pulled     10m    kubelet, 10.144.188.209  Successfully pulled image "us.icr.io/[your-namespace]/system:1.0-SNAPSHOT"
-  Normal   Created    10m    kubelet, 10.144.188.209  Created container ibm-open-liberty
-  Normal   Started    10m    kubelet, 10.144.188.209  Started container ibm-open-liberty
-  Warning  Unhealthy  9m58s  kubelet, 10.144.188.209  Readiness probe failed: Get http://172.30.200.205:9080/: dial tcp 172.30.200.205:9080: connect: connection refused
+---- 
+LAST SEEN   TYPE     REASON      OBJECT                                         MESSAGE
+12m         Normal   Scheduled   pod/system-app-ibm-open-libe-85c85949c-lb49d   Successfully assigned default/system-app-ibm-open-libe-85c85949c-lb49d to 10.144.182.122
+12m         Normal   Pulling     pod/system-app-ibm-open-libe-85c85949c-lb49d   Pulling image "us.icr.io/gkwan-ns/system:2.0-SNAPSHOT"
+12m         Normal   Pulled      pod/system-app-ibm-open-libe-85c85949c-lb49d   Successfully pulled image "us.icr.io/gkwan-ns/system:2.0-SNAPSHOT" in 6.8103423s
+12m         Normal   Created     pod/system-app-ibm-open-libe-85c85949c-lb49d   Created container ibm-open-liberty
+12m         Normal   Started     pod/system-app-ibm-open-libe-85c85949c-lb49d   Started container ibm-open-liberty
 ----
 
 // =================================================================================================
