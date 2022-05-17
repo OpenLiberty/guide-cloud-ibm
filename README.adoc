@@ -634,6 +634,11 @@ kubectl describe pod [pod-name]
 
 Substitute the `[pod-name]` to your pod name into the following command. Run the command to view your pod events. Observe that the pod is using the new container image `system:2.0-SNAPSHOT`.
 
+[role=command]
+```
+kubectl get event --field-selector involvedObject.name=[pod-name]
+```
+
 [source, role="no_copy"]
 ---- 
 LAST SEEN   TYPE     REASON      OBJECT                                         MESSAGE
