@@ -707,7 +707,7 @@ ibmcloud logout
 
 == Great work! You're done!
 
-You have just deployed two microservices to IBM Cloud. You have learned to use Helm to install your microservices on a {kube} cluster using the Open Liberty helm chart.
+You just deployed two microservices to IBM Cloud. You learned to use Helm to install your microservices on a {kube} cluster by using the Open Liberty helm chart.
 
 // Multipane
 include::{common-includes}/attribution.adoc[subs="attributes"]
