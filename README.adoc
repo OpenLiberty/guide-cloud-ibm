@@ -625,7 +625,7 @@ inventory-app-ibm-open-l-994778cf7-fdkb5   1/1      Running   0          5m
 system-app-ibm-open-libe-85c85949c-lb49d   1/1      Running   0          23s
 ----
 
-Observe that in this case the `system` microservice is running in the pod called `system-app-ibm-open-libe-85c85949c-lb49d`. Substitute the name of your pod into the following command to see more details about the pod.
+In this case, the `system` microservice is running in the pod called `system-app-ibm-open-libe-85c85949c-lb49d`. Substitute the name of your pod into the following command to see more details about the pod.
 
 [role=command]
 ```
