@@ -541,7 +541,7 @@ Results:
 Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
 ----
 
-== Deploying new version of system microservice
+== Deploying a new version of system microservice
 
 Optionally, you might want to make changes to your microservice and redeploy the updated version. In this section, you will bump the version of the `system` microservice to `2.0-SNAPSHOT` and redeploy the new version of the microservice. You can redeploy a microservice by using Helm to upgrade the release.
 
