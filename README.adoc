@@ -46,7 +46,7 @@ You will learn how to deploy two microservices in Open Liberty containers to a {
 
 Kubernetes is an open source container orchestrator that automates many tasks involved in deploying, managing, and scaling containerized applications. If you would like to learn more about Kubernetes, check out the https://openliberty.io/guides/kubernetes-intro.html[Deploying microservices to Kubernetes^] guide.
 
-There are different cloud-based solutions for running your Kubernetes workloads. A cloud-based infrastructure enables you to focus on developing your microservices without worrying about low-level infrastructure details for deployment. Using a cloud helps you to easily scale and manage your microservices in a high-availability setup.
+Different cloud-based solutions are available to run your Kubernetes workloads. A cloud-based infrastructure enables you to focus on developing your microservices without worrying about low-level infrastructure details for deployment. Using a cloud helps you to easily scale and manage your microservices in a high-availability setup.
 
 IBM Cloud Kubernetes Service (IKS) is part of IBM’s public cloud offerings. It provides a hosted Kubernetes cluster where you can deploy your microservices. You will use it with IBM Cloud Container Registry, a private registry used to store and distribute your container images.
 
