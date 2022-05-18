@@ -494,7 +494,7 @@ The first URL returns system properties and the name of the pod in an HTTP heade
 
 == Testing microservices that are running on IBM Cloud
 
-A few tests are included for you to test the basic functionality of the microservices. If a test failure occurs, then you might have introduced a bug into the code. To run the tests, wait for all pods to be in the ready state before proceeding further. The default properties that are defined in the `pom.xml` are:
+A few tests are included for you to test the basic functionality of the microservices. If a test fails, then you might have introduced a bug into the code. To run the tests, wait until all pods are in the ready state before proceeding further. The default properties that are defined in the `pom.xml` file are:
 
 [cols="15, 100", options="header"]
 |===
