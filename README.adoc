@@ -454,7 +454,7 @@ First, find the public IP address of your cluster.
 ibmcloud ks workers --cluster guide-cluster
 ```
 
-Take note of the `Public IP` in the command's output. This will be the hostname you substitute into commands later in this guide.
+Take note of the `Public IP` in the command's output. You will substitute this value as the hostname into commands later in this guide.
 
 [role="no_copy"]
 ----
