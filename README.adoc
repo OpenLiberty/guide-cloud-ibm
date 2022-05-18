@@ -486,7 +486,7 @@ To make a request to the `system` and `inventory` microservices,  `curl` or visi
 * `{system-api}`
 * `{inventory-api}/system-service`
 
-The first URL returns system properties and the name of the pod in an HTTP header called `X-Pod-Name`. To view the header, you can use the `-I` option in the `curl` when making a request to `{system-api}`. The second URL adds properties from `system-service` to the inventory.
+The first URL returns system properties and the name of the pod in an HTTP header called `X-Pod-Name`. To view the header, you can use the `-I` option in the `curl` when making a request to  the `{system-api}` URL. The second URL adds properties from `system-service` to the inventory.
 
 // =================================================================================================
 // Testing microservices that are running on IBM Cloud
