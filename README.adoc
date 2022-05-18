@@ -445,7 +445,7 @@ system-app-ibm-open-libe-84976bccfb-r22lj   1/1       Running   0          23s
 
 === Finding the microservice's IP address and ports
 
-The service used to expose your deployments has a type of `NodePort`. This means you can access these services from outside of your cluster via a specific port. In this case, `nodePort` is not specified so the ports are randomized so you must obtain the ports before making requests to the services. You must also obtain the public IP address of your cluster. Note that there are other ways to expose your services such as using a `LoadBalancer` service type or using an `Ingress`. In production, you would most likely use an `Ingress`.
+The service used to expose your deployments has a type of `NodePort` service that enables you to access these services from outside of your cluster through a specific port. In this case, `nodePort` is not specified and the ports are randomized so you must obtain the ports before you make requests to the services. You must also obtain the public IP address of your cluster. Other ways to expose your services are available, such as by using a `LoadBalancer` service type or  an `Ingress` resource. In production, you typically use an `Ingress` resource.
 
 First, find the public IP address of your cluster.
 
