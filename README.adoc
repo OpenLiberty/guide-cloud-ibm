@@ -52,7 +52,7 @@ The IBM Cloud Kubernetes Service (IKS) is part of IBM’s public cloud offerings
 
 The two microservices you will deploy are called `system` and `inventory`. The `system` microservice returns the JVM system properties of the running container. It also returns the pod’s name in the HTTP header, making replicas easy to distinguish from each other. The `inventory` microservice adds the properties from the `system` microservice to the inventory. This configuration demonstrates how to establish communication between pods inside a cluster.
 
-You will use Helm to deploy these microservices to IBM Cloud using Open Liberty Helm charts. Helm is a package manager for {kube}. It uses templates to generate {kube} yaml files and then deploys and manages them as releases in your cluster. 
+You will use Helm to deploy these microservices to IBM Cloud by using Open Liberty Helm charts. Helm is a package manager for {kube}. It uses templates to generate {kube} YAML files and then deploys and manages them as releases in your cluster. 
 
 
 // =================================================================================================
