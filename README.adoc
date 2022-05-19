@@ -10,21 +10,21 @@
 :page-layout: guide
 :page-duration: 1 hour
 :page-releasedate: 2019-05-29
-:page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS).
+:page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service.
 :page-tags: ['Kubernetes', 'Docker', 'Cloud']
 :page-permalink: /guides/{projectid}
 :page-related-guides: ['kubernetes-intro', 'kubernetes-microprofile-config', 'kubernetes-microprofile-health', 'istio-intro']
 :common-includes: https://raw.githubusercontent.com/OpenLiberty/guides-common/prod
 :source-highlighter: prettify
-:page-seo-title: Deploying Java microservices to IBM Cloud Kubernetes Service (IKS)
-:page-seo-description: A getting started tutorial with examples on how to deploy Java microservices to IBM Cloud Kubernetes Service (IKS) using IBM Cloud Container Registry and Helm.
+:page-seo-title: Deploying Java microservices to IBM Cloud Kubernetes Service
+:page-seo-description: A getting started tutorial with examples on how to deploy Java microservices to IBM Cloud Kubernetes Service using IBM Cloud Container Registry and Helm.
 :guide-author: Open Liberty
-= Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+= Deploying microservices to IBM Cloud Kubernetes Service
 
 [.hidden]
 NOTE: This repository contains the guide documentation source. To view the guide in published form, view it on the https://openliberty.io/guides/{projectid}.html[Open Liberty website^].
 
-Explore how to deploy microservices to IBM Cloud Kubernetes Service (IKS).
+Explore how to deploy microservices to IBM Cloud Kubernetes Service.
 
 :minikube-ip: 192.168.99.100
 :kube: Kubernetes
@@ -48,7 +48,7 @@ Kubernetes is an open source container orchestrator that automates many tasks in
 
 Different cloud-based solutions are available to run your Kubernetes workloads. A cloud-based infrastructure enables you to focus on developing your microservices without worrying about low-level infrastructure details for deployment. Using a cloud helps you to easily scale and manage your microservices in a high-availability setup.
 
-The IBM Cloud Kubernetes Service (IKS) is part of IBM’s public cloud offerings. It provides a hosted Kubernetes cluster where you can deploy your microservices. In this guide, you will use it with the IBM Cloud Container Registry, which is a private registry that is used to store and distribute your container images.
+The IBM Cloud Kubernetes Service is part of IBM’s public cloud offerings. It provides a hosted Kubernetes cluster where you can deploy your microservices. In this guide, you will use it with the IBM Cloud Container Registry, which is a private registry that is used to store and distribute your container images.
 
 The two microservices you will deploy are called `system` and `inventory`. The `system` microservice returns the JVM system properties of the running container. It also returns the pod’s name in the HTTP header, making replicas easy to distinguish from each other. The `inventory` microservice adds the properties from the `system` microservice to the inventory. This configuration demonstrates how to establish communication between pods inside a cluster.
 
@@ -196,7 +196,7 @@ Name            ID                     State    Created          Workers   Locat
 guide-cluster   bpp5ge4f0ck66fue46vg   pending  16 minutes ago   1         par01      1.16.8_1526   Default               classic 
 ----
 
-Finally, it will transition to the `normal` state. It may take a while for IKS to prepare your cluster.
+Finally, it will transition to the `normal` state. It may take a while for the IBM Cloud Kubernetes Service to prepare your cluster.
 
 [role="no_copy"]
 ----
@@ -226,10 +226,10 @@ NAME           STATUS    ROLES     AGE       VERSION
 ----
 
 // =================================================================================================
-// Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+// Deploying microservices to IBM Cloud Kubernetes Service
 // =================================================================================================
 
-== Deploying microservices to IBM Cloud Kubernetes Service (IKS)
+== Deploying microservices to IBM Cloud Kubernetes Service
 
 In this section, you will learn how to deploy two microservices in Open Liberty containers to a {kube} cluster on IBM Cloud. You will build and containerize the `system` and `inventory` microservices, push them to a container registry, and then deploy them to your {kube} cluster. 
 
