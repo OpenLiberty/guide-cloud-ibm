@@ -13,4 +13,3 @@ apt-get update -y
 apt-get install -y conntrack
 
 sudo minikube start --driver=none --bootstrapper=kubeadm
-#eval $(minikube docker-env)
