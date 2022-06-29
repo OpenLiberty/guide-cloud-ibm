@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
 
-../scripts/startMinikube.sh
-
 mvn -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
@@ -56,8 +54,6 @@ kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{
 
 helm uninstall system-app
 helm uninstall inventory-app
-
-../scripts/stopMinikube.sh
 
 # Clear .m2 cache
 rm -rf ~/.m2
