@@ -7,6 +7,7 @@ sudo ln -s -f "$(pwd)/kubectl /usr/local/bin/kubectl"
 wget https://github.com/kubernetes/minikube/releases/download/v0.28.2/minikube-linux-amd64 -q -O minikube
 chmod +x minikube
 CHANGE_MINIKUBE_NONE_USER=true
+echo CHANGE_MINIKUBE_NONE_USER="$CHANGE_MINIKUBE_NONE_USER"
 
 apt-get update -y
 apt-get install -y conntrack
