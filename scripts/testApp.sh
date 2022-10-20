@@ -34,8 +34,7 @@ mvn failsafe:verify
 kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)"
 kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep inventory)"
 
-helm uninstall system-app
-helm uninstall inventory-app
+kubectl delete -f kubernetes.yaml
 
 ../scripts/stopMinikube.sh
 
