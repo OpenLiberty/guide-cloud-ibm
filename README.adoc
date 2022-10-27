@@ -337,7 +337,7 @@ A Kubernetes resource definition is a yaml file that contains a description of a
 
 [role="code_command hotspot", subs="quotes"]
 ----
-#Update the `kubernetes.yaml` file in the `start` directory.#
+#Replace the `kubernetes.yaml` file in the `start` directory.#
 `kubernetes.yaml`
 ----
 
