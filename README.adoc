@@ -486,7 +486,7 @@ Next, build the new version of the container image as `2.0-SNAPSHOT`:
 docker build -t system:2.0-SNAPSHOT system/.
 ```
 
-Since you built a new image, it will have to be pushed to the repository again.
+Since you built a new image, it will have to be pushed to the repository again. Remember to replace `us.icr.io to` your registry and `[your-namespace]` with the namespace you created earlier in the guide.
 
 // Tagging images
 Tag your container image with the relevant data about your registry.
