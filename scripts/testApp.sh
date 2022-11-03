@@ -13,31 +13,11 @@ docker pull icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
 docker build --no-cache -t system:1.0-SNAPSHOT system/.
 docker build --no-cache -t inventory:1.0-SNAPSHOT inventory/.
 
-sleep 20
+sed -i 's|us.icr.io/\[your-namespace\]/||g' kubernetes.yaml
 
-helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
+kubectl apply -f kubernetes.yaml
 
-helm install system-app \
-    --set image.repository=system \
-    --set image.tag=1.0-SNAPSHOT \
-    --set service.name=system-service \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty 
-
-sleep 60
-
-helm install inventory-app \
-    --set image.repository=inventory \
-    --set image.tag=1.0-SNAPSHOT \
-    --set service.name=inventory-service \
-    --set service.port=9080 \
-    --set service.targetPort=9080 \
-    --set ssl.enabled=false \
-    ibm-charts/ibm-open-liberty
-
-sleep 60
+sleep 120
 
 kubectl get pods
 
@@ -54,8 +34,7 @@ mvn failsafe:verify
 kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)"
 kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep inventory)"
 
-helm uninstall system-app
-helm uninstall inventory-app
+kubectl delete -f kubernetes.yaml
 
 ../scripts/stopMinikube.sh
 
