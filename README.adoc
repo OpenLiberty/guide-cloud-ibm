@@ -10,7 +10,7 @@
 :page-layout: guide-multipane
 :page-duration: 1 hour
 :page-releasedate: 2019-05-29
-:page-majorupdateddate: 2022-11-11
+:page-majorupdateddate: 2022-11-03
 :page-description: Explore how to deploy microservices to IBM Cloud Kubernetes Service.
 :page-tags: ['Kubernetes', 'Docker', 'Cloud']
 :page-permalink: /guides/{projectid}
