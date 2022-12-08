@@ -27,6 +27,7 @@ GUIDE_INVENTORY_PORT=$(kubectl get service inventory-service -o jsonpath="{.spec
 
 # if the following curl failed, wait for another 3 minutes
 curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties || sleep 180; kubectl get pods
+curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties || sleep 300; kubectl get pods
 curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties || kubectl delete -f kubernetes.yaml; ../scripts/stopMinikube.sh
 curl http://"$GUIDE_IP":"$GUIDE_INVENTORY_PORT"/inventory/systems/system-service
 
