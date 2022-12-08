@@ -14,6 +14,8 @@ docker build --no-cache -t system:1.0-SNAPSHOT system/.
 docker build --no-cache -t inventory:1.0-SNAPSHOT inventory/.
 
 sed -i 's|us.icr.io/\[your-namespace\]/||g' kubernetes.yaml
+sed -i 's=nodePort: 31000==g' kubernetes.yaml
+sed -i 's=nodePort: 32000==g' kubernetes.yaml
 
 kubectl apply -f kubernetes.yaml
 
