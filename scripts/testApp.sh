@@ -3,7 +3,7 @@ set -euxo pipefail
 
 ../scripts/startMinikube.sh
 
-mvn -Dhttp.keepAlive=false \
+mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
     -q clean package
@@ -25,8 +25,8 @@ GUIDE_IP=$(minikube ip)
 GUIDE_SYSTEM_PORT=$(kubectl get service system-service -o jsonpath="{.spec.ports[0].nodePort}")
 GUIDE_INVENTORY_PORT=$(kubectl get service inventory-service -o jsonpath="{.spec.ports[0].nodePort}")
 
-# if the following curl failed, wait for another 2 minutes
-curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties || sleep 120; kubectl get pods; curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties
+# if the following curl failed, wait for another 3 minutes
+curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties || sleep 180; kubectl get pods; curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties
 curl http://"$GUIDE_IP":"$GUIDE_INVENTORY_PORT"/inventory/systems/system-service
 
 mvn failsafe:integration-test -Dcluster.ip="$GUIDE_IP" -Dsystem.node.port="$GUIDE_SYSTEM_PORT" -Dinventory.node.port="$GUIDE_INVENTORY_PORT"
