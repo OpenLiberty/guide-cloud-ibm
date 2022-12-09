@@ -34,3 +34,4 @@ minikube delete
 
 # start minikube with none driver
 minikube start --driver=none
+minikube config view
