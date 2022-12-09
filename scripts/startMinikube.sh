@@ -33,5 +33,5 @@ minikube stop
 minikube delete
 
 # start minikube with none driver
-minikube start --driver=none
+minikube start --memory 8192 --driver=none
 minikube config view
