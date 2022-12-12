@@ -29,9 +29,9 @@ tar zxvf "crictl-$VERSION-linux-amd64.tar.gz" -C /usr/local/bin
 rm -f "crictl-$VERSION-linux-amd64.tar.gz"
 
 # recreate minikube cluser
-minikube stop
-minikube delete
+sudo minikube stop
+sudo minikube delete
 
 # start minikube
-minikube start
-minikube config view
+sudo minikube start
+sudo minikube config view
