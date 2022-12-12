@@ -32,6 +32,6 @@ rm -f "crictl-$VERSION-linux-amd64.tar.gz"
 minikube stop
 minikube delete
 
-# start minikube with none driver
-minikube start --memory=2200mb --driver=none
+# start minikube
+minikube start
 minikube config view
