@@ -2,6 +2,7 @@
 set -euxo pipefail
 
 ../scripts/startMinikube.sh
+eval $(minikube -p minikube docker-env)
 
 mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
