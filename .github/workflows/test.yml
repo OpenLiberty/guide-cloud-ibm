@@ -51,7 +51,7 @@ jobs:
       id: minikube
       uses: medyagh/setup-minikube@master
     - name: Try the cluster !
-      run: kubectl get pods -A
+      run: kubectl get nodes
     - name: Set up JDK 8
       uses: actions/setup-java@v1
       with:
