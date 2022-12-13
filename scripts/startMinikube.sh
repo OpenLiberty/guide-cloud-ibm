@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # install Minikube prereqs for none driver
+CHANGE_MINIKUBE_NONE_USER=true
 
 # install conntrack
 apt-get update -y
@@ -36,3 +37,4 @@ minikube delete
 # start minikube with none driver
 minikube start --driver=none
 minikube config view
+kubectl get nodes
