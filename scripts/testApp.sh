@@ -2,7 +2,6 @@
 set -euxo pipefail
 
 #./scripts/startMinikube.sh
-eval "$(minikube -p minikube docker-env)"
 minikube config view
 
 mvn -Dhttp.keepAlive=false \
