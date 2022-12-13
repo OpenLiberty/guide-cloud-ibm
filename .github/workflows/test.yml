@@ -53,6 +53,8 @@ jobs:
         java-version: 8
     - run: unset _JAVA_OPTIONS
     - name: Run tests
+      env:
+        CHANGE_MINIKUBE_NONE_USER: true
       run: sudo ../scripts/testApp.sh
     - name: Post tests
       if: always()
