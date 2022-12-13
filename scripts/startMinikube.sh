@@ -4,8 +4,8 @@
 
 # install conntrack
 apt-get update -y
-#apt-get install -y conntrack
-#sysctl fs.protected_regular=0
+apt-get install -y conntrack
+sysctl fs.protected_regular=0
 
 # install and set up cri-dockerd
 #VER=$(curl -s https://api.github.com/repos/Mirantis/cri-dockerd/releases/latest|grep tag_name | cut -d '"' -f 4|sed 's/v//g')
