@@ -24,10 +24,10 @@ systemctl enable --now cri-docker.socket
 systemctl status cri-docker.socket
 
 # install crictl
-#VERSION="v1.25.0"
-#wget -q "https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-$VERSION-linux-amd64.tar.gz"
-#tar zxvf "crictl-$VERSION-linux-amd64.tar.gz" -C /usr/local/bin
-#rm -f "crictl-$VERSION-linux-amd64.tar.gz"
+VERSION="v1.25.0"
+wget -q "https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-$VERSION-linux-amd64.tar.gz"
+tar zxvf "crictl-$VERSION-linux-amd64.tar.gz" -C /usr/local/bin
+rm -f "crictl-$VERSION-linux-amd64.tar.gz"
 
 # recreate minikube cluser
 minikube stop
