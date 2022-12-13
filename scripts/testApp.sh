@@ -10,7 +10,7 @@ mvn -Dhttp.keepAlive=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
     -q clean package
 
-docker -q pull icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
+docker pull -q icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
 
 docker build --no-cache -t system:1.0-SNAPSHOT system/.
 docker build --no-cache -t inventory:1.0-SNAPSHOT inventory/.
