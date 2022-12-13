@@ -52,6 +52,18 @@ jobs:
       with:
         java-version: 8
     - run: unset _JAVA_OPTIONS
+    - uses: opsgang/ga-setup-minikube@v0.1.1
+      with:
+        minikube-version: 1.4.0
+        k8s-version: 1.15.1
+    - name: Testing
+      run: |
+        minikube config set vm-driver docker
+        minikube config set kubernetes-version v1.15.1
+        minikube start
+        minikube update-context
+        kubectl cluster-info
+        kubectl get nodes
     - name: Run tests
       run: sudo ../scripts/testApp.sh
     - name: Post tests
