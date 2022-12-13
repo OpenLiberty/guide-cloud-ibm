@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # install Minikube prereqs for none driver
-echo CHANGE_MINIKUBE_NONE_USER=${CHANGE_MINIKUBE_NONE_USER}
+echo CHANGE_MINIKUBE_NONE_USER="${CHANGE_MINIKUBE_NONE_USER}"
 
 # install conntrack
 apt-get update -y
