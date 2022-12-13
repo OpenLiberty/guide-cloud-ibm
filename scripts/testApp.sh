@@ -4,6 +4,8 @@ set -euxo pipefail
 #./scripts/startMinikube.sh
 minikube config view
 
+eval "$(minikube -p minikube docker-env)"
+        
 mvn -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
