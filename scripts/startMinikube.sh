@@ -38,3 +38,6 @@ minikube delete
 minikube start --driver=none
 minikube config view
 kubectl get nodes
+sleep 60
+kubectl get nodes
+
