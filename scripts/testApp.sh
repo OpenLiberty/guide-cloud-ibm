@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 
-../scripts/startMinikube.sh
+#../scripts/startMinikube.sh
 
 mvn -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
@@ -28,15 +28,15 @@ GUIDE_INVENTORY_PORT=$(kubectl get service inventory-service -o jsonpath="{.spec
 curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties
 curl http://"$GUIDE_IP":"$GUIDE_INVENTORY_PORT"/inventory/systems/system-service
 
-mvn failsafe:integration-test -Dcluster.ip="$GUIDE_IP" -Dsystem.node.port="$GUIDE_SYSTEM_PORT" -Dinventory.node.port="$GUIDE_INVENTORY_PORT"
-mvn failsafe:verify
+mvn -ntp failsafe:integration-test -Dcluster.ip="$GUIDE_IP" -Dsystem.node.port="$GUIDE_SYSTEM_PORT" -Dinventory.node.port="$GUIDE_INVENTORY_PORT"
+mvn -ntp failsafe:verify
 
 kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)"
 kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep inventory)"
 
 kubectl delete -f kubernetes.yaml
 
-../scripts/stopMinikube.sh
+#../scripts/stopMinikube.sh
 
 # Clear .m2 cache
 rm -rf ~/.m2
