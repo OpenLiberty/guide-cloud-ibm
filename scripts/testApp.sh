@@ -3,9 +3,7 @@ set -euxo pipefail
 
 #./scripts/startMinikube.sh
 minikube config view
-
-export SHELL=/bin/bash
-eval "$(minikube docker-env)"
+sleep 60
         
 mvn -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
