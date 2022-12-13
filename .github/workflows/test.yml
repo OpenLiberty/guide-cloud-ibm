@@ -52,18 +52,19 @@ jobs:
       with:
         java-version: 8
     - run: unset _JAVA_OPTIONS
-    - uses: opsgang/ga-setup-minikube@v0.1.1
+    - name: Start Minikube
+      id: minikube
+      uses: hiberbee/github-action-minikube@latest
       with:
-        minikube-version: 1.4.0
-        k8s-version: 1.15.1
-    - name: Testing
-      run: |
-        minikube config set vm-driver docker
-        minikube config set kubernetes-version v1.15.1
-        minikube start
-        minikube update-context
-        kubectl cluster-info
-        kubectl get nodes
+        profile: github
+    - name: Get Minikube status
+      run: minikube status
+    - name: Get cluster info
+      run: kubectl cluster-info
+    - name: Get Kubernetes pods
+      run: kubectl get services --all-namespaces
+    - name: Get Minikube IP
+      run: echo ${{ steps.minikube.outputs.ip }}
     - name: Run tests
       run: sudo ../scripts/testApp.sh
     - name: Post tests
