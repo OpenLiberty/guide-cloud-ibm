@@ -3,8 +3,6 @@ set -euxo pipefail
 
 #../scripts/startMinikube.sh
 
-cat ~/.kube/config
-
 mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
