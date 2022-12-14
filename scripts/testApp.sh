@@ -47,8 +47,8 @@ kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{
 kubectl delete -f kubernetes.yaml
 
 #../scripts/stopMinikube.sh
-eval "$(minikube docker-env -u)"
 minikube stop
+eval "$(minikube docker-env -u)"
 
 # Clear .m2 cache
 rm -rf ~/.m2
