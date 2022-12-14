@@ -19,7 +19,11 @@ docker pull -q icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
 docker build --no-cache -t system:1.0-SNAPSHOT system/.
 docker build --no-cache -t inventory:1.0-SNAPSHOT inventory/.
 
+docker images
+
 sed -i 's|us.icr.io/\[your-namespace\]/||g' kubernetes.yaml
+
+cat kubernetes.yaml
 
 kubectl apply -f kubernetes.yaml
 
