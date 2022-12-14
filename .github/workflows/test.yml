@@ -65,8 +65,10 @@ jobs:
       run: kubectl get services --all-namespaces
     - name: Get Minikube IP
       run: echo ${{ steps.minikube.outputs.ip }}
+    - name: Minikube config
+      run: minikube config view
     - name: Run tests
-      run: sudo ../scripts/testApp.sh
+      run: sudo ../scripts/testApp.sh ${{ steps.minikube.outputs.ip }}
     - name: Post tests
       if: always()
       run: docker images
