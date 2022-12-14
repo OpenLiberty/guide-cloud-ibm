@@ -20,4 +20,4 @@ sed -i "s;RUN features.sh;;g" system/Dockerfile inventory/Dockerfile
 
 cat system/Dockerfile inventory/Dockerfile
 
-sudo ../scripts/testApp.sh
+../scripts/testApp.sh
