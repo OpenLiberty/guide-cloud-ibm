@@ -3,7 +3,7 @@ set -euxo pipefail
 
 #../scripts/startMinikube.sh
 
-cat /etc/kubernetes/admin.conf
+cat ~/.kube/config
 
 mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
