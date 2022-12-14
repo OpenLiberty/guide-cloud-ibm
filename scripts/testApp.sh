@@ -9,6 +9,8 @@ kubectl cluster-info
 kubectl get services --all-namespaces
 kubectl config view
 
+eval "$(minikube docker-env)"
+
 mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
