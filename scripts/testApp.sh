@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
 
-whoami
-
 #../scripts/startMinikube.sh
 minikube start
 minikube status
