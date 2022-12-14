@@ -4,7 +4,8 @@ set -euxo pipefail
 #../scripts/startMinikube.sh
 
 echo "minikube.outputs.ip = $1"
-echo "DOCKER_HOST=${DOCKER_HOST}"
+echo "DOCKER_HOST=$DOCKER_HOST"
+cat /etc/kubernetes/admin.conf
 
 mvn -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
