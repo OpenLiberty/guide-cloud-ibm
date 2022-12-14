@@ -2,13 +2,11 @@
 set -euxo pipefail
 
 #../scripts/startMinikube.sh
-
 minikube start
 minikube status
-kubectl cluster-info
-kubectl get services --all-namespaces
-kubectl config view
-
+#kubectl cluster-info
+#kubectl get services --all-namespaces
+#kubectl config view
 eval "$(minikube docker-env)"
 
 mvn -ntp -Dhttp.keepAlive=false \
@@ -49,6 +47,8 @@ kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{
 kubectl delete -f kubernetes.yaml
 
 #../scripts/stopMinikube.sh
+eval $(minikube docker-env -u)
+minikube stop
 
 # Clear .m2 cache
 rm -rf ~/.m2
