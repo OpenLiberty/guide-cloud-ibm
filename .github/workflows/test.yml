@@ -68,7 +68,7 @@ jobs:
     - name: kubectl config view
       run: kubectl config view
     - name: Run tests
-      run: ../scripts/testApp.sh ${{ steps.minikube.outputs.ip }}
+      run: ../scripts/testApp.sh
     - name: Post tests
       if: always()
       run: docker images
