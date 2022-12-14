@@ -20,6 +20,4 @@ sed -i "s;RUN features.sh;;g" system/Dockerfile inventory/Dockerfile
 
 cat system/Dockerfile inventory/Dockerfile
 
-docker pull $DOCKER_USERNAME/olguides:$BUILD
-
 sudo -u runner ../scripts/testApp.sh
