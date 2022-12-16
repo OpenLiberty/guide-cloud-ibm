@@ -17,6 +17,6 @@ sed -i "s;FROM icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi;FROM op
 sed -i "s;RUN features.sh;;g" system/Dockerfile inventory/Dockerfile
 cat system/Dockerfile inventory/Dockerfile
 
-docker pull "openliberty/daily:latest"
+docker pull -q "openliberty/daily:latest"
 
 sudo -u runner ../scripts/testApp.sh
