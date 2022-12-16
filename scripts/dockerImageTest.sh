@@ -19,4 +19,4 @@ cat system/Dockerfile inventory/Dockerfile
 
 docker pull "openliberty/daily:latest"
 
-sudo ../scripts/testApp.sh
+sudo -u runner ../scripts/testApp.sh
