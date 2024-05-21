@@ -264,8 +264,8 @@ mvn package
 Next, run the `docker build` commands to build container images for your application:
 [role='command']
 ```
-docker build -t system:1.0-SNAPSHOT system/.
-docker build -t inventory:1.0-SNAPSHOT inventory/.
+docker build --platform linux/amd64 -t system:1.0-SNAPSHOT system/.
+docker build --platform linux/amd64 -t inventory:1.0-SNAPSHOT inventory/.
 ```
 
 The `-t` flag in the `docker build` command allows the Docker image to be labeled (tagged) in the `name[:tag]` format. The tag for an image describes the specific image version. If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
@@ -497,7 +497,7 @@ mvn package
 Next, build the new version of the container image as `2.0-SNAPSHOT`:
 [role=command]
 ```
-docker build -t system:2.0-SNAPSHOT system/.
+docker build --platform linux/amd64 -t system:2.0-SNAPSHOT system/.
 ```
 
 Since you built a new image, you need to push it to the repository again. In the following `docker` and `kubectl` commands, remember to replace `us.icr.io` with your registry and `[your-namespace]` with the namespace you created earlier in the guide.
