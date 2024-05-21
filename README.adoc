@@ -161,11 +161,12 @@ Retrieve the list of available Kubernetes zone for deploying the cluster within 
 ibmcloud ks zone ls --provider classic
 ```
 
+Replace `[available_zone]` with an available zone selected from the previous command. Then use the following command to retrieve the list of the available flavors of Kubernetes worker nodes for a zone.
+
 include::{common-includes}/os-tabs.adoc[]
 
 [.tab_content.windows_section]
 --
-Replace `[available_zone]` with an available zone selected from the previous command. Then use the following command to retrieve the list of the available flavors of Kubernetes worker nodes for a zone.
 
 [role=command]
 ```
@@ -192,11 +193,12 @@ ibmcloud ks flavor ls  --provider classic --zone $AVAILABLE_ZONE
 ```
 --
 
+Replace `[selected_flavor]` with an available flavor selected from the previous command. Then use the following command to create a Kubernetes cluster.
+
 include::{common-includes}/os-tabs.adoc[]
 
 [.tab_content.windows_section]
 --
-Replace `[selected_flavor]` with an available flavor selected from the previous command. Then use the following command to create a Kubernetes cluster.
 
 [role=command]
 ```
