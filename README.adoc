@@ -161,6 +161,8 @@ Retrieve the list of available Kubernetes zone for deploying the cluster within 
 ibmcloud ks zone ls --provider classic
 ```
 
+include::{common-includes}/os-tabs.adoc[]
+
 [.tab_content.windows_section]
 --
 Replace `[available_zone]` with an available zone selected from the previous command. Then use the following command to retrieve the list of the available flavors of Kubernetes worker nodes for a zone.
@@ -189,6 +191,8 @@ export AVAILABLE_ZONE=[available_zone]
 ibmcloud ks flavor ls  --provider classic --zone $AVAILABLE_ZONE
 ```
 --
+
+include::{common-includes}/os-tabs.adoc[]
 
 [.tab_content.windows_section]
 --
