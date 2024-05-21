@@ -162,18 +162,64 @@ ibmcloud ks zone ls --provider classic
 ```
 
 Replace `[available_zone]` with an available zone selected from the previous command. Then use the following command to retrieve the list of the available flavors of Kubernetes worker nodes for a zone.
+
+[.tab_content.windows_section]
+--
+
+[role=command]
+```
+set AVAILABLE_ZONE=[available_zone]
+ibmcloud ks flavor ls  --provider classic --zone $AVAILABLE_ZONE
+```
+--
+
+[.tab_content.mac_section]
+--
 [role=command]
 ```
 export AVAILABLE_ZONE=[available_zone]
 ibmcloud ks flavor ls  --provider classic --zone $AVAILABLE_ZONE
 ```
+--
+
+[.tab_content.linux_section]
+--
+[role=command]
+```
+export AVAILABLE_ZONE=[available_zone]
+ibmcloud ks flavor ls  --provider classic --zone $AVAILABLE_ZONE
+```
+--
 
 Replace `[selected_flavor]` with an available flavor selected from the previous command. Then use the following command to create a Kubernetes cluster.
+
+[.tab_content.windows_section]
+--
+
+[role=command]
+```
+set SELECTED_FLAVOR=[selected_flavor]
+ibmcloud ks cluster create classic --name guide-cluster --flavor $SELECTED_FLAVOR  --zone $AVAILABLE_ZONE
+```
+--
+
+[.tab_content.mac_section]
+--
 [role=command]
 ```
 export SELECTED_FLAVOR=[selected_flavor]
 ibmcloud ks cluster create classic --name guide-cluster --flavor $SELECTED_FLAVOR  --zone $AVAILABLE_ZONE
 ```
+--
+
+[.tab_content.linux_section]
+--
+[role=command]
+```
+export SELECTED_FLAVOR=[selected_flavor]
+ibmcloud ks cluster create classic --name guide-cluster --flavor $SELECTED_FLAVOR  --zone $AVAILABLE_ZONE
+```
+--
 
 You will see the following output:
 [source, role="no_copy"]
