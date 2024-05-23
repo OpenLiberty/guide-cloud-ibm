@@ -155,7 +155,7 @@ To create a {kube} cluster, you need `Administrator` access to IBM Cloud Kuberne
 
 Once you have confirmed that you have appropriate permissions, use the following commands to provision a cluster.
 
-Retrieve the list of available Kubernetes zone for deploying the cluster within the IBM Cloud classic infrastructure 
+Retrieve the list of available Kubernetes zone for deploying the cluster within the https://cloud.ibm.com/docs/containers?topic=containers-regions-and-zones#zones-sz[IBM Cloud classic infrastructure] 
 [role=command]
 ```
 ibmcloud ks zone ls --provider classic
@@ -163,67 +163,26 @@ ibmcloud ks zone ls --provider classic
 
 Replace `[available_zone]` with an available zone selected from the previous command. Then use the following command to retrieve the list of the available flavors of Kubernetes worker nodes for a zone.
 
-include::{common-includes}/os-tabs.adoc[]
+[role=command]
+```
+ibmcloud ks flavor ls  --provider classic --zone [available_zone]
+```
 
-[.tab_content.windows_section]
---
+You will see the following output: 
+[role="no_copy"]
+----
+For more information about these flavors, see 'https://ibm.biz/flavors'
+Name                      Cores   Memory   Network Speed   OS             Server Type   Storage   Secondary Storage   Flavor Class   Provider
+b3c.16x64                 16      64GB     1000Mbps        UBUNTU_20_64   virtual       25GB      100GB               -              classic
+b3c.16x64.300gb           16      64GB     1000Mbps        UBUNTU_20_64   virtual       25GB      300GB               -              classic
+----
+
+Replace `[selected_flavor]` with an available flavor selected from the output of the previous command, and replace `[available_zone]` with the previously used zone. Then use the following command to create a Kubernetes cluster.
 
 [role=command]
 ```
-set AVAILABLE_ZONE=[available_zone]
-ibmcloud ks flavor ls  --provider classic --zone $AVAILABLE_ZONE
+ibmcloud ks cluster create classic --name guide-cluster --flavor [selected_flavor] --zone [available_zone]
 ```
---
-
-[.tab_content.mac_section]
---
-[role=command]
-```
-export AVAILABLE_ZONE=[available_zone]
-ibmcloud ks flavor ls  --provider classic --zone $AVAILABLE_ZONE
-```
---
-
-[.tab_content.linux_section]
---
-[role=command]
-```
-export AVAILABLE_ZONE=[available_zone]
-ibmcloud ks flavor ls  --provider classic --zone $AVAILABLE_ZONE
-```
---
-
-Replace `[selected_flavor]` with an available flavor selected from the previous command. Then use the following command to create a Kubernetes cluster.
-
-include::{common-includes}/os-tabs.adoc[]
-
-[.tab_content.windows_section]
---
-
-[role=command]
-```
-set SELECTED_FLAVOR=[selected_flavor]
-ibmcloud ks cluster create classic --name guide-cluster --flavor $SELECTED_FLAVOR  --zone $AVAILABLE_ZONE
-```
---
-
-[.tab_content.mac_section]
---
-[role=command]
-```
-export SELECTED_FLAVOR=[selected_flavor]
-ibmcloud ks cluster create classic --name guide-cluster --flavor $SELECTED_FLAVOR  --zone $AVAILABLE_ZONE
-```
---
-
-[.tab_content.linux_section]
---
-[role=command]
-```
-export SELECTED_FLAVOR=[selected_flavor]
-ibmcloud ks cluster create classic --name guide-cluster --flavor $SELECTED_FLAVOR  --zone $AVAILABLE_ZONE
-```
---
 
 You will see the following output:
 [source, role="no_copy"]
@@ -318,7 +277,7 @@ docker build --platform linux/amd64 -t system:1.0-SNAPSHOT system/.
 docker build --platform linux/amd64 -t inventory:1.0-SNAPSHOT inventory/.
 ```
 
-The `-t` flag in the `docker build` command allows the Docker image to be labeled (tagged) in the `name[:tag]` format. The tag for an image describes the specific image version. If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
+The `--platform` flag in the `docker build` command allows user to specify the target platforms for the build output. As IBM Cloud Kubernetes service support both x86_64 and s390x architectures, the target platform will be `linux/amd64`. In addition, the `-t` flag in the command allows the Docker image to be labeled (tagged) in the `name[:tag]` format. The tag for an image describes the specific image version. If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
 
 During the build, you'll see various Docker messages describing what images are being downloaded and built. When the build finishes, run the following command to list all local Docker images:
 
@@ -347,7 +306,11 @@ If you don't see the `system:1.0-SNAPSHOT` and `inventory:1.0-SNAPSHOT` images, 
 
 Pushing the images to a registry enables the cluster to create pods by using your container images. It's a private repository so only users with access to your IBM Cloud account will have access to these images.
 
-The registry you will use is called IBM Cloud Container Registry. Use the container registry plug-in to create a namespace for your container images. The namespace must be unique within IBM Cloud for the region you selected, so choose something relevant that you'll remember for the duration of the guide.
+The registry you will use is called IBM Cloud Container Registry. Use the container registry plug-in to create a namespace for your container images. 
+
+To create, assign, and remove namespaces, you must have the Manager role in the Container Registry service at the account level. For more information, please visit https://cloud.ibm.com/docs/Registry?topic=Registry-registry_setup_cli_namespace#registry_setup_cli_namespace_plan_perm[User permissions for working with namespaces]
+
+The namespace must be unique within IBM Cloud for the region you selected, so choose something relevant that you'll remember for the duration of the guide.
 
 [role=command]
 ```
