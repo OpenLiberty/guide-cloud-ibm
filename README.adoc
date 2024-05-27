@@ -277,7 +277,7 @@ docker build --platform linux/amd64 -t system:1.0-SNAPSHOT system/.
 docker build --platform linux/amd64 -t inventory:1.0-SNAPSHOT inventory/.
 ```
 
-The `--platform` flag in the `docker build` command allows user to specify the target platforms for the build output. As IBM Cloud Kubernetes service support both x86_64 and s390x architectures, the target platform will be `linux/amd64`. In addition, the `-t` flag in the command allows the Docker image to be labeled (tagged) in the `name[:tag]` format. The tag for an image describes the specific image version. If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
+The `--platform` flag in the `docker build` command allows user to specify the target platforms for the build output. As IBM Cloud Kubernetes service support both `x86_64` and `s390x` architectures, the target platform will be `linux/amd64`. In addition, the `-t` flag in the command allows the Docker image to be labeled (tagged) in the `name[:tag]` format. The tag for an image describes the specific image version. If the optional `[:tag]` tag is not specified, the `latest` tag is created by default.
 
 During the build, you'll see various Docker messages describing what images are being downloaded and built. When the build finishes, run the following command to list all local Docker images:
 
