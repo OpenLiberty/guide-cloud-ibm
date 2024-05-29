@@ -153,7 +153,7 @@ ibmcloud login
 
 === Provisioning a cluster
 
-To create a {kube} cluster on IBM Cloud, you need Administrator access to IBM Cloud Kubernetes Service. To verify your Administrator access, log in to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. Then, navigate to **Manage** > **Access (IAM**) > **Users** > [Your Username] > **Access** > **Access Policies**`. Alternatively, if you are part of an access group, you also can check `**Manage** > **Access (IAM)** > **Access groups** > [Your Access Group] > **Access**`. Using these steps, you can confirm that `Administrator` is listed as a policy for all resources in the account or for the Kubernetes service.
+To create a {kube} cluster on IBM Cloud, you need Administrator access to IBM Cloud Kubernetes Service. To verify your Administrator access, log in to the https://cloud.ibm.com/[IBM Cloud Dashboard^]. Then, navigate to **Manage** > **Access (IAM**) > **Users** > [Your Username] > **Access** > **Access Policies**. Alternatively, if you are part of an access group, you also can check `**Manage** > **Access (IAM)** > **Access groups** > [Your Access Group] > **Access**. Using these steps, you can confirm that `Administrator` is listed as a policy for all resources in the account or for the Kubernetes service.
 
 Once you confirm that you have appropriate permissions, use the following commands to provision a cluster.
 
