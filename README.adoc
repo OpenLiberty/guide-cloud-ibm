@@ -309,7 +309,7 @@ Pushing the images to a registry enables the cluster to create pods by using you
 
 The registry you will use is called IBM Cloud Container Registry. Use the container registry plug-in to create a namespace for your container images. 
 
-To create, assign, and remove namespaces, you must have the Manager role in the Container Registry service at the account level. For more information, please visit https://cloud.ibm.com/docs/Registry?topic=Registry-registry_setup_cli_namespace#registry_setup_cli_namespace_plan_perm[User permissions for working with namespaces]
+To create, assign, and remove namespaces, you must have the Manager role in the Container Registry service at the account level. For more information, see the https://cloud.ibm.com/docs/Registry?topic=Registry-registry_setup_cli_namespace#registry_setup_cli_namespace_plan_perm[User permissions for working with namespaces] documentation.
 
 The namespace must be unique within IBM Cloud for the region you selected, so choose something relevant that you'll remember for the duration of the guide.
 
