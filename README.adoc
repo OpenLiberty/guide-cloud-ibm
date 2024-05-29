@@ -163,7 +163,7 @@ Retrieve the list of available Kubernetes zones for deploying the cluster within
 ibmcloud ks zone ls --provider classic
 ```
 
-Use the following command to retrieve the list of the available flavors of Kubernetes worker nodes for a zone by replacing the `[available_zone]` with an available zone selected from the previous command. 
+Use the following command to retrieve a list of the available flavors of Kubernetes worker nodes for a zone. Replace the `[available_zone]` value with a zone selected from the list you generated with previous command. 
 
 [role=command]
 ```
