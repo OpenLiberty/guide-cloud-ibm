@@ -49,7 +49,9 @@ Kubernetes is an open source container orchestrator that automates many tasks in
 
 Different cloud-based solutions are available to run your Kubernetes workloads. A cloud-based infrastructure enables you to focus on developing your microservices without worrying about low-level infrastructure details for deployment. Using a cloud helps you to easily scale and manage your microservices in a high-availability setup.
 
-The IBM Cloud Kubernetes Service is part of IBM’s public cloud offerings. It provides a hosted Kubernetes cluster where you can deploy your microservices. In this guide, you will use it with the IBM Cloud Container Registry, which is a private registry that is used to store and distribute your container images. Please note, the IBM Cloud Container Registry is hosted on IBM Cloud Platform, fees might be associated with running this guide. Please refer to https://cloud.ibm.com/docs/account?topic=account-accounts[IBM Cloud account type] document for more details. 
+The IBM Cloud Kubernetes Service is an IBM public cloud offering. It provides a hosted Kubernetes cluster where you can deploy your microservices. In this guide, you will use it with the IBM Cloud Container Registry, which is a private registry that is used to store and distribute your container images. 
+
+Note: Because the IBM Cloud Container Registry is hosted on IBM Cloud Platform, fees might be associated with running this guide. For more information, see link:https://cloud.ibm.com/docs/account?topic=account-accounts[IBM Cloud account type]. 
 
 The two microservices you will deploy are called `system` and `inventory`. The `system` microservice returns the JVM system properties of the running container. It also returns the pod’s name in the HTTP header, making replicas easy to distinguish from each other. The `inventory` microservice adds the properties from the `system` microservice to the inventory. This configuration demonstrates how to establish communication between pods inside a cluster.
 
