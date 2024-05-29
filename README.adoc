@@ -175,6 +175,7 @@ For more information about these flavors, see 'https://ibm.biz/flavors'
 Name                      Cores   Memory   Network Speed   OS             Server Type   Storage   Secondary Storage   Flavor Class   Provider
 b3c.16x64                 16      64GB     1000Mbps        UBUNTU_20_64   virtual       25GB      100GB               -              classic
 b3c.16x64.300gb           16      64GB     1000Mbps        UBUNTU_20_64   virtual       25GB      300GB               -              classic
+...
 ----
 
 Replace `[selected_flavor]` with an available flavor selected from the output of the previous command, and replace `[available_zone]` with the previously used zone. Then use the following command to create a Kubernetes cluster.
