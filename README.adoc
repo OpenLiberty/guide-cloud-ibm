@@ -157,7 +157,7 @@ To create a {kube} cluster on IBM Cloud, you need Administrator access to IBM Cl
 
 Once you confirm that you have appropriate permissions, use the following commands to provision a cluster.
 
-Retrieve the list of available Kubernetes zone for deploying the cluster within the https://cloud.ibm.com/docs/containers?topic=containers-regions-and-zones#zones-sz[IBM Cloud classic infrastructure] 
+Retrieve the list of available Kubernetes zones for deploying the cluster within the https://cloud.ibm.com/docs/containers?topic=containers-regions-and-zones#zones-sz[IBM Cloud classic infrastructure] 
 [role=command]
 ```
 ibmcloud ks zone ls --provider classic
