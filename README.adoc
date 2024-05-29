@@ -187,7 +187,7 @@ Use the following command to create a Kubernetes cluster. Replacing the `[select
 ibmcloud ks cluster create classic --name guide-cluster --flavor [selected_flavor] --zone [available_zone]
 ```
 
-You will see the following output:
+Look for the following output:
 [source, role="no_copy"]
 ----
 Number of workers was not specified. Using default: 1
