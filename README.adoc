@@ -170,7 +170,7 @@ Use the following command to retrieve a list of the available flavors of Kuberne
 ibmcloud ks flavor ls  --provider classic --zone [available_zone]
 ```
 
-You will see the following output: 
+Look for the following output: 
 [role="no_copy"]
 ----
 For more information about these flavors, see 'https://ibm.biz/flavors'
