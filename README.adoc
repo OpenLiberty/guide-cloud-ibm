@@ -1,4 +1,4 @@
-// Copyright (c) 2018, 2024 IBM Corporation and others.
+// Copyright (c) 2018, 2025 IBM Corporation and others.
 // Licensed under Creative Commons Attribution-NoDerivatives
 // 4.0 International (CC BY-ND 4.0)
 //   https://creativecommons.org/licenses/by-nd/4.0/
@@ -266,10 +266,32 @@ The starting Java project, which you can find in the `start` directory, is a mul
 
 To build these microservices, navigate to the `start` directory and run the following command:
 
-[role=command]
+
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
+[role='command']
 ```
-mvn package
+mvnw.cmd package
 ```
+--
+
+[.tab_content.mac_section]
+--
+[role='command']
+```
+./mvnw package
+```
+--
+
+[.tab_content.linux_section]
+--
+[role='command']
+```
+./mvnw package
+```
+--
 
 Next, run the `docker build` commands to build container images for your application:
 [role='command']
@@ -465,10 +487,31 @@ A few tests are included for you to test the basic functionality of the microser
 Use the following command to run the integration tests against your cluster. Substitute 
 `[hostname]`, `[system-node-port]` and `[inventory-node-port]` with the appropriate values.
 
-[role=command]
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
+[role='command']
 ```
-mvn failsafe:integration-test -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
+mvnw.cmd failsafe:integration-test -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
 ```
+--
+
+[.tab_content.mac_section]
+--
+[role='command']
+```
+./mvnw failsafe:integration-test -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
+```
+--
+
+[.tab_content.linux_section]
+--
+[role='command']
+```
+./mvnw failsafe:integration-test -Dcluster.ip=[hostname] -Dsystem.node.port=[system-node-port] -Dinventory.node.port=[inventory-node-port]
+```
+--
 
 If the tests pass, you'll see an output similar to the following for each service respectively:
 
@@ -503,10 +546,32 @@ Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
 Optionally, you might want to make changes to your microservice and redeploy the updated version. In this section, you will bump the version of the `system` microservice to `2.0-SNAPSHOT` and redeploy the new version of the microservice. 
 
 Use Maven to repackage your microservice:
-[role=command]
+
+include::{common-includes}/os-tabs.adoc[]
+
+[.tab_content.windows_section]
+--
+[role='command']
 ```
-mvn package
+mvnw.cmd package
 ```
+--
+
+[.tab_content.mac_section]
+--
+[role='command']
+```
+./mvnw package
+```
+--
+
+[.tab_content.linux_section]
+--
+[role='command']
+```
+./mvnw package
+```
+--
 
 Next, build the new version of the container image as `2.0-SNAPSHOT`:
 [role=command]
