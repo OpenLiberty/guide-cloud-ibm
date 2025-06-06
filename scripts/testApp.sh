@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
+./mvnw -version
 
 #../scripts/startMinikube.sh
 minikube start
@@ -9,7 +10,7 @@ minikube status
 #kubectl config view
 eval "$(minikube docker-env)"
 
-mvn -ntp -Dhttp.keepAlive=false \
+./mvnw -ntp -Dhttp.keepAlive=false \
     -Dmaven.wagon.http.pool=false \
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
     -q clean package
@@ -38,8 +39,8 @@ GUIDE_INVENTORY_PORT=$(kubectl get service inventory-service -o jsonpath="{.spec
 curl http://"$GUIDE_IP":"$GUIDE_SYSTEM_PORT"/system/properties
 curl http://"$GUIDE_IP":"$GUIDE_INVENTORY_PORT"/inventory/systems/system-service
 
-mvn -ntp failsafe:integration-test -Dcluster.ip="$GUIDE_IP" -Dsystem.node.port="$GUIDE_SYSTEM_PORT" -Dinventory.node.port="$GUIDE_INVENTORY_PORT"
-mvn -ntp failsafe:verify
+./mvnw -ntp failsafe:integration-test -Dcluster.ip="$GUIDE_IP" -Dsystem.node.port="$GUIDE_SYSTEM_PORT" -Dinventory.node.port="$GUIDE_INVENTORY_PORT"
+./mvnw -ntp failsafe:verify
 
 kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep system)"
 kubectl logs "$(kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}' | grep inventory)"
