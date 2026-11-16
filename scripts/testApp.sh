@@ -15,7 +15,7 @@ eval "$(minikube docker-env)"
     -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
     -q clean package
 
-docker pull -q icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
+docker pull -q icr.io/appcafe/open-liberty:kernel-slim-java25-openj9-ubi-minimal
 
 docker build --no-cache -t system:1.0-SNAPSHOT system/.
 docker build --no-cache -t inventory:1.0-SNAPSHOT inventory/.
@@ -28,7 +28,7 @@ cat kubernetes.yaml
 
 kubectl apply -f kubernetes.yaml
 
-sleep 120
+sleep 180
 
 kubectl get pods
 
